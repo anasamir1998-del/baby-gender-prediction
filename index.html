@@ -1217,8 +1217,12 @@
     <div id="pdfExportContainer" style="position: absolute; left: -9999px; top: -9999px; width: 800px; direction: rtl;">
         <div id="pdfContent" style="padding: 40px; background: #ffffff; font-family: 'Tajawal', sans-serif; color: #1a0a2e; direction: rtl;">
             <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #fce7f3; padding-bottom: 20px;">
-                <h1 style="color: #be185d; font-size: 28px; margin: 0 0 10px 0;">🎀 تقرير الكشف عن المولود 🎀</h1>
-                <p style="color: #6b7280; font-size: 16px; margin: 0;">سجل توقعات العائلة والأصدقاء</p>
+                <div style="color: #be185d; font-size: 28px; margin: 0 0 10px 0; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                    <span style="font-family: sans-serif;">🎀</span>
+                    <span dir="rtl">تقرير الكشف عن المولود</span>
+                    <span style="font-family: sans-serif;">🎀</span>
+                </div>
+                <p style="color: #6b7280; font-size: 16px; margin: 0; direction: rtl;">سجل توقعات العائلة والأصدقاء</p>
             </div>
             
             <div style="display: flex; justify-content: space-around; margin-bottom: 30px; background: #fdf2f8; padding: 20px; border-radius: 12px; border: 1px solid #fbcfe8;">
@@ -1701,16 +1705,18 @@
                 tbody.innerHTML = '';
 
                 predictions.forEach((pred, i) => {
-                    const genderText = pred.gender === 'boy' ? '👦 ولد' : '👧 بنت';
+                    const genderText = pred.gender === 'boy' 
+                        ? '<span dir="rtl">ولد</span> <span style="font-family: sans-serif;">👦</span>' 
+                        : '<span dir="rtl">بنت</span> <span style="font-family: sans-serif;">👧</span>';
                     const color = pred.gender === 'boy' ? '#0284c7' : '#be185d';
                     const bg = i % 2 === 0 ? '#ffffff' : '#fdf2f8';
                     tbody.innerHTML += `
                         <tr style="background: ${bg}; border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px; text-align: right;">${i + 1}</td>
-                            <td style="padding: 12px; text-align: right; font-weight: bold;">${escapeHTML(pred.name)}</td>
+                            <td style="padding: 12px; text-align: right; font-weight: bold;" dir="rtl">${escapeHTML(pred.name)}</td>
                             <td style="padding: 12px; text-align: right; color: ${color}; font-weight: bold;">${genderText}</td>
-                            <td style="padding: 12px; text-align: right; color: #4b5563;">${escapeHTML(pred.relation)}</td>
-                            <td style="padding: 12px; text-align: right; color: #6b7280; font-size: 0.9em;">${pred.date}</td>
+                            <td style="padding: 12px; text-align: right; color: #4b5563;" dir="rtl">${escapeHTML(pred.relation)}</td>
+                            <td style="padding: 12px; text-align: right; color: #6b7280; font-size: 0.9em;" dir="rtl">${pred.date}</td>
                         </tr>
                     `;
                 });
