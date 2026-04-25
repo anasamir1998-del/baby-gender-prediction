@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>توقع جنس المولود 👶</title>
     <meta name="description" content="شارك توقعك لجنس المولود مع العائلة والأصدقاء">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --boy-start: #4facfe;
@@ -45,16 +47,26 @@
         }
 
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* Floating background particles */
         .bg-particles {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             z-index: 0;
             overflow: hidden;
@@ -68,8 +80,13 @@
         }
 
         @keyframes floatParticle {
-            0% { transform: translateY(110vh) rotate(0deg); }
-            100% { transform: translateY(-10vh) rotate(360deg); }
+            0% {
+                transform: translateY(110vh) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+            }
         }
 
         /* Container */
@@ -91,8 +108,15 @@
         }
 
         @keyframes pageIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         /* Card */
@@ -117,11 +141,11 @@
             width: 200%;
             height: 200%;
             background: radial-gradient(circle at 30% 20%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(244, 114, 182, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 70% 80%, rgba(244, 114, 182, 0.08) 0%, transparent 50%);
             pointer-events: none;
         }
 
-        .card > * {
+        .card>* {
             position: relative;
             z-index: 1;
         }
@@ -134,8 +158,15 @@
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         h1 {
@@ -185,17 +216,17 @@
 
         .gender-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
         }
 
-        .gender-option input:checked + .gender-card.boy-card {
+        .gender-option input:checked+.gender-card.boy-card {
             border-color: var(--boy-start);
             background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
             box-shadow: 0 8px 30px rgba(79, 172, 254, 0.3);
             transform: translateY(-6px) scale(1.03);
         }
 
-        .gender-option input:checked + .gender-card.girl-card {
+        .gender-option input:checked+.gender-card.girl-card {
             border-color: var(--girl-start);
             background: linear-gradient(135deg, rgba(240, 147, 251, 0.1), rgba(245, 87, 108, 0.1));
             box-shadow: 0 8px 30px rgba(240, 147, 251, 0.3);
@@ -213,8 +244,13 @@
             font-weight: 800;
         }
 
-        .boy-card .gender-label { color: var(--boy-start); }
-        .girl-card .gender-label { color: var(--girl-end); }
+        .boy-card .gender-label {
+            color: var(--boy-start);
+        }
+
+        .girl-card .gender-label {
+            color: var(--girl-end);
+        }
 
         .check-mark {
             position: absolute;
@@ -233,10 +269,15 @@
             transition: all 0.3s ease;
         }
 
-        .boy-card .check-mark { background: var(--boy-start); }
-        .girl-card .check-mark { background: var(--girl-end); }
+        .boy-card .check-mark {
+            background: var(--boy-start);
+        }
 
-        .gender-option input:checked + .gender-card .check-mark {
+        .girl-card .check-mark {
+            background: var(--girl-end);
+        }
+
+        .gender-option input:checked+.gender-card .check-mark {
             opacity: 1;
             transform: scale(1);
         }
@@ -262,7 +303,7 @@
             border-radius: 14px;
             font-size: 1rem;
             font-family: 'Tajawal', sans-serif;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255, 255, 255, 0.7);
             transition: all 0.3s ease;
             outline: none;
             color: var(--text-dark);
@@ -300,9 +341,11 @@
         .submit-btn::after {
             content: '';
             position: absolute;
-            top: 0; left: -100%;
-            width: 200%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s ease;
         }
 
@@ -351,12 +394,14 @@
         .success-overlay {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1000;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(8px);
         }
 
@@ -370,7 +415,7 @@
             border-radius: var(--radius);
             padding: 48px 40px;
             text-align: center;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             max-width: 400px;
             width: 90%;
@@ -393,13 +438,25 @@
         }
 
         @keyframes popIn {
-            from { opacity: 0; transform: scale(0.7); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* Admin Link */
@@ -424,12 +481,14 @@
         .pin-modal {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1000;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
         }
 
@@ -443,7 +502,7 @@
             border-radius: var(--radius);
             padding: 40px;
             text-align: center;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
             animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             max-width: 380px;
             width: 90%;
@@ -530,7 +589,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .loading-spinner p {
@@ -561,8 +622,17 @@
         }
 
         @keyframes livePulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
         }
 
         /* ===== Results Page ===== */
@@ -618,21 +688,29 @@
             color: var(--text-dark);
         }
 
-        .btn-back:hover { background: #e5e7eb; }
+        .btn-back:hover {
+            background: #e5e7eb;
+        }
 
         .btn-download {
             background: linear-gradient(135deg, #10b981, #34d399);
             color: white;
         }
 
-        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
 
         .btn-delete {
             background: linear-gradient(135deg, #ef4444, #f87171);
             color: white;
         }
 
-        .btn-delete:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3); }
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+        }
 
         /* Settings Box */
         .settings-box {
@@ -705,7 +783,7 @@
             border-radius: 16px;
             padding: 20px 12px;
             text-align: center;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
             border: 1px solid #f3f4f6;
         }
 
@@ -721,9 +799,17 @@
             font-weight: 900;
         }
 
-        .stat-total .stat-value { color: var(--purple); }
-        .stat-boys .stat-value { color: var(--boy-start); }
-        .stat-girls .stat-value { color: var(--girl-end); }
+        .stat-total .stat-value {
+            color: var(--purple);
+        }
+
+        .stat-boys .stat-value {
+            color: var(--boy-start);
+        }
+
+        .stat-girls .stat-value {
+            color: var(--girl-end);
+        }
 
         /* Progress Bar */
         .progress-container {
@@ -738,8 +824,13 @@
             font-size: 0.95rem;
         }
 
-        .progress-labels .boy-pct { color: var(--boy-start); }
-        .progress-labels .girl-pct { color: var(--girl-end); }
+        .progress-labels .boy-pct {
+            color: var(--boy-start);
+        }
+
+        .progress-labels .girl-pct {
+            color: var(--girl-end);
+        }
 
         .progress-bar {
             height: 20px;
@@ -863,8 +954,10 @@
         /* Confetti */
         .confetti-container {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             z-index: 999;
             overflow: hidden;
@@ -880,8 +973,15 @@
         }
 
         @keyframes confettiFall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
         }
 
         /* footer */
@@ -894,495 +994,549 @@
 
         /* Responsive */
         @media (max-width: 600px) {
-            .card { padding: 32px 20px; }
-            h1 { font-size: 1.7rem; }
-            .gender-selector { gap: 14px; }
-            .gender-card { padding: 20px 12px; }
-            .gender-icon { font-size: 2.8rem; }
-            .gender-label { font-size: 1.1rem; }
-            .results-card { padding: 24px 16px; }
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-            .stat-card { padding: 14px 8px; }
-            .stat-card .stat-value { font-size: 1.5rem; }
-            .results-header { flex-direction: column; align-items: stretch; }
-            .action-buttons { flex-direction: column; }
-            .action-btn { justify-content: center; }
-            .results-table { font-size: 0.82rem; }
-            .results-table th, .results-table td { padding: 10px 8px; }
+            .card {
+                padding: 32px 20px;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .gender-selector {
+                gap: 14px;
+            }
+
+            .gender-card {
+                padding: 20px 12px;
+            }
+
+            .gender-icon {
+                font-size: 2.8rem;
+            }
+
+            .gender-label {
+                font-size: 1.1rem;
+            }
+
+            .results-card {
+                padding: 24px 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 14px 8px;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                justify-content: center;
+            }
+
+            .results-table {
+                font-size: 0.82rem;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px 8px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<!-- Background Particles -->
-<div class="bg-particles" id="bgParticles"></div>
+    <!-- Background Particles -->
+    <div class="bg-particles" id="bgParticles"></div>
 
-<!-- Confetti Container -->
-<div class="confetti-container" id="confettiContainer"></div>
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confettiContainer"></div>
 
-<!-- Success Overlay -->
-<div class="success-overlay" id="successOverlay">
-    <div class="success-box">
-        <div class="success-icon">🎉</div>
-        <h2>تم حفظ توقعك!</h2>
-        <p>شكراً لمشاركتك 💕</p>
-        <a href="celebration.html" class="submit-btn" style="text-decoration:none; display:inline-block; margin-top:16px;">🎉 ادخل الاحتفالية 🎉</a>
-    </div>
-</div>
-
-<!-- PIN Modal -->
-<div class="pin-modal" id="pinModal">
-    <div class="pin-box">
-        <h3>🔒 أدخل رمز الدخول</h3>
-        <input type="password" class="pin-input" id="pinInput" maxlength="4" placeholder="••••" inputmode="numeric">
-        <div class="pin-error" id="pinError">رمز خاطئ، حاول مرة أخرى</div>
-        <div class="pin-buttons">
-            <button class="pin-confirm" id="pinConfirmBtn">دخول</button>
-            <button class="pin-cancel" id="pinCancelBtn">إلغاء</button>
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-box">
+            <div class="success-icon">🎉</div>
+            <h2>تم حفظ توقعك!</h2>
+            <p>شكراً لمشاركتك 💕</p>
+            <a href="celebration.html" class="submit-btn"
+                style="text-decoration:none; display:inline-block; margin-top:16px;">🎉 ادخل الاحتفالية 🎉</a>
         </div>
     </div>
-</div>
 
-<!-- PIN Setup Modal -->
-<div class="pin-modal" id="pinSetupModal">
-    <div class="pin-box">
-        <h3>🔐 أنشئ رمز دخول للنتائج</h3>
-        <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 16px;">هذا الرمز سيحمي صفحة النتائج من الزوار</p>
-        <input type="password" class="pin-input" id="pinSetupInput" maxlength="4" placeholder="••••" inputmode="numeric">
-        <div class="pin-error" id="pinSetupError">أدخل 4 أرقام</div>
-        <div class="pin-buttons">
-            <button class="pin-confirm" id="pinSetupConfirmBtn">حفظ</button>
-            <button class="pin-cancel" id="pinSetupCancelBtn">تخطي</button>
+    <!-- PIN Modal -->
+    <div class="pin-modal" id="pinModal">
+        <div class="pin-box">
+            <h3>🔒 أدخل رمز الدخول</h3>
+            <input type="password" class="pin-input" id="pinInput" maxlength="4" placeholder="••••" inputmode="numeric">
+            <div class="pin-error" id="pinError">رمز خاطئ، حاول مرة أخرى</div>
+            <div class="pin-buttons">
+                <button class="pin-confirm" id="pinConfirmBtn">دخول</button>
+                <button class="pin-cancel" id="pinCancelBtn">إلغاء</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container">
-
-    <!-- ====== Prediction Page ====== -->
-    <div id="predictionPage" class="page active">
-        <div class="card">
-            <div class="header-emoji">👶</div>
-            <h1>توقع جنس المولود</h1>
-            <p class="subtitle">اختر توقعك وشاركنا رأيك!</p>
-
-            <!-- Live counter -->
-            <div class="live-badge" id="liveBadge" style="display:none;">
-                <span class="live-dot"></span>
-                <span id="liveCount">0</span> توقع حتى الآن
+    <!-- PIN Setup Modal -->
+    <div class="pin-modal" id="pinSetupModal">
+        <div class="pin-box">
+            <h3>🔐 أنشئ رمز دخول للنتائج</h3>
+            <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 16px;">هذا الرمز سيحمي صفحة النتائج من الزوار
+            </p>
+            <input type="password" class="pin-input" id="pinSetupInput" maxlength="4" placeholder="••••"
+                inputmode="numeric">
+            <div class="pin-error" id="pinSetupError">أدخل 4 أرقام</div>
+            <div class="pin-buttons">
+                <button class="pin-confirm" id="pinSetupConfirmBtn">حفظ</button>
+                <button class="pin-cancel" id="pinSetupCancelBtn">تخطي</button>
             </div>
-
-            <!-- Loading -->
-            <div class="loading-spinner" id="loadingSpinner">
-                <div class="spinner"></div>
-                <p>جاري التحميل...</p>
-            </div>
-
-            <div id="formArea">
-                <form id="predictionForm" autocomplete="off">
-                    <div class="gender-selector">
-                        <label class="gender-option" id="optionBoy">
-                            <input type="radio" name="gender" value="boy" required>
-                            <div class="gender-card boy-card">
-                                <span class="check-mark">✓</span>
-                                <span class="gender-icon">👦</span>
-                                <div class="gender-label">ولد</div>
-                            </div>
-                        </label>
-                        <label class="gender-option" id="optionGirl">
-                            <input type="radio" name="gender" value="girl" required>
-                            <div class="gender-card girl-card">
-                                <span class="check-mark">✓</span>
-                                <span class="gender-icon">👧</span>
-                                <div class="gender-label">بنت</div>
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="form-group">
-                        <label>📝 اسمك</label>
-                        <input type="text" name="name" id="nameInput" placeholder="اكتب اسمك هنا..." required maxlength="50">
-                    </div>
-
-                    <div class="form-group">
-                        <label>💝 صلة القرابة</label>
-                        <input type="text" name="relation" id="relationInput" placeholder="مثال: خالة، صديقة، جدة..." maxlength="50">
-                    </div>
-
-                    <button type="submit" class="submit-btn" id="submitBtn">✨ أرسل توقعك ✨</button>
-                </form>
-            </div>
-
-            <!-- Already Voted State -->
-            <div id="alreadyVoted" class="already-voted" style="display:none;">
-                <div class="voted-icon">✅</div>
-                <h2>تم تسجيل توقعك!</h2>
-                <p>شكراً لمشاركتك، لقد سجّلت توقعك مسبقاً 💕</p>
-                <a href="celebration.html" class="submit-btn" style="text-decoration:none; display:inline-block; margin-top:20px;">🎉 ادخل الاحتفالية 🎉</a>
-            </div>
-
-            <button class="admin-link" id="adminLink">📊 عرض النتائج</button>
         </div>
-
-        <p class="footer-text">صُنع بـ 💕</p>
     </div>
 
-    <!-- ====== Results Page ====== -->
-    <div id="resultsPage" class="page">
-        <div class="results-card">
-            <div class="results-header">
-                <h2>📊 نتائج التوقعات</h2>
-                <div class="action-buttons">
-                    <button class="action-btn btn-back" id="backBtn">→ رجوع</button>
-                    <button class="action-btn btn-download" id="downloadBtn">⬇ تحميل</button>
-                    <button class="action-btn btn-delete" id="clearAllBtn">🗑 حذف الكل</button>
+    <div class="container">
+
+        <!-- ====== Prediction Page ====== -->
+        <div id="predictionPage" class="page active">
+            <div class="card">
+                <div class="header-emoji">👶</div>
+                <h1>توقع جنس المولود</h1>
+                <p class="subtitle">اختر توقعك وشاركنا رأيك!</p>
+
+                <!-- Live counter -->
+                <div class="live-badge" id="liveBadge" style="display:none;">
+                    <span class="live-dot"></span>
+                    <span id="liveCount">0</span> توقع حتى الآن
                 </div>
+
+                <!-- Loading -->
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                    <p>جاري التحميل...</p>
+                </div>
+
+                <div id="formArea">
+                    <form id="predictionForm" autocomplete="off">
+                        <div class="gender-selector">
+                            <label class="gender-option" id="optionBoy">
+                                <input type="radio" name="gender" value="boy" required>
+                                <div class="gender-card boy-card">
+                                    <span class="check-mark">✓</span>
+                                    <span class="gender-icon">👦</span>
+                                    <div class="gender-label">ولد</div>
+                                </div>
+                            </label>
+                            <label class="gender-option" id="optionGirl">
+                                <input type="radio" name="gender" value="girl" required>
+                                <div class="gender-card girl-card">
+                                    <span class="check-mark">✓</span>
+                                    <span class="gender-icon">👧</span>
+                                    <div class="gender-label">بنت</div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>📝 اسمك</label>
+                            <input type="text" name="name" id="nameInput" placeholder="اكتب اسمك هنا..." required
+                                maxlength="50">
+                        </div>
+
+                        <div class="form-group">
+                            <label>💝 صلة القرابة</label>
+                            <input type="text" name="relation" id="relationInput"
+                                placeholder="مثال: خالة، صديقة، جدة..." maxlength="50">
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="submitBtn">✨ أرسل توقعك ✨</button>
+                    </form>
+                </div>
+
+                <!-- Already Voted State -->
+                <div id="alreadyVoted" class="already-voted" style="display:none;">
+                    <div class="voted-icon">✅</div>
+                    <h2>تم تسجيل توقعك!</h2>
+                    <p>شكراً لمشاركتك، لقد سجّلت توقعك مسبقاً 💕</p>
+                    <a href="celebration.html" class="submit-btn"
+                        style="text-decoration:none; display:inline-block; margin-top:20px;">🎉 ادخل الاحتفالية 🎉</a>
+                </div>
+
+                <button class="admin-link" id="adminLink">📊 عرض النتائج</button>
             </div>
 
-            <!-- Settings Box -->
-            <div class="settings-box">
-                <div class="settings-info">
-                    <h3>⏱️ وقت الاحتفالية (مباشر)</h3>
-                    <p>قم بتغيير وقت الاحتفالية لجميع الزوار في نفس اللحظة.</p>
-                </div>
-                <div class="settings-controls">
-                    <input type="datetime-local" id="adminTargetDate">
-                    <button class="btn-save-time" id="saveTimeBtn">حفظ ونشر الموعد</button>
-                </div>
-            </div>
-
-            <div id="statsContainer"></div>
-            <div id="progressContainer"></div>
-            <div id="resultsContainer"></div>
+            <p class="footer-text">صُنع بـ 💕</p>
         </div>
+
+        <!-- ====== Results Page ====== -->
+        <div id="resultsPage" class="page">
+            <div class="results-card">
+                <div class="results-header">
+                    <h2>📊 نتائج التوقعات</h2>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-back" id="backBtn">→ رجوع</button>
+                        <button class="action-btn btn-download" id="downloadBtn">⬇ تحميل</button>
+                        <button class="action-btn btn-delete" id="clearAllBtn">🗑 حذف الكل</button>
+                    </div>
+                </div>
+
+                <!-- Settings Box -->
+                <div class="settings-box">
+                    <div class="settings-info">
+                        <h3>⏱️ وقت الاحتفالية (مباشر)</h3>
+                        <p>قم بتغيير وقت الاحتفالية لجميع الزوار في نفس اللحظة.</p>
+                    </div>
+                    <div class="settings-controls">
+                        <input type="datetime-local" id="adminTargetDate">
+                        <button class="btn-save-time" id="saveTimeBtn">حفظ ونشر الموعد</button>
+                    </div>
+                </div>
+
+                <div id="statsContainer"></div>
+                <div id="progressContainer"></div>
+                <div id="resultsContainer"></div>
+            </div>
+        </div>
+
     </div>
 
-</div>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-
-<script>
-    // ============ FIREBASE CONFIG ============
-    const firebaseConfig = {
-        apiKey: "AIzaSyCcEiiFAMHe_Q-YXlh3OKs1RA2qt57KIEI",
-        authDomain: "baby-prediction-cd7f0.firebaseapp.com",
-        databaseURL: "https://baby-prediction-cd7f0-default-rtdb.firebaseio.com",
-        projectId: "baby-prediction-cd7f0",
-        storageBucket: "baby-prediction-cd7f0.firebasestorage.app",
-        messagingSenderId: "746478336440",
-        appId: "1:746478336440:web:9734916b1e1a0f6338374d"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const predictionsRef = db.ref('predictions');
-
-    // ============ DOM ============
-    const predictionPage = document.getElementById('predictionPage');
-    const resultsPage = document.getElementById('resultsPage');
-    const predictionForm = document.getElementById('predictionForm');
-    const formArea = document.getElementById('formArea');
-    const alreadyVoted = document.getElementById('alreadyVoted');
-    const adminLink = document.getElementById('adminLink');
-    const backBtn = document.getElementById('backBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const clearAllBtn = document.getElementById('clearAllBtn');
-    const successOverlay = document.getElementById('successOverlay');
-    const confettiContainer = document.getElementById('confettiContainer');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const liveBadge = document.getElementById('liveBadge');
-    const liveCount = document.getElementById('liveCount');
-
-    // PIN elements
-    const pinModal = document.getElementById('pinModal');
-    const pinInput = document.getElementById('pinInput');
-    const pinError = document.getElementById('pinError');
-    const pinConfirmBtn = document.getElementById('pinConfirmBtn');
-    const pinCancelBtn = document.getElementById('pinCancelBtn');
-
-    // PIN Setup elements
-    const pinSetupModal = document.getElementById('pinSetupModal');
-    const pinSetupInput = document.getElementById('pinSetupInput');
-    const pinSetupError = document.getElementById('pinSetupError');
-    const pinSetupConfirmBtn = document.getElementById('pinSetupConfirmBtn');
-    const pinSetupCancelBtn = document.getElementById('pinSetupCancelBtn');
-
-    // ============ KEYS ============
-    const PIN_KEY = 'babyGenderPIN';
-    const VOTED_KEY = 'babyGenderVoted';
-
-    // ============ INIT ============
-    initParticles();
-    checkVotedStatus();
-    listenToLiveCount();
-
-    // ============ FIREBASE DATA ============
-    // Listen for live prediction count
-    function listenToLiveCount() {
-        predictionsRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            const count = data ? Object.keys(data).length : 0;
-            liveCount.textContent = count;
-            if (count > 0) {
-                liveBadge.style.display = 'inline-flex';
-            }
-        });
-    }
-
-    // Add prediction to Firebase
-    function addPrediction(prediction) {
-        return predictionsRef.push(prediction);
-    }
-
-    // Get all predictions from Firebase
-    function getAllPredictions() {
-        return predictionsRef.once('value').then(snapshot => {
-            const data = snapshot.val();
-            if (!data) return [];
-            return Object.entries(data).map(([key, val]) => ({
-                firebaseKey: key,
-                ...val
-            }));
-        });
-    }
-
-    // Delete single prediction
-    function deletePrediction(firebaseKey) {
-        return predictionsRef.child(firebaseKey).remove();
-    }
-
-    // Delete all predictions
-    function deleteAllPredictions() {
-        return predictionsRef.remove();
-    }
-
-    // ============ XSS Protection ============
-    function escapeHTML(str) {
-        const div = document.createElement('div');
-        div.textContent = str || '';
-        return div.innerHTML;
-    }
-
-    // ============ PIN (stored locally) ============
-    function getPIN() {
-        return localStorage.getItem(PIN_KEY);
-    }
-
-    function setPIN(pin) {
-        localStorage.setItem(PIN_KEY, pin);
-    }
-
-    // ============ Duplicate Vote Check ============
-    function hasVoted() {
-        return localStorage.getItem(VOTED_KEY) === 'true';
-    }
-
-    function markVoted() {
-        localStorage.setItem(VOTED_KEY, 'true');
-    }
-
-    function checkVotedStatus() {
-        if (hasVoted()) {
-            formArea.style.display = 'none';
-            alreadyVoted.style.display = 'block';
-        }
-    }
-
-    // ============ Form Submit ============
-    predictionForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        if (hasVoted()) return;
-
-        const nameVal = document.getElementById('nameInput').value.trim();
-        const relationVal = document.getElementById('relationInput').value.trim();
-        const genderEl = document.querySelector('input[name="gender"]:checked');
-
-        if (!genderEl || !nameVal) return;
-
-        // Disable button
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'جاري الإرسال...';
-
-        const prediction = {
-            name: nameVal,
-            relation: relationVal || 'لم يُحدد',
-            gender: genderEl.value,
-            date: new Date().toLocaleString('ar-EG'),
-            timestamp: Date.now()
+    <script>
+        // ============ FIREBASE CONFIG ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcEiiFAMHe_Q-YXlh3OKs1RA2qt57KIEI",
+            authDomain: "baby-prediction-cd7f0.firebaseapp.com",
+            databaseURL: "https://baby-prediction-cd7f0-default-rtdb.firebaseio.com",
+            projectId: "baby-prediction-cd7f0",
+            storageBucket: "baby-prediction-cd7f0.firebasestorage.app",
+            messagingSenderId: "746478336440",
+            appId: "1:746478336440:web:9734916b1e1a0f6338374d"
         };
 
-        // Save locally for celebration page
-        localStorage.setItem('celebPrediction', prediction.gender);
-        localStorage.setItem('celebVisitor', prediction.name);
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const predictionsRef = db.ref('predictions');
 
-        // Save to Firebase
-        addPrediction(prediction)
-            .then(() => {
-                markVoted();
+        // ============ DOM ============
+        const predictionPage = document.getElementById('predictionPage');
+        const resultsPage = document.getElementById('resultsPage');
+        const predictionForm = document.getElementById('predictionForm');
+        const formArea = document.getElementById('formArea');
+        const alreadyVoted = document.getElementById('alreadyVoted');
+        const adminLink = document.getElementById('adminLink');
+        const backBtn = document.getElementById('backBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const successOverlay = document.getElementById('successOverlay');
+        const confettiContainer = document.getElementById('confettiContainer');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const liveBadge = document.getElementById('liveBadge');
+        const liveCount = document.getElementById('liveCount');
 
-                // Show success
-                showSuccess();
-                launchConfetti();
+        // PIN elements
+        const pinModal = document.getElementById('pinModal');
+        const pinInput = document.getElementById('pinInput');
+        const pinError = document.getElementById('pinError');
+        const pinConfirmBtn = document.getElementById('pinConfirmBtn');
+        const pinCancelBtn = document.getElementById('pinCancelBtn');
 
-                setTimeout(() => {
-                    successOverlay.classList.remove('show');
-                    formArea.style.display = 'none';
-                    alreadyVoted.style.display = 'block';
-                }, 2500);
-            })
-            .catch((error) => {
-                console.error('Error saving prediction:', error);
-                alert('حدث خطأ أثناء حفظ التوقع. حاول مرة أخرى.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '✨ أرسل توقعك ✨';
+        // PIN Setup elements
+        const pinSetupModal = document.getElementById('pinSetupModal');
+        const pinSetupInput = document.getElementById('pinSetupInput');
+        const pinSetupError = document.getElementById('pinSetupError');
+        const pinSetupConfirmBtn = document.getElementById('pinSetupConfirmBtn');
+        const pinSetupCancelBtn = document.getElementById('pinSetupCancelBtn');
+
+        // ============ KEYS ============
+        const PIN_KEY = 'babyGenderPIN';
+        const VOTED_KEY = 'babyGenderVoted';
+
+        // ============ INIT ============
+        initParticles();
+        checkVotedStatus();
+        listenToLiveCount();
+
+        // ============ FIREBASE DATA ============
+        // Listen for live prediction count
+        function listenToLiveCount() {
+            predictionsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                const count = data ? Object.keys(data).length : 0;
+                liveCount.textContent = count;
+                if (count > 0) {
+                    liveBadge.style.display = 'inline-flex';
+                }
             });
-    });
-
-    // ============ Success Overlay ============
-    function showSuccess() {
-        successOverlay.classList.add('show');
-    }
-
-    // ============ Confetti ============
-    function launchConfetti() {
-        const colors = ['#4facfe', '#f093fb', '#f5576c', '#a855f7', '#fbbf24', '#34d399', '#00f2fe'];
-        for (let i = 0; i < 60; i++) {
-            const piece = document.createElement('div');
-            piece.className = 'confetti-piece';
-            piece.style.left = Math.random() * 100 + '%';
-            piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            piece.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
-            piece.style.animationDelay = Math.random() * 0.8 + 's';
-            piece.style.width = (Math.random() * 8 + 6) + 'px';
-            piece.style.height = (Math.random() * 8 + 6) + 'px';
-            piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-            confettiContainer.appendChild(piece);
         }
-        setTimeout(() => { confettiContainer.innerHTML = ''; }, 4000);
-    }
 
-    // ============ Background Particles ============
-    function initParticles() {
-        const emojis = ['👶', '🎀', '🍼', '⭐', '💕', '🌸', '✨', '🧸'];
-        const container = document.getElementById('bgParticles');
-        for (let i = 0; i < 15; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            p.style.left = Math.random() * 100 + '%';
-            p.style.animationDuration = (Math.random() * 15 + 10) + 's';
-            p.style.animationDelay = Math.random() * 10 + 's';
-            p.style.fontSize = (Math.random() * 16 + 16) + 'px';
-            container.appendChild(p);
+        // Add prediction to Firebase
+        function addPrediction(prediction) {
+            return predictionsRef.push(prediction);
         }
-    }
 
-    // ============ Admin / Results Navigation ============
-    adminLink.addEventListener('click', function() {
-        const pin = getPIN();
-        if (!pin) {
-            pinSetupModal.classList.add('show');
-            pinSetupInput.value = '';
-            pinSetupInput.focus();
-        } else {
-            pinModal.classList.add('show');
-            pinInput.value = '';
-            pinError.style.display = 'none';
-            pinInput.focus();
+        // Get all predictions from Firebase
+        function getAllPredictions() {
+            return predictionsRef.once('value').then(snapshot => {
+                const data = snapshot.val();
+                if (!data) return [];
+                return Object.entries(data).map(([key, val]) => ({
+                    firebaseKey: key,
+                    ...val
+                }));
+            });
         }
-    });
 
-    // PIN Setup
-    pinSetupConfirmBtn.addEventListener('click', function() {
-        const val = pinSetupInput.value.trim();
-        if (val.length === 4 && /^\d{4}$/.test(val)) {
-            setPIN(val);
+        // Delete single prediction
+        function deletePrediction(firebaseKey) {
+            return predictionsRef.child(firebaseKey).remove();
+        }
+
+        // Delete all predictions
+        function deleteAllPredictions() {
+            return predictionsRef.remove();
+        }
+
+        // ============ XSS Protection ============
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+
+        // ============ PIN (stored locally) ============
+        function getPIN() {
+            return localStorage.getItem(PIN_KEY);
+        }
+
+        function setPIN(pin) {
+            localStorage.setItem(PIN_KEY, pin);
+        }
+
+        // ============ Duplicate Vote Check ============
+        function hasVoted() {
+            return localStorage.getItem(VOTED_KEY) === 'true';
+        }
+
+        function markVoted() {
+            localStorage.setItem(VOTED_KEY, 'true');
+        }
+
+        function checkVotedStatus() {
+            if (hasVoted()) {
+                formArea.style.display = 'none';
+                alreadyVoted.style.display = 'block';
+            }
+        }
+
+        // ============ Form Submit ============
+        predictionForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (hasVoted()) return;
+
+            const nameVal = document.getElementById('nameInput').value.trim();
+            const relationVal = document.getElementById('relationInput').value.trim();
+            const genderEl = document.querySelector('input[name="gender"]:checked');
+
+            if (!genderEl || !nameVal) return;
+
+            // Disable button
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإرسال...';
+
+            const prediction = {
+                name: nameVal,
+                relation: relationVal || 'لم يُحدد',
+                gender: genderEl.value,
+                date: new Date().toLocaleString('ar-EG'),
+                timestamp: Date.now()
+            };
+
+            // Save locally for celebration page
+            localStorage.setItem('celebPrediction', prediction.gender);
+            localStorage.setItem('celebVisitor', prediction.name);
+
+            // Save to Firebase
+            addPrediction(prediction)
+                .then(() => {
+                    markVoted();
+
+                    // Show success
+                    showSuccess();
+                    launchConfetti();
+
+                    setTimeout(() => {
+                        successOverlay.classList.remove('show');
+                        formArea.style.display = 'none';
+                        alreadyVoted.style.display = 'block';
+                    }, 2500);
+                })
+                .catch((error) => {
+                    console.error('Error saving prediction:', error);
+                    alert('حدث خطأ أثناء حفظ التوقع. حاول مرة أخرى.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '✨ أرسل توقعك ✨';
+                });
+        });
+
+        // ============ Success Overlay ============
+        function showSuccess() {
+            successOverlay.classList.add('show');
+        }
+
+        // ============ Confetti ============
+        function launchConfetti() {
+            const colors = ['#4facfe', '#f093fb', '#f5576c', '#a855f7', '#fbbf24', '#34d399', '#00f2fe'];
+            for (let i = 0; i < 60; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+                piece.style.animationDelay = Math.random() * 0.8 + 's';
+                piece.style.width = (Math.random() * 8 + 6) + 'px';
+                piece.style.height = (Math.random() * 8 + 6) + 'px';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                confettiContainer.appendChild(piece);
+            }
+            setTimeout(() => { confettiContainer.innerHTML = ''; }, 4000);
+        }
+
+        // ============ Background Particles ============
+        function initParticles() {
+            const emojis = ['👶', '🎀', '🍼', '⭐', '💕', '🌸', '✨', '🧸'];
+            const container = document.getElementById('bgParticles');
+            for (let i = 0; i < 15; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                p.style.animationDelay = Math.random() * 10 + 's';
+                p.style.fontSize = (Math.random() * 16 + 16) + 'px';
+                container.appendChild(p);
+            }
+        }
+
+        // ============ Admin / Results Navigation ============
+        adminLink.addEventListener('click', function () {
+            const pin = getPIN();
+            if (!pin) {
+                pinSetupModal.classList.add('show');
+                pinSetupInput.value = '';
+                pinSetupInput.focus();
+            } else {
+                pinModal.classList.add('show');
+                pinInput.value = '';
+                pinError.style.display = 'none';
+                pinInput.focus();
+            }
+        });
+
+        // PIN Setup
+        pinSetupConfirmBtn.addEventListener('click', function () {
+            const val = pinSetupInput.value.trim();
+            if (val.length === 4 && /^\d{4}$/.test(val)) {
+                setPIN(val);
+                pinSetupModal.classList.remove('show');
+                goToResults();
+            } else {
+                pinSetupError.style.display = 'block';
+                pinSetupInput.focus();
+            }
+        });
+
+        pinSetupCancelBtn.addEventListener('click', function () {
             pinSetupModal.classList.remove('show');
             goToResults();
-        } else {
-            pinSetupError.style.display = 'block';
-            pinSetupInput.focus();
-        }
-    });
+        });
 
-    pinSetupCancelBtn.addEventListener('click', function() {
-        pinSetupModal.classList.remove('show');
-        goToResults();
-    });
+        // PIN Verify
+        pinConfirmBtn.addEventListener('click', function () {
+            const val = pinInput.value.trim();
+            if (val === getPIN()) {
+                pinModal.classList.remove('show');
+                goToResults();
+            } else {
+                pinError.style.display = 'block';
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        });
 
-    // PIN Verify
-    pinConfirmBtn.addEventListener('click', function() {
-        const val = pinInput.value.trim();
-        if (val === getPIN()) {
+        pinCancelBtn.addEventListener('click', function () {
             pinModal.classList.remove('show');
-            goToResults();
-        } else {
-            pinError.style.display = 'block';
-            pinInput.value = '';
-            pinInput.focus();
+        });
+
+        // Enter key for PIN inputs
+        pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') pinConfirmBtn.click(); });
+        pinSetupInput.addEventListener('keydown', e => { if (e.key === 'Enter') pinSetupConfirmBtn.click(); });
+
+        function goToResults() {
+            predictionPage.classList.remove('active');
+            resultsPage.classList.add('active');
+            displayResults();
         }
-    });
 
-    pinCancelBtn.addEventListener('click', function() {
-        pinModal.classList.remove('show');
-    });
+        backBtn.addEventListener('click', function () {
+            resultsPage.classList.remove('active');
+            predictionPage.classList.add('active');
+        });
 
-    // Enter key for PIN inputs
-    pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') pinConfirmBtn.click(); });
-    pinSetupInput.addEventListener('keydown', e => { if (e.key === 'Enter') pinSetupConfirmBtn.click(); });
+        // ============ Display Results (from Firebase) ============
+        function displayResults() {
+            const statsContainer = document.getElementById('statsContainer');
+            const progressContainer = document.getElementById('progressContainer');
+            const resultsContainer = document.getElementById('resultsContainer');
 
-    function goToResults() {
-        predictionPage.classList.remove('active');
-        resultsPage.classList.add('active');
-        displayResults();
-    }
+            // Show loading state
+            resultsContainer.innerHTML = '<div class="loading-spinner show"><div class="spinner"></div><p>جاري تحميل التوقعات...</p></div>';
+            statsContainer.innerHTML = '';
+            progressContainer.innerHTML = '';
 
-    backBtn.addEventListener('click', function() {
-        resultsPage.classList.remove('active');
-        predictionPage.classList.add('active');
-    });
-
-    // ============ Display Results (from Firebase) ============
-    function displayResults() {
-        const statsContainer = document.getElementById('statsContainer');
-        const progressContainer = document.getElementById('progressContainer');
-        const resultsContainer = document.getElementById('resultsContainer');
-
-        // Show loading state
-        resultsContainer.innerHTML = '<div class="loading-spinner show"><div class="spinner"></div><p>جاري تحميل التوقعات...</p></div>';
-        statsContainer.innerHTML = '';
-        progressContainer.innerHTML = '';
-
-        getAllPredictions().then(predictions => {
-            if (predictions.length === 0) {
-                resultsContainer.innerHTML = `
+            getAllPredictions().then(predictions => {
+                if (predictions.length === 0) {
+                    resultsContainer.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📭</div>
                         <h3>لا توجد توقعات بعد</h3>
                         <p>شارك الرابط مع العائلة والأصدقاء!</p>
                     </div>
                 `;
-                statsContainer.innerHTML = '';
-                progressContainer.innerHTML = '';
-                return;
-            }
+                    statsContainer.innerHTML = '';
+                    progressContainer.innerHTML = '';
+                    return;
+                }
 
-            // Sort by timestamp (newest first in table, but keep order)
-            predictions.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+                // Sort by timestamp (newest first in table, but keep order)
+                predictions.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-            const boys = predictions.filter(p => p.gender === 'boy').length;
-            const girls = predictions.filter(p => p.gender === 'girl').length;
-            const total = predictions.length;
-            const boyPct = total > 0 ? Math.round((boys / total) * 100) : 0;
-            const girlPct = 100 - boyPct;
+                const boys = predictions.filter(p => p.gender === 'boy').length;
+                const girls = predictions.filter(p => p.gender === 'girl').length;
+                const total = predictions.length;
+                const boyPct = total > 0 ? Math.round((boys / total) * 100) : 0;
+                const girlPct = 100 - boyPct;
 
-            // Stats
-            statsContainer.innerHTML = `
+                // Stats
+                statsContainer.innerHTML = `
                 <div class="stats-grid">
                     <div class="stat-card stat-total">
                         <div class="stat-label">إجمالي التوقعات</div>
@@ -1399,8 +1553,8 @@
                 </div>
             `;
 
-            // Progress Bar
-            progressContainer.innerHTML = `
+                // Progress Bar
+                progressContainer.innerHTML = `
                 <div class="progress-container">
                     <div class="progress-labels">
                         <span class="boy-pct">👦 ولد ${boyPct}%</span>
@@ -1413,12 +1567,12 @@
                 </div>
             `;
 
-            // Table
-            let rows = '';
-            predictions.forEach((pred, i) => {
-                const genderText = pred.gender === 'boy' ? '👦 ولد' : '👧 بنت';
-                const badgeClass = pred.gender === 'boy' ? 'badge-boy' : 'badge-girl';
-                rows += `
+                // Table
+                let rows = '';
+                predictions.forEach((pred, i) => {
+                    const genderText = pred.gender === 'boy' ? '👦 ولد' : '👧 بنت';
+                    const badgeClass = pred.gender === 'boy' ? 'badge-boy' : 'badge-girl';
+                    rows += `
                     <tr>
                         <td>${i + 1}</td>
                         <td>${escapeHTML(pred.name)}</td>
@@ -1428,9 +1582,9 @@
                         <td><button class="delete-row-btn" data-key="${pred.firebaseKey}" title="حذف">✕</button></td>
                     </tr>
                 `;
-            });
+                });
 
-            resultsContainer.innerHTML = `
+                resultsContainer.innerHTML = `
                 <table class="results-table">
                     <thead>
                         <tr>
@@ -1446,102 +1600,103 @@
                 </table>
             `;
 
-            // Bind delete buttons
-            resultsContainer.querySelectorAll('.delete-row-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const key = this.getAttribute('data-key');
-                    if (confirm('هل تريد حذف هذا التوقع؟')) {
-                        deletePrediction(key).then(() => {
-                            displayResults();
-                        });
-                    }
+                // Bind delete buttons
+                resultsContainer.querySelectorAll('.delete-row-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const key = this.getAttribute('data-key');
+                        if (confirm('هل تريد حذف هذا التوقع؟')) {
+                            deletePrediction(key).then(() => {
+                                displayResults();
+                            });
+                        }
+                    });
                 });
-            });
-        }).catch(error => {
-            console.error('Error loading predictions:', error);
-            resultsContainer.innerHTML = `
+            }).catch(error => {
+                console.error('Error loading predictions:', error);
+                resultsContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">⚠️</div>
                     <h3>حدث خطأ</h3>
                     <p>تعذر تحميل التوقعات. تحقق من اتصال الإنترنت.</p>
                 </div>
             `;
-        });
-    }
-
-    // ============ Clear All ============
-    clearAllBtn.addEventListener('click', function() {
-        if (confirm('هل أنت متأكد من حذف جميع التوقعات؟\nلا يمكن التراجع عن هذا!')) {
-            deleteAllPredictions().then(() => {
-                displayResults();
             });
         }
-    });
 
-    // ============ Download CSV ============
-    downloadBtn.addEventListener('click', function() {
-        getAllPredictions().then(predictions => {
-            if (predictions.length === 0) {
-                alert('لا توجد بيانات لتحميلها');
+        // ============ Clear All ============
+        clearAllBtn.addEventListener('click', function () {
+            if (confirm('هل أنت متأكد من حذف جميع التوقعات؟\nلا يمكن التراجع عن هذا!')) {
+                deleteAllPredictions().then(() => {
+                    displayResults();
+                });
+            }
+        });
+
+        // ============ Download CSV ============
+        downloadBtn.addEventListener('click', function () {
+            getAllPredictions().then(predictions => {
+                if (predictions.length === 0) {
+                    alert('لا توجد بيانات لتحميلها');
+                    return;
+                }
+
+                // BOM for Arabic support in Excel
+                let csv = '\ufeff';
+                csv += 'الرقم,الاسم,التوقع,صلة القرابة,التاريخ\n';
+
+                predictions.forEach((pred, i) => {
+                    const gender = pred.gender === 'boy' ? 'ولد' : 'بنت';
+                    csv += `${i + 1},"${pred.name}","${gender}","${pred.relation}","${pred.date}"\n`;
+                });
+
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'توقعات_المولود.csv';
+                link.click();
+                URL.revokeObjectURL(link.href);
+            });
+        });
+
+        // ============ Admin Target Date Control ============
+        const adminTargetDate = document.getElementById('adminTargetDate');
+        const saveTimeBtn = document.getElementById('saveTimeBtn');
+
+        // Load initial target date
+        db.ref('settings/targetDate').on('value', (snap) => {
+            const val = snap.val();
+            if (val) {
+                const d = new Date(val);
+                const offset = d.getTimezoneOffset();
+                const local = new Date(d.getTime() - offset * 60000);
+                adminTargetDate.value = local.toISOString().slice(0, 16);
+            }
+        });
+
+        saveTimeBtn.addEventListener('click', () => {
+            const val = adminTargetDate.value;
+            if (!val) {
+                alert('الرجاء تحديد التاريخ والوقت أولاً');
                 return;
             }
 
-            // BOM for Arabic support in Excel
-            let csv = '\ufeff';
-            csv += 'الرقم,الاسم,التوقع,صلة القرابة,التاريخ\n';
+            saveTimeBtn.disabled = true;
+            saveTimeBtn.textContent = 'جاري الحفظ...';
 
-            predictions.forEach((pred, i) => {
-                const gender = pred.gender === 'boy' ? 'ولد' : 'بنت';
-                csv += `${i + 1},"${pred.name}","${gender}","${pred.relation}","${pred.date}"\n`;
+            const dateISO = new Date(val).toISOString();
+            db.ref('settings/targetDate').set(dateISO).then(() => {
+                alert('تم نشر الموعد بنجاح لجميع الزوار! 🚀');
+                saveTimeBtn.disabled = false;
+                saveTimeBtn.textContent = 'حفظ ونشر الموعد';
+            }).catch(err => {
+                alert('حدث خطأ أثناء الحفظ');
+                console.error(err);
+                saveTimeBtn.disabled = false;
+                saveTimeBtn.textContent = 'حفظ ونشر الموعد';
             });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'توقعات_المولود.csv';
-            link.click();
-            URL.revokeObjectURL(link.href);
         });
-    });
-
-    // ============ Admin Target Date Control ============
-    const adminTargetDate = document.getElementById('adminTargetDate');
-    const saveTimeBtn = document.getElementById('saveTimeBtn');
-
-    // Load initial target date
-    db.ref('settings/targetDate').on('value', (snap) => {
-        const val = snap.val();
-        if (val) {
-            const d = new Date(val);
-            const offset = d.getTimezoneOffset();
-            const local = new Date(d.getTime() - offset * 60000);
-            adminTargetDate.value = local.toISOString().slice(0, 16);
-        }
-    });
-
-    saveTimeBtn.addEventListener('click', () => {
-        const val = adminTargetDate.value;
-        if (!val) {
-            alert('الرجاء تحديد التاريخ والوقت أولاً');
-            return;
-        }
-        
-        saveTimeBtn.disabled = true;
-        saveTimeBtn.textContent = 'جاري الحفظ...';
-
-        const dateISO = new Date(val).toISOString();
-        db.ref('settings/targetDate').set(dateISO).then(() => {
-            alert('تم نشر الموعد بنجاح لجميع الزوار! 🚀');
-            saveTimeBtn.disabled = false;
-            saveTimeBtn.textContent = 'حفظ ونشر الموعد';
-        }).catch(err => {
-            alert('حدث خطأ أثناء الحفظ');
-            console.error(err);
-            saveTimeBtn.disabled = false;
-            saveTimeBtn.textContent = 'حفظ ونشر الموعد';
-        });
-    });
-</script>
+    </script>
 
 </body>
+
 </html>

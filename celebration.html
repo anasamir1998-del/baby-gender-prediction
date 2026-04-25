@@ -1,136 +1,141 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎀 احتفالية الكشف عن المولود</title>
     <meta name="description" content="احتفالية الكشف عن جنس المولود - لحظة لا تُنسى">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="celebration.css">
 </head>
+
 <body>
 
-<!-- Particle Canvas -->
-<canvas id="particleCanvas"></canvas>
+    <!-- Particle Canvas -->
+    <canvas id="particleCanvas"></canvas>
 
-<!-- ===== PAGE 1: Welcome & Prediction ===== -->
-<div id="welcomePage" class="page active">
-    <div class="welcome-container">
-        <div class="sparkle-icon">✨👶✨</div>
-        <h1 class="welcome-title">احتفالية الكشف عن المولود</h1>
-        <p class="welcome-subtitle">شاركنا توقعك قبل اللحظة الكبرى!</p>
+    <!-- ===== PAGE 1: Welcome & Prediction ===== -->
+    <div id="welcomePage" class="page active">
+        <div class="welcome-container">
+            <div class="sparkle-icon">✨👶✨</div>
+            <h1 class="welcome-title">احتفالية الكشف عن المولود</h1>
+            <p class="welcome-subtitle">شاركنا توقعك قبل اللحظة الكبرى!</p>
 
-        <div class="prediction-box">
-            <p class="pred-label">ما توقعك لجنس المولود؟</p>
-            <div class="pred-options">
-                <button class="pred-btn boy-btn" data-gender="boy" id="boyBtn">
-                    <span class="pred-emoji">👦</span>
-                    <span class="pred-text">ولد</span>
+            <div class="prediction-box">
+                <p class="pred-label">ما توقعك لجنس المولود؟</p>
+                <div class="pred-options">
+                    <button class="pred-btn boy-btn" data-gender="boy" id="boyBtn">
+                        <span class="pred-emoji">👦</span>
+                        <span class="pred-text">ولد</span>
+                    </button>
+                    <button class="pred-btn girl-btn" data-gender="girl" id="girlBtn">
+                        <span class="pred-emoji">👧</span>
+                        <span class="pred-text">بنت</span>
+                    </button>
+                </div>
+                <div class="name-input-wrap" id="nameWrap" style="display:none;">
+                    <input type="text" id="visitorName" placeholder="اكتب اسمك هنا..." maxlength="40">
+                </div>
+                <button class="enter-btn" id="enterBtn" style="display:none;">
+                    🎉 ادخل الاحتفالية
                 </button>
-                <button class="pred-btn girl-btn" data-gender="girl" id="girlBtn">
-                    <span class="pred-emoji">👧</span>
-                    <span class="pred-text">بنت</span>
-                </button>
             </div>
-            <div class="name-input-wrap" id="nameWrap" style="display:none;">
-                <input type="text" id="visitorName" placeholder="اكتب اسمك هنا..." maxlength="40">
-            </div>
-            <button class="enter-btn" id="enterBtn" style="display:none;">
-                🎉 ادخل الاحتفالية
-            </button>
         </div>
     </div>
-</div>
 
-<!-- ===== PAGE 2: Countdown ===== -->
-<div id="countdownPage" class="page">
-    <div class="countdown-container">
-        <div class="countdown-header">
-            <div class="pulse-ring"></div>
-            <h2 class="cd-title">⏳ العد التنازلي للحظة الكبرى</h2>
-            <p class="cd-subtitle">استعدوا... اللحظة اقتربت!</p>
-        </div>
-
-        <div class="countdown-display">
-            <div class="cd-unit">
-                <div class="cd-number" id="cdDays">00</div>
-                <div class="cd-label">يوم</div>
+    <!-- ===== PAGE 2: Countdown ===== -->
+    <div id="countdownPage" class="page">
+        <div class="countdown-container">
+            <div class="countdown-header">
+                <div class="pulse-ring"></div>
+                <h2 class="cd-title">⏳ العد التنازلي للحظة الكبرى</h2>
+                <p class="cd-subtitle">استعدوا... اللحظة اقتربت!</p>
             </div>
-            <div class="cd-separator">:</div>
-            <div class="cd-unit">
-                <div class="cd-number" id="cdHours">00</div>
-                <div class="cd-label">ساعة</div>
-            </div>
-            <div class="cd-separator">:</div>
-            <div class="cd-unit">
-                <div class="cd-number" id="cdMinutes">00</div>
-                <div class="cd-label">دقيقة</div>
-            </div>
-            <div class="cd-separator">:</div>
-            <div class="cd-unit">
-                <div class="cd-number" id="cdSeconds">00</div>
-                <div class="cd-label">ثانية</div>
-            </div>
-        </div>
 
-        <div class="your-prediction">
-            <span>توقعك:</span>
-            <span id="yourPredLabel" class="pred-badge">—</span>
-        </div>
+            <div class="countdown-display">
+                <div class="cd-unit">
+                    <div class="cd-number" id="cdDays">00</div>
+                    <div class="cd-label">يوم</div>
+                </div>
+                <div class="cd-separator">:</div>
+                <div class="cd-unit">
+                    <div class="cd-number" id="cdHours">00</div>
+                    <div class="cd-label">ساعة</div>
+                </div>
+                <div class="cd-separator">:</div>
+                <div class="cd-unit">
+                    <div class="cd-number" id="cdMinutes">00</div>
+                    <div class="cd-label">دقيقة</div>
+                </div>
+                <div class="cd-separator">:</div>
+                <div class="cd-unit">
+                    <div class="cd-number" id="cdSeconds">00</div>
+                    <div class="cd-label">ثانية</div>
+                </div>
+            </div>
 
-        <div class="excitement-bar">
-            <div class="excitement-fill" id="excitementFill"></div>
-        </div>
-        <p class="excitement-text">مستوى الحماس 🔥</p>
-    </div>
-</div>
+            <div class="your-prediction">
+                <span>توقعك:</span>
+                <span id="yourPredLabel" class="pred-badge">—</span>
+            </div>
 
-<!-- ===== PAGE 3: Suspense Messages ===== -->
-<div id="suspensePage" class="page">
-    <div class="suspense-container">
-        <div class="suspense-text" id="suspenseText"></div>
-        <div class="suspense-dots" id="suspenseDots">
-            <span>.</span><span>.</span><span>.</span>
+            <div class="excitement-bar">
+                <div class="excitement-fill" id="excitementFill"></div>
+            </div>
+            <p class="excitement-text">مستوى الحماس 🔥</p>
         </div>
     </div>
-</div>
 
-<!-- ===== PAGE 4: Grand Reveal ===== -->
-<div id="revealPage" class="page">
-    <canvas id="confettiCanvas"></canvas>
-    <div class="reveal-container">
-        <div class="reveal-icon">👸🎀</div>
-        <h1 class="reveal-title">إنها بنت!</h1>
-        <div class="reveal-name-wrapper">
-            <div class="reveal-name" id="revealName"></div>
-        </div>
-        <div class="reveal-decorations">
-            <span>🌸</span><span>🎀</span><span>💖</span><span>🦋</span><span>🌷</span>
-        </div>
-        <p class="reveal-message">اللهم بارك لنا فيها وأنبتها نباتاً حسناً 🤲</p>
-        <div class="reveal-flowers">
-            🌺🌸🌷💐🌹🌺🌸🌷
+    <!-- ===== PAGE 3: Suspense Messages ===== -->
+    <div id="suspensePage" class="page">
+        <div class="suspense-container">
+            <div class="suspense-text" id="suspenseText"></div>
+            <div class="suspense-dots" id="suspenseDots">
+                <span>.</span><span>.</span><span>.</span>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Admin: Set countdown target (hidden, triggered by key combo) -->
-<div id="adminPanel" class="admin-panel" style="display:none;">
-    <div class="admin-box">
-        <h3>⚙️ تحديد موعد الكشف</h3>
-        <label>التاريخ والوقت:</label>
-        <input type="datetime-local" id="targetDateInput">
-        <div class="admin-btns">
-            <button id="saveTargetBtn" class="admin-save">💾 حفظ</button>
-            <button id="closeAdminBtn" class="admin-close">✕ إغلاق</button>
+    <!-- ===== PAGE 4: Grand Reveal ===== -->
+    <div id="revealPage" class="page">
+        <canvas id="confettiCanvas"></canvas>
+        <div class="reveal-container">
+            <div class="reveal-icon">👸🎀</div>
+            <h1 class="reveal-title">إنها بنت!</h1>
+            <div class="reveal-name-wrapper">
+                <div class="reveal-name" id="revealName"></div>
+            </div>
+            <div class="reveal-decorations">
+                <span>🌸</span><span>🎀</span><span>💖</span><span>🦋</span><span>🌷</span>
+            </div>
+            <p class="reveal-message">اللهم بارك لنا فيها وأنبتها نباتاً حسناً 🤲</p>
+            <div class="reveal-flowers">
+                🌺🌸🌷💐🌹🌺🌸🌷
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="celebration.js"></script>
+    <!-- Admin: Set countdown target (hidden, triggered by key combo) -->
+    <div id="adminPanel" class="admin-panel" style="display:none;">
+        <div class="admin-box">
+            <h3>⚙️ تحديد موعد الكشف</h3>
+            <label>التاريخ والوقت:</label>
+            <input type="datetime-local" id="targetDateInput">
+            <div class="admin-btns">
+                <button id="saveTargetBtn" class="admin-save">💾 حفظ</button>
+                <button id="closeAdminBtn" class="admin-close">✕ إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="celebration.js"></script>
 </body>
+
 </html>
