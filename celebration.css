@@ -859,7 +859,12 @@ body {
     }
 
     .suspense-text {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+    }
+    
+    .huge-countdown {
+        font-size: 7rem;
+        -webkit-text-stroke: 2px rgba(255, 255, 255, 0.9);
     }
 
     .prediction-box {
