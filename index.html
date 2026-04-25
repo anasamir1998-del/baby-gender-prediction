@@ -634,6 +634,64 @@
 
         .btn-delete:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3); }
 
+        /* Settings Box */
+        .settings-box {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(236, 72, 153, 0.05));
+            border: 2px solid rgba(124, 58, 237, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .settings-info h3 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .settings-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .settings-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .settings-controls input[type="datetime-local"] {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            font-family: 'Tajawal', sans-serif;
+            outline: none;
+            direction: ltr;
+        }
+
+        .btn-save-time {
+            background: linear-gradient(135deg, var(--purple), #a855f7);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save-time:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+        }
+
         /* Stats */
         .stats-grid {
             display: grid;
@@ -978,6 +1036,18 @@
                     <button class="action-btn btn-back" id="backBtn">→ رجوع</button>
                     <button class="action-btn btn-download" id="downloadBtn">⬇ تحميل</button>
                     <button class="action-btn btn-delete" id="clearAllBtn">🗑 حذف الكل</button>
+                </div>
+            </div>
+
+            <!-- Settings Box -->
+            <div class="settings-box">
+                <div class="settings-info">
+                    <h3>⏱️ وقت الاحتفالية (مباشر)</h3>
+                    <p>قم بتغيير وقت الاحتفالية لجميع الزوار في نفس اللحظة.</p>
+                </div>
+                <div class="settings-controls">
+                    <input type="datetime-local" id="adminTargetDate">
+                    <button class="btn-save-time" id="saveTimeBtn">حفظ ونشر الموعد</button>
                 </div>
             </div>
 
@@ -1431,6 +1501,44 @@
             link.download = 'توقعات_المولود.csv';
             link.click();
             URL.revokeObjectURL(link.href);
+        });
+    });
+
+    // ============ Admin Target Date Control ============
+    const adminTargetDate = document.getElementById('adminTargetDate');
+    const saveTimeBtn = document.getElementById('saveTimeBtn');
+
+    // Load initial target date
+    db.ref('settings/targetDate').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+            const d = new Date(val);
+            const offset = d.getTimezoneOffset();
+            const local = new Date(d.getTime() - offset * 60000);
+            adminTargetDate.value = local.toISOString().slice(0, 16);
+        }
+    });
+
+    saveTimeBtn.addEventListener('click', () => {
+        const val = adminTargetDate.value;
+        if (!val) {
+            alert('الرجاء تحديد التاريخ والوقت أولاً');
+            return;
+        }
+        
+        saveTimeBtn.disabled = true;
+        saveTimeBtn.textContent = 'جاري الحفظ...';
+
+        const dateISO = new Date(val).toISOString();
+        db.ref('settings/targetDate').set(dateISO).then(() => {
+            alert('تم نشر الموعد بنجاح لجميع الزوار! 🚀');
+            saveTimeBtn.disabled = false;
+            saveTimeBtn.textContent = 'حفظ ونشر الموعد';
+        }).catch(err => {
+            alert('حدث خطأ أثناء الحفظ');
+            console.error(err);
+            saveTimeBtn.disabled = false;
+            saveTimeBtn.textContent = 'حفظ ونشر الموعد';
         });
     });
 </script>

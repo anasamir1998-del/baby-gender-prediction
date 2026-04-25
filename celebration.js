@@ -1,6 +1,18 @@
 // ============ CONFIG ============
 const BABY_NAME = "مايان نايف عبدالله يعقوب باوزير";
-const TARGET_KEY = 'celebrationTargetDate';
+
+// ============ FIREBASE CONFIG ============
+const firebaseConfig = {
+    apiKey: "AIzaSyCcEiiFAMHe_Q-YXlh3OKs1RA2qt57KIEI",
+    authDomain: "baby-prediction-cd7f0.firebaseapp.com",
+    databaseURL: "https://baby-prediction-cd7f0-default-rtdb.firebaseio.com",
+    projectId: "baby-prediction-cd7f0",
+    storageBucket: "baby-prediction-cd7f0.firebasestorage.app",
+    messagingSenderId: "746478336440",
+    appId: "1:746478336440:web:9734916b1e1a0f6338374d"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 // Suspense messages - dramatic & teasing
 const SUSPENSE_MESSAGES = [
@@ -44,6 +56,20 @@ const closeAdminBtn = document.getElementById('closeAdminBtn');
 
 let selectedGender = null;
 let countdownInterval = null;
+let globalTargetDate = new Date(Date.now() + 3600000); // Default fallback
+
+// Listen to Firebase for real-time target date updates
+db.ref('settings/targetDate').on('value', (snap) => {
+    const val = snap.val();
+    if (val) {
+        globalTargetDate = new Date(val);
+        // Restart countdown with new date if it's already running
+        if (countdownPage.classList.contains('active')) {
+            clearInterval(countdownInterval);
+            startCountdown();
+        }
+    }
+});
 
 // ============ PARTICLE BACKGROUND ============
 const canvas = document.getElementById('particleCanvas');
@@ -152,16 +178,9 @@ function goToPage(name) {
 }
 
 // ============ COUNTDOWN ============
-function getTargetDate() {
-    const stored = localStorage.getItem(TARGET_KEY);
-    if (stored) return new Date(stored);
-    // Default: 1 hour from now
-    return new Date(Date.now() + 3600000);
-}
-
 function startCountdown() {
-    const target = getTargetDate();
-    const totalDuration = target.getTime() - Date.now();
+    const target = globalTargetDate;
+    const totalDuration = 1000 * 60 * 60 * 24; // Use 24h as a base for the excitement bar max width
     
     function update() {
         const now = Date.now();
@@ -377,27 +396,29 @@ document.addEventListener('click', (e) => {
 
 function openAdmin() {
     adminPanel.style.display = 'flex';
-    const stored = localStorage.getItem(TARGET_KEY);
-    if (stored) {
-        // Format for datetime-local input
-        const d = new Date(stored);
-        const offset = d.getTimezoneOffset();
-        const local = new Date(d.getTime() - offset * 60000);
-        targetDateInput.value = local.toISOString().slice(0, 16);
-    }
+    db.ref('settings/targetDate').once('value').then((snap) => {
+        const stored = snap.val();
+        if (stored) {
+            // Format for datetime-local input
+            const d = new Date(stored);
+            const offset = d.getTimezoneOffset();
+            const local = new Date(d.getTime() - offset * 60000);
+            targetDateInput.value = local.toISOString().slice(0, 16);
+        }
+    });
 }
 
 saveTargetBtn.addEventListener('click', () => {
     const val = targetDateInput.value;
     if (val) {
-        localStorage.setItem(TARGET_KEY, new Date(val).toISOString());
-        adminPanel.style.display = 'none';
-        // Restart countdown if on countdown page
-        if (countdownPage.classList.contains('active')) {
-            clearInterval(countdownInterval);
-            startCountdown();
-        }
-        alert('✅ تم حفظ الموعد بنجاح!');
+        const dateISO = new Date(val).toISOString();
+        db.ref('settings/targetDate').set(dateISO).then(() => {
+            adminPanel.style.display = 'none';
+            alert('✅ تم حفظ الموعد ونشره لجميع الزوار بنجاح!');
+        }).catch(err => {
+            alert('حدث خطأ أثناء الحفظ');
+            console.error(err);
+        });
     }
 });
 
