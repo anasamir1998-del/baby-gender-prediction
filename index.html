@@ -1368,13 +1368,15 @@
             return div.innerHTML;
         }
 
-        // ============ PIN (stored locally) ============
+        // ============ PIN (Hardcoded for Admin only) ============
+        const MASTER_PIN = '2030'; // كلمة السر الموحدة لك فقط
+
         function getPIN() {
-            return localStorage.getItem(PIN_KEY);
+            return MASTER_PIN;
         }
 
         function setPIN(pin) {
-            localStorage.setItem(PIN_KEY, pin);
+            // No longer used, as we use a master PIN
         }
 
         // ============ Duplicate Vote Check ============
