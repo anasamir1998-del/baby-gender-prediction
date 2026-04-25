@@ -1,5 +1,8 @@
 // ============ CONFIG ============
 const BABY_NAME = "مايان نايف عبدالله يعقوب باوزير";
+// قم بتغيير هذا التاريخ والوقت لتحديد موعد انتهاء العد التنازلي لجميع الزوار
+// الصيغة: السنة-الشهر-اليومTالساعة:الدقيقة:الثانية
+const EVENT_DATE = "2026-04-26T21:00:00"; 
 const TARGET_KEY = 'celebrationTargetDate';
 
 // Suspense messages - dramatic & teasing
@@ -155,8 +158,9 @@ function goToPage(name) {
 function getTargetDate() {
     const stored = localStorage.getItem(TARGET_KEY);
     if (stored) return new Date(stored);
-    // Default: 1 hour from now
-    return new Date(Date.now() + 3600000);
+    
+    // استخدام التاريخ الموحد لجميع الزوار
+    return new Date(EVENT_DATE);
 }
 
 function startCountdown() {
