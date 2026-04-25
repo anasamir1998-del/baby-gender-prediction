@@ -508,6 +508,63 @@
             color: var(--text-dark);
         }
 
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e5e7eb;
+            border-top-color: var(--purple);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-spinner p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Live counter badge */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: livePulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
         /* ===== Results Page ===== */
         .results-card {
             background: var(--card-bg);
@@ -850,6 +907,18 @@
             <h1>توقع جنس المولود</h1>
             <p class="subtitle">اختر توقعك وشاركنا رأيك!</p>
 
+            <!-- Live counter -->
+            <div class="live-badge" id="liveBadge" style="display:none;">
+                <span class="live-dot"></span>
+                <span id="liveCount">0</span> توقع حتى الآن
+            </div>
+
+            <!-- Loading -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>جاري التحميل...</p>
+            </div>
+
             <div id="formArea">
                 <form id="predictionForm" autocomplete="off">
                     <div class="gender-selector">
@@ -918,11 +987,26 @@
 
 </div>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
 <script>
-    // ============ CONFIG ============
-    const STORAGE_KEY = 'babyGenderPredictions';
-    const PIN_KEY = 'babyGenderPIN';
-    const VOTED_KEY = 'babyGenderVoted';
+    // ============ FIREBASE CONFIG ============
+    const firebaseConfig = {
+        apiKey: "AIzaSyCcEiiFAMHe_Q-YXlh3OKs1RA2qt57KIEI",
+        authDomain: "baby-prediction-cd7f0.firebaseapp.com",
+        databaseURL: "https://baby-prediction-cd7f0-default-rtdb.firebaseio.com",
+        projectId: "baby-prediction-cd7f0",
+        storageBucket: "baby-prediction-cd7f0.firebasestorage.app",
+        messagingSenderId: "746478336440",
+        appId: "1:746478336440:web:9734916b1e1a0f6338374d"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const predictionsRef = db.ref('predictions');
 
     // ============ DOM ============
     const predictionPage = document.getElementById('predictionPage');
@@ -936,6 +1020,9 @@
     const clearAllBtn = document.getElementById('clearAllBtn');
     const successOverlay = document.getElementById('successOverlay');
     const confettiContainer = document.getElementById('confettiContainer');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const liveBadge = document.getElementById('liveBadge');
+    const liveCount = document.getElementById('liveCount');
 
     // PIN elements
     const pinModal = document.getElementById('pinModal');
@@ -951,22 +1038,63 @@
     const pinSetupConfirmBtn = document.getElementById('pinSetupConfirmBtn');
     const pinSetupCancelBtn = document.getElementById('pinSetupCancelBtn');
 
+    // ============ KEYS ============
+    const PIN_KEY = 'babyGenderPIN';
+    const VOTED_KEY = 'babyGenderVoted';
+
     // ============ INIT ============
     initParticles();
     checkVotedStatus();
+    listenToLiveCount();
 
-    // ============ DATA ============
-    function getPredictions() {
-        try {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
-        } catch { return []; }
+    // ============ FIREBASE DATA ============
+    // Listen for live prediction count
+    function listenToLiveCount() {
+        predictionsRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            const count = data ? Object.keys(data).length : 0;
+            liveCount.textContent = count;
+            if (count > 0) {
+                liveBadge.style.display = 'inline-flex';
+            }
+        });
     }
 
-    function savePredictions(predictions) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(predictions));
+    // Add prediction to Firebase
+    function addPrediction(prediction) {
+        return predictionsRef.push(prediction);
     }
 
+    // Get all predictions from Firebase
+    function getAllPredictions() {
+        return predictionsRef.once('value').then(snapshot => {
+            const data = snapshot.val();
+            if (!data) return [];
+            return Object.entries(data).map(([key, val]) => ({
+                firebaseKey: key,
+                ...val
+            }));
+        });
+    }
+
+    // Delete single prediction
+    function deletePrediction(firebaseKey) {
+        return predictionsRef.child(firebaseKey).remove();
+    }
+
+    // Delete all predictions
+    function deleteAllPredictions() {
+        return predictionsRef.remove();
+    }
+
+    // ============ XSS Protection ============
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
+    // ============ PIN (stored locally) ============
     function getPIN() {
         return localStorage.getItem(PIN_KEY);
     }
@@ -975,6 +1103,7 @@
         localStorage.setItem(PIN_KEY, pin);
     }
 
+    // ============ Duplicate Vote Check ============
     function hasVoted() {
         return localStorage.getItem(VOTED_KEY) === 'true';
     }
@@ -983,14 +1112,6 @@
         localStorage.setItem(VOTED_KEY, 'true');
     }
 
-    // ============ XSS Protection ============
-    function escapeHTML(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-
-    // ============ Duplicate Vote Check ============
     function checkVotedStatus() {
         if (hasVoted()) {
             formArea.style.display = 'none';
@@ -1010,28 +1131,40 @@
 
         if (!genderEl || !nameVal) return;
 
+        // Disable button
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الإرسال...';
+
         const prediction = {
-            id: Date.now(),
             name: nameVal,
             relation: relationVal || 'لم يُحدد',
             gender: genderEl.value,
-            date: new Date().toLocaleString('ar-EG')
+            date: new Date().toLocaleString('ar-EG'),
+            timestamp: Date.now()
         };
 
-        const predictions = getPredictions();
-        predictions.push(prediction);
-        savePredictions(predictions);
-        markVoted();
+        // Save to Firebase
+        addPrediction(prediction)
+            .then(() => {
+                markVoted();
 
-        // Show success
-        showSuccess();
-        launchConfetti();
+                // Show success
+                showSuccess();
+                launchConfetti();
 
-        setTimeout(() => {
-            successOverlay.classList.remove('show');
-            formArea.style.display = 'none';
-            alreadyVoted.style.display = 'block';
-        }, 2500);
+                setTimeout(() => {
+                    successOverlay.classList.remove('show');
+                    formArea.style.display = 'none';
+                    alreadyVoted.style.display = 'block';
+                }, 2500);
+            })
+            .catch((error) => {
+                console.error('Error saving prediction:', error);
+                alert('حدث خطأ أثناء حفظ التوقع. حاول مرة أخرى.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✨ أرسل توقعك ✨';
+            });
     });
 
     // ============ Success Overlay ============
@@ -1077,12 +1210,10 @@
     adminLink.addEventListener('click', function() {
         const pin = getPIN();
         if (!pin) {
-            // First time - ask to set up PIN
             pinSetupModal.classList.add('show');
             pinSetupInput.value = '';
             pinSetupInput.focus();
         } else {
-            // Ask for PIN
             pinModal.classList.add('show');
             pinInput.value = '';
             pinError.style.display = 'none';
@@ -1104,7 +1235,6 @@
     });
 
     pinSetupCancelBtn.addEventListener('click', function() {
-        // Skip PIN setup - go directly
         pinSetupModal.classList.remove('show');
         goToResults();
     });
@@ -1141,141 +1271,161 @@
         predictionPage.classList.add('active');
     });
 
-    // ============ Display Results ============
+    // ============ Display Results (from Firebase) ============
     function displayResults() {
-        const predictions = getPredictions();
         const statsContainer = document.getElementById('statsContainer');
         const progressContainer = document.getElementById('progressContainer');
         const resultsContainer = document.getElementById('resultsContainer');
 
-        if (predictions.length === 0) {
-            statsContainer.innerHTML = '';
-            progressContainer.innerHTML = '';
+        // Show loading state
+        resultsContainer.innerHTML = '<div class="loading-spinner show"><div class="spinner"></div><p>جاري تحميل التوقعات...</p></div>';
+        statsContainer.innerHTML = '';
+        progressContainer.innerHTML = '';
+
+        getAllPredictions().then(predictions => {
+            if (predictions.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <h3>لا توجد توقعات بعد</h3>
+                        <p>شارك الرابط مع العائلة والأصدقاء!</p>
+                    </div>
+                `;
+                statsContainer.innerHTML = '';
+                progressContainer.innerHTML = '';
+                return;
+            }
+
+            // Sort by timestamp (newest first in table, but keep order)
+            predictions.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+            const boys = predictions.filter(p => p.gender === 'boy').length;
+            const girls = predictions.filter(p => p.gender === 'girl').length;
+            const total = predictions.length;
+            const boyPct = total > 0 ? Math.round((boys / total) * 100) : 0;
+            const girlPct = 100 - boyPct;
+
+            // Stats
+            statsContainer.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card stat-total">
+                        <div class="stat-label">إجمالي التوقعات</div>
+                        <div class="stat-value">${total}</div>
+                    </div>
+                    <div class="stat-card stat-boys">
+                        <div class="stat-label">👦 ولد</div>
+                        <div class="stat-value">${boys}</div>
+                    </div>
+                    <div class="stat-card stat-girls">
+                        <div class="stat-label">👧 بنت</div>
+                        <div class="stat-value">${girls}</div>
+                    </div>
+                </div>
+            `;
+
+            // Progress Bar
+            progressContainer.innerHTML = `
+                <div class="progress-container">
+                    <div class="progress-labels">
+                        <span class="boy-pct">👦 ولد ${boyPct}%</span>
+                        <span class="girl-pct">👧 بنت ${girlPct}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill-boy" style="width: ${boyPct}%"></div>
+                        <div class="progress-fill-girl" style="width: ${girlPct}%"></div>
+                    </div>
+                </div>
+            `;
+
+            // Table
+            let rows = '';
+            predictions.forEach((pred, i) => {
+                const genderText = pred.gender === 'boy' ? '👦 ولد' : '👧 بنت';
+                const badgeClass = pred.gender === 'boy' ? 'badge-boy' : 'badge-girl';
+                rows += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${escapeHTML(pred.name)}</td>
+                        <td><span class="badge ${badgeClass}">${genderText}</span></td>
+                        <td>${escapeHTML(pred.relation)}</td>
+                        <td>${escapeHTML(pred.date)}</td>
+                        <td><button class="delete-row-btn" data-key="${pred.firebaseKey}" title="حذف">✕</button></td>
+                    </tr>
+                `;
+            });
+
+            resultsContainer.innerHTML = `
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الاسم</th>
+                            <th>التوقع</th>
+                            <th>القرابة</th>
+                            <th>التاريخ</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            `;
+
+            // Bind delete buttons
+            resultsContainer.querySelectorAll('.delete-row-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const key = this.getAttribute('data-key');
+                    if (confirm('هل تريد حذف هذا التوقع؟')) {
+                        deletePrediction(key).then(() => {
+                            displayResults();
+                        });
+                    }
+                });
+            });
+        }).catch(error => {
+            console.error('Error loading predictions:', error);
             resultsContainer.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-icon">📭</div>
-                    <h3>لا توجد توقعات بعد</h3>
-                    <p>شارك الرابط مع العائلة والأصدقاء!</p>
+                    <div class="empty-icon">⚠️</div>
+                    <h3>حدث خطأ</h3>
+                    <p>تعذر تحميل التوقعات. تحقق من اتصال الإنترنت.</p>
                 </div>
             `;
-            return;
-        }
-
-        const boys = predictions.filter(p => p.gender === 'boy').length;
-        const girls = predictions.filter(p => p.gender === 'girl').length;
-        const total = predictions.length;
-        const boyPct = Math.round((boys / total) * 100);
-        const girlPct = 100 - boyPct;
-
-        // Stats
-        statsContainer.innerHTML = `
-            <div class="stats-grid">
-                <div class="stat-card stat-total">
-                    <div class="stat-label">إجمالي التوقعات</div>
-                    <div class="stat-value">${total}</div>
-                </div>
-                <div class="stat-card stat-boys">
-                    <div class="stat-label">👦 ولد</div>
-                    <div class="stat-value">${boys}</div>
-                </div>
-                <div class="stat-card stat-girls">
-                    <div class="stat-label">👧 بنت</div>
-                    <div class="stat-value">${girls}</div>
-                </div>
-            </div>
-        `;
-
-        // Progress Bar
-        progressContainer.innerHTML = `
-            <div class="progress-container">
-                <div class="progress-labels">
-                    <span class="boy-pct">👦 ولد ${boyPct}%</span>
-                    <span class="girl-pct">👧 بنت ${girlPct}%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill-boy" style="width: ${boyPct}%"></div>
-                    <div class="progress-fill-girl" style="width: ${girlPct}%"></div>
-                </div>
-            </div>
-        `;
-
-        // Table
-        let rows = '';
-        predictions.forEach((pred, i) => {
-            const genderText = pred.gender === 'boy' ? '👦 ولد' : '👧 بنت';
-            const badgeClass = pred.gender === 'boy' ? 'badge-boy' : 'badge-girl';
-            rows += `
-                <tr>
-                    <td>${i + 1}</td>
-                    <td>${escapeHTML(pred.name)}</td>
-                    <td><span class="badge ${badgeClass}">${genderText}</span></td>
-                    <td>${escapeHTML(pred.relation)}</td>
-                    <td>${escapeHTML(pred.date)}</td>
-                    <td><button class="delete-row-btn" data-id="${pred.id}" title="حذف">✕</button></td>
-                </tr>
-            `;
-        });
-
-        resultsContainer.innerHTML = `
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>الاسم</th>
-                        <th>التوقع</th>
-                        <th>القرابة</th>
-                        <th>التاريخ</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
-        `;
-
-        // Bind delete buttons
-        resultsContainer.querySelectorAll('.delete-row-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = parseInt(this.getAttribute('data-id'));
-                if (confirm('هل تريد حذف هذا التوقع؟')) {
-                    const preds = getPredictions().filter(p => p.id !== id);
-                    savePredictions(preds);
-                    displayResults();
-                }
-            });
         });
     }
 
     // ============ Clear All ============
     clearAllBtn.addEventListener('click', function() {
         if (confirm('هل أنت متأكد من حذف جميع التوقعات؟\nلا يمكن التراجع عن هذا!')) {
-            savePredictions([]);
-            displayResults();
+            deleteAllPredictions().then(() => {
+                displayResults();
+            });
         }
     });
 
     // ============ Download CSV ============
     downloadBtn.addEventListener('click', function() {
-        const predictions = getPredictions();
-        if (predictions.length === 0) {
-            alert('لا توجد بيانات لتحميلها');
-            return;
-        }
+        getAllPredictions().then(predictions => {
+            if (predictions.length === 0) {
+                alert('لا توجد بيانات لتحميلها');
+                return;
+            }
 
-        // BOM for Arabic support in Excel
-        let csv = '\ufeff';
-        csv += 'الرقم,الاسم,التوقع,صلة القرابة,التاريخ\n';
+            // BOM for Arabic support in Excel
+            let csv = '\ufeff';
+            csv += 'الرقم,الاسم,التوقع,صلة القرابة,التاريخ\n';
 
-        predictions.forEach((pred, i) => {
-            const gender = pred.gender === 'boy' ? 'ولد' : 'بنت';
-            csv += `${i + 1},"${pred.name}","${gender}","${pred.relation}","${pred.date}"\n`;
+            predictions.forEach((pred, i) => {
+                const gender = pred.gender === 'boy' ? 'ولد' : 'بنت';
+                csv += `${i + 1},"${pred.name}","${gender}","${pred.relation}","${pred.date}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'توقعات_المولود.csv';
+            link.click();
+            URL.revokeObjectURL(link.href);
         });
-
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'توقعات_المولود.csv';
-        link.click();
-        URL.revokeObjectURL(link.href);
     });
 </script>
 
