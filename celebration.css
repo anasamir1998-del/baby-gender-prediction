@@ -492,6 +492,12 @@ body {
     text-shadow: 0 0 25px rgba(255, 107, 157, 0.4);
 }
 
+.suspense-text .emoji-fix {
+    -webkit-text-fill-color: initial;
+    background: none;
+    text-shadow: none;
+}
+
 @keyframes popTextSentence {
     0% {
         opacity: 0;

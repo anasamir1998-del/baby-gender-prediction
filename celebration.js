@@ -17,12 +17,12 @@ const db = firebase.database();
 // Suspense messages - dramatic & teasing
 const SUSPENSE_MESSAGES = [
     { text: "⏳ خلص الوقت!", delay: 5000 },
-    { text: "اللحظة اللي ننتظرها من زمان... 🔥", delay: 5000 },
-    { text: "يا ترى ولد ولا بنت؟ 🤔", delay: 5000 },
-    { text: "نبضات القلب تزيد... 💓", delay: 5000 },
-    { text: "تتوقعون إحساسكم بمحله؟ ✨", delay: 5000 },
-    { text: "ترقبوا الخبر الزين... 🚀", delay: 5000 },
-    { text: "جاهزيييين؟؟ 😍", delay: 5000 },
+    { text: "اللحظة اللي ننتظرها من زمان... <span class='emoji-fix'>🔥</span>", delay: 5000 },
+    { text: "يا ترى ولد ولا بنت؟ <span class='emoji-fix'>🤔</span>", delay: 5000 },
+    { text: "نبضات القلب تزيد... <span class='emoji-fix'>💓</span>", delay: 5000 },
+    { text: "تتوقعون إحساسكم بمحله؟ <span class='emoji-fix'>✨</span>", delay: 5000 },
+    { text: "ترقبوا الخبر الزين... <span class='emoji-fix'>🚀</span>", delay: 5000 },
+    { text: "جاهزيييين؟؟ <span class='emoji-fix'>😍</span>", delay: 5000 },
     { text: "<span class='huge-countdown'>10</span>", delay: 1000 },
     { text: "<span class='huge-countdown'>9</span>", delay: 1000 },
     { text: "<span class='huge-countdown'>8</span>", delay: 1000 },
