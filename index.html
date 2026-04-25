@@ -868,6 +868,7 @@
         <div class="success-icon">🎉</div>
         <h2>تم حفظ توقعك!</h2>
         <p>شكراً لمشاركتك 💕</p>
+        <a href="celebration.html" class="submit-btn" style="text-decoration:none; display:inline-block; margin-top:16px;">🎉 ادخل الاحتفالية 🎉</a>
     </div>
 </div>
 
@@ -959,6 +960,7 @@
                 <div class="voted-icon">✅</div>
                 <h2>تم تسجيل توقعك!</h2>
                 <p>شكراً لمشاركتك، لقد سجّلت توقعك مسبقاً 💕</p>
+                <a href="celebration.html" class="submit-btn" style="text-decoration:none; display:inline-block; margin-top:20px;">🎉 ادخل الاحتفالية 🎉</a>
             </div>
 
             <button class="admin-link" id="adminLink">📊 عرض النتائج</button>
@@ -1143,6 +1145,10 @@
             date: new Date().toLocaleString('ar-EG'),
             timestamp: Date.now()
         };
+
+        // Save locally for celebration page
+        localStorage.setItem('celebPrediction', prediction.gender);
+        localStorage.setItem('celebVisitor', prediction.name);
 
         // Save to Firebase
         addPrediction(prediction)

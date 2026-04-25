@@ -1,0 +1,421 @@
+// ============ CONFIG ============
+const BABY_NAME = "مايان نايف عبدالله يعقوب باوزير";
+const TARGET_KEY = 'celebrationTargetDate';
+
+// Suspense messages - dramatic & teasing
+const SUSPENSE_MESSAGES = [
+    { text: "🥁 اللحظة اللي كنتوا تنتظروها...", delay: 3000 },
+    { text: "😱 قلوبكم جاهزة؟!", delay: 2500 },
+    { text: "💓 خلوا بالكم... الخبر كبير!", delay: 3000 },
+    { text: "🤫 هل توقعاتكم صحيحة؟", delay: 2500 },
+    { text: "🔮 الجواب بعد لحظات...", delay: 3000 },
+    { text: "😍 ترى الجواب... مو أي جواب!", delay: 2500 },
+    { text: "3️⃣", delay: 1200 },
+    { text: "2️⃣", delay: 1200 },
+    { text: "1️⃣", delay: 1200 },
+    { text: "🎉🎉🎉", delay: 1500 }
+];
+
+// ============ DOM ============
+const welcomePage = document.getElementById('welcomePage');
+const countdownPage = document.getElementById('countdownPage');
+const suspensePage = document.getElementById('suspensePage');
+const revealPage = document.getElementById('revealPage');
+
+const boyBtn = document.getElementById('boyBtn');
+const girlBtn = document.getElementById('girlBtn');
+const nameWrap = document.getElementById('nameWrap');
+const visitorName = document.getElementById('visitorName');
+const enterBtn = document.getElementById('enterBtn');
+
+const cdDays = document.getElementById('cdDays');
+const cdHours = document.getElementById('cdHours');
+const cdMinutes = document.getElementById('cdMinutes');
+const cdSeconds = document.getElementById('cdSeconds');
+const yourPredLabel = document.getElementById('yourPredLabel');
+const excitementFill = document.getElementById('excitementFill');
+const suspenseText = document.getElementById('suspenseText');
+const revealName = document.getElementById('revealName');
+
+const adminPanel = document.getElementById('adminPanel');
+const targetDateInput = document.getElementById('targetDateInput');
+const saveTargetBtn = document.getElementById('saveTargetBtn');
+const closeAdminBtn = document.getElementById('closeAdminBtn');
+
+let selectedGender = null;
+let countdownInterval = null;
+
+// ============ PARTICLE BACKGROUND ============
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function createParticles() {
+    particles = [];
+    const count = Math.min(60, Math.floor(window.innerWidth / 20));
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 3 + 1,
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: (Math.random() - 0.5) * 0.5,
+            opacity: Math.random() * 0.4 + 0.1,
+            hue: Math.random() * 60 + 280 // purple-pink range
+        });
+    }
+}
+createParticles();
+
+function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue}, 80%, 70%, ${p.opacity})`;
+        ctx.fill();
+        p.x += p.speedX;
+        p.y += p.speedY;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+    });
+    // Draw connections
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(168, 85, 247, ${0.06 * (1 - dist / 120)})`;
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ============ GENDER SELECTION ============
+boyBtn.addEventListener('click', () => selectGender('boy'));
+girlBtn.addEventListener('click', () => selectGender('girl'));
+
+function selectGender(gender) {
+    selectedGender = gender;
+    boyBtn.classList.toggle('selected', gender === 'boy');
+    girlBtn.classList.toggle('selected', gender === 'girl');
+    nameWrap.style.display = 'block';
+    enterBtn.style.display = 'block';
+    visitorName.focus();
+}
+
+// ============ ENTER CELEBRATION ============
+enterBtn.addEventListener('click', () => {
+    if (!selectedGender) return;
+    const name = visitorName.value.trim() || 'زائر';
+    
+    // Save prediction
+    localStorage.setItem('celebPrediction', selectedGender);
+    localStorage.setItem('celebVisitor', name);
+    
+    // Show prediction label
+    yourPredLabel.textContent = selectedGender === 'boy' ? '👦 ولد' : '👧 بنت';
+    yourPredLabel.className = 'pred-badge ' + selectedGender;
+    
+    // Navigate to countdown
+    goToPage('countdown');
+    startCountdown();
+});
+
+// ============ PAGE NAVIGATION ============
+function goToPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = {
+        welcome: welcomePage,
+        countdown: countdownPage,
+        suspense: suspensePage,
+        reveal: revealPage
+    }[name];
+    if (page) page.classList.add('active');
+}
+
+// ============ COUNTDOWN ============
+function getTargetDate() {
+    const stored = localStorage.getItem(TARGET_KEY);
+    if (stored) return new Date(stored);
+    // Default: 1 hour from now
+    return new Date(Date.now() + 3600000);
+}
+
+function startCountdown() {
+    const target = getTargetDate();
+    const totalDuration = target.getTime() - Date.now();
+    
+    function update() {
+        const now = Date.now();
+        const diff = target.getTime() - now;
+        
+        if (diff <= 0) {
+            clearInterval(countdownInterval);
+            cdDays.textContent = '00';
+            cdHours.textContent = '00';
+            cdMinutes.textContent = '00';
+            cdSeconds.textContent = '00';
+            excitementFill.style.width = '100%';
+            // Go to suspense
+            setTimeout(() => startSuspense(), 1000);
+            return;
+        }
+        
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        
+        cdDays.textContent = String(days).padStart(2, '0');
+        cdHours.textContent = String(hours).padStart(2, '0');
+        cdMinutes.textContent = String(minutes).padStart(2, '0');
+        cdSeconds.textContent = String(seconds).padStart(2, '0');
+        
+        // Update excitement bar
+        const elapsed = totalDuration > 0 ? (1 - diff / totalDuration) * 100 : 0;
+        excitementFill.style.width = Math.min(elapsed, 100) + '%';
+    }
+    
+    update();
+    countdownInterval = setInterval(update, 1000);
+}
+
+// ============ SUSPENSE MESSAGES ============
+function startSuspense() {
+    goToPage('suspense');
+    
+    let i = 0;
+    function showNext() {
+        if (i >= SUSPENSE_MESSAGES.length) {
+            // Go to reveal!
+            setTimeout(() => startReveal(), 500);
+            return;
+        }
+        
+        const msg = SUSPENSE_MESSAGES[i];
+        suspenseText.style.opacity = '0';
+        suspenseText.style.transform = 'scale(0.8)';
+        
+        setTimeout(() => {
+            suspenseText.textContent = msg.text;
+            suspenseText.style.transition = 'all 0.5s ease';
+            suspenseText.style.opacity = '1';
+            suspenseText.style.transform = 'scale(1)';
+            
+            // Shake effect for countdown numbers
+            if (['3️⃣','2️⃣','1️⃣'].includes(msg.text)) {
+                suspenseText.style.fontSize = '5rem';
+                document.body.style.animation = 'shake 0.3s ease';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                    suspenseText.style.fontSize = '';
+                }, 300);
+            }
+            
+            i++;
+            setTimeout(showNext, msg.delay);
+        }, 400);
+    }
+    
+    showNext();
+}
+
+// Add shake keyframe dynamically
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+    @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+`;
+document.head.appendChild(shakeStyle);
+
+// ============ GRAND REVEAL ============
+function startReveal() {
+    goToPage('reveal');
+    
+    // Animate name letter by letter
+    const chars = BABY_NAME.split('');
+    revealName.innerHTML = '';
+    chars.forEach((char, i) => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.style.opacity = '0';
+        span.style.display = 'inline-block';
+        span.style.animation = `letterIn 0.5s ease ${i * 0.08}s forwards`;
+        revealName.appendChild(span);
+    });
+    
+    // Add letter animation
+    const letterStyle = document.createElement('style');
+    letterStyle.textContent = `
+        @keyframes letterIn {
+            from { opacity:0; transform:translateY(20px) scale(0.5); }
+            to { opacity:1; transform:translateY(0) scale(1); }
+        }
+    `;
+    document.head.appendChild(letterStyle);
+    
+    // Start confetti
+    launchConfetti();
+}
+
+// ============ CONFETTI ============
+function launchConfetti() {
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const cCtx = confettiCanvas.getContext('2d');
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+    
+    const pieces = [];
+    const colors = ['#ff6b9d','#ffa2c4','#f9a8d4','#c4b5fd','#a855f7','#f6d365','#ff85a1','#fbc2eb','#fff'];
+    
+    function addBurst() {
+        for (let i = 0; i < 80; i++) {
+            pieces.push({
+                x: Math.random() * confettiCanvas.width,
+                y: -20,
+                w: Math.random() * 10 + 5,
+                h: Math.random() * 6 + 3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                speedX: (Math.random() - 0.5) * 6,
+                speedY: Math.random() * 4 + 2,
+                rotation: Math.random() * 360,
+                rotSpeed: (Math.random() - 0.5) * 10,
+                opacity: 1
+            });
+        }
+    }
+    
+    addBurst();
+    setTimeout(addBurst, 1000);
+    setTimeout(addBurst, 2500);
+    setTimeout(addBurst, 4000);
+    
+    function animateConfetti() {
+        cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        
+        for (let i = pieces.length - 1; i >= 0; i--) {
+            const p = pieces[i];
+            cCtx.save();
+            cCtx.translate(p.x, p.y);
+            cCtx.rotate((p.rotation * Math.PI) / 180);
+            cCtx.globalAlpha = p.opacity;
+            cCtx.fillStyle = p.color;
+            cCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            cCtx.restore();
+            
+            p.x += p.speedX;
+            p.y += p.speedY;
+            p.speedY += 0.05; // gravity
+            p.rotation += p.rotSpeed;
+            p.opacity -= 0.003;
+            
+            if (p.y > confettiCanvas.height + 20 || p.opacity <= 0) {
+                pieces.splice(i, 1);
+            }
+        }
+        
+        if (pieces.length > 0) {
+            requestAnimationFrame(animateConfetti);
+        }
+    }
+    
+    animateConfetti();
+    
+    // Keep adding confetti bursts
+    let burstCount = 0;
+    const burstInterval = setInterval(() => {
+        addBurst();
+        burstCount++;
+        if (burstCount > 10) clearInterval(burstInterval);
+    }, 3000);
+}
+
+// ============ ADMIN PANEL ============
+// Ctrl+Shift+A or triple-tap to open admin
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        openAdmin();
+    }
+});
+
+let tapCount = 0;
+let tapTimer = null;
+document.addEventListener('click', (e) => {
+    // Triple tap on top-left corner
+    if (e.clientX < 60 && e.clientY < 60) {
+        tapCount++;
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(() => { tapCount = 0; }, 800);
+        if (tapCount >= 3) {
+            tapCount = 0;
+            openAdmin();
+        }
+    }
+});
+
+function openAdmin() {
+    adminPanel.style.display = 'flex';
+    const stored = localStorage.getItem(TARGET_KEY);
+    if (stored) {
+        // Format for datetime-local input
+        const d = new Date(stored);
+        const offset = d.getTimezoneOffset();
+        const local = new Date(d.getTime() - offset * 60000);
+        targetDateInput.value = local.toISOString().slice(0, 16);
+    }
+}
+
+saveTargetBtn.addEventListener('click', () => {
+    const val = targetDateInput.value;
+    if (val) {
+        localStorage.setItem(TARGET_KEY, new Date(val).toISOString());
+        adminPanel.style.display = 'none';
+        // Restart countdown if on countdown page
+        if (countdownPage.classList.contains('active')) {
+            clearInterval(countdownInterval);
+            startCountdown();
+        }
+        alert('✅ تم حفظ الموعد بنجاح!');
+    }
+});
+
+closeAdminBtn.addEventListener('click', () => {
+    adminPanel.style.display = 'none';
+});
+
+// ============ INITIALIZE ============
+document.addEventListener('DOMContentLoaded', () => {
+    const existingPrediction = localStorage.getItem('celebPrediction');
+    if (existingPrediction) {
+        // Skip welcome and go straight to countdown
+        selectedGender = existingPrediction;
+        yourPredLabel.textContent = selectedGender === 'boy' ? '👦 ولد' : '👧 بنت';
+        yourPredLabel.className = 'pred-badge ' + selectedGender;
+        goToPage('countdown');
+        startCountdown();
+    } else {
+        goToPage('welcome');
+    }
+});
