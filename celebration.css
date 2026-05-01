@@ -678,29 +678,88 @@ body {
 }
 
 .reveal-name-wrapper {
-    background: linear-gradient(135deg, rgba(255, 107, 157, 0.1), rgba(168, 85, 247, 0.1));
-    border: 2px solid rgba(255, 107, 157, 0.3);
-    border-radius: 24px;
-    padding: 28px 24px;
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(168, 85, 247, 0.15));
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 40px 30px;
     margin: 0 auto 24px;
-    max-width: 520px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 60px rgba(255, 107, 157, 0.15);
+    max-width: 550px;
+    backdrop-filter: blur(25px);
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(255, 107, 157, 0.2),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.reveal-name-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotateBg 10s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes rotateBg {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .reveal-name {
-    font-family: 'Amiri', serif;
-    font-size: 2.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--pink-light), #f9a8d4, var(--lavender), var(--pink));
-    background-size: 300% 300%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.main-name-reveal {
+    font-size: 5rem;
+    font-weight: 900;
+    font-family: 'Tajawal', sans-serif;
+    background: linear-gradient(to bottom, #fff 0%, var(--pink-light) 50%, var(--pink) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradShift 4s ease infinite;
-    line-height: 1.6;
-    letter-spacing: 0px;
+    filter: drop-shadow(0 0 15px rgba(255, 107, 157, 0.6));
+    letter-spacing: -1px;
+    line-height: 1;
+    opacity: 0;
+    animation: mainNamePop 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s forwards;
 }
+
+.sub-name-reveal {
+    font-family: 'Amiri', serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    animation: subNameFade 1.5s ease 1.2s forwards;
+    letter-spacing: 1px;
+}
+
+@keyframes mainNamePop {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.5) translateY(50px); 
+        filter: blur(10px) drop-shadow(0 0 0 rgba(255, 107, 157, 0));
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+        filter: blur(0) drop-shadow(0 0 20px rgba(255, 107, 157, 0.4));
+    }
+}
+
+@keyframes subNameFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 
 .reveal-decorations {
     font-size: 2rem;
