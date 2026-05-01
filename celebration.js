@@ -1,5 +1,7 @@
 // ============ CONFIG ============
-const BABY_NAME = "إيلان نايف باوزير";
+const MAIN_BABY_NAME = "إيلان";
+const SUB_BABY_NAME = "نايف باوزير";
+
 
 // ============ FIREBASE CONFIG ============
 const firebaseConfig = {
@@ -274,10 +276,13 @@ document.head.appendChild(shakeStyle);
 function startReveal() {
     goToPage('reveal');
 
-    // Animate the whole name
-    revealName.textContent = BABY_NAME;
-    revealName.style.opacity = '0';
-    revealName.style.animation = 'namePopIn 1.5s cubic-bezier(.17,.67,.35,1.2) 0.5s forwards';
+    // Create the dual name structure
+    revealName.innerHTML = `
+        <div class="main-name-reveal">${MAIN_BABY_NAME}</div>
+        <div class="sub-name-reveal">${SUB_BABY_NAME}</div>
+    `;
+    revealName.style.opacity = '1'; // container is visible, children animate
+
 
     // Add name animation
     const nameStyle = document.createElement('style');
