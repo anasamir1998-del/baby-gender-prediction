@@ -1,22 +1,40 @@
 // ============ CONFIG ============
-const BABY_NAME = "مايان نايف عبدالله يعقوب باوزير";
-// قم بتغيير هذا التاريخ والوقت لتحديد موعد انتهاء العد التنازلي لجميع الزوار
-// الصيغة: السنة-الشهر-اليومTالساعة:الدقيقة:الثانية
-const EVENT_DATE = "2026-04-26T21:00:00"; 
-const TARGET_KEY = 'celebrationTargetDate';
+const MAIN_BABY_NAME = "إيلان";
+const SUB_BABY_NAME = "نايف باوزير";
+
+
+// ============ FIREBASE CONFIG ============
+const firebaseConfig = {
+    apiKey: "AIzaSyCcEiiFAMHe_Q-YXlh3OKs1RA2qt57KIEI",
+    authDomain: "baby-prediction-cd7f0.firebaseapp.com",
+    databaseURL: "https://baby-prediction-cd7f0-default-rtdb.firebaseio.com",
+    projectId: "baby-prediction-cd7f0",
+    storageBucket: "baby-prediction-cd7f0.firebasestorage.app",
+    messagingSenderId: "746478336440",
+    appId: "1:746478336440:web:9734916b1e1a0f6338374d"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 // Suspense messages - dramatic & teasing
 const SUSPENSE_MESSAGES = [
-    { text: "🥁 اللحظة اللي كنتوا تنتظروها...", delay: 3000 },
-    { text: "😱 قلوبكم جاهزة؟!", delay: 2500 },
-    { text: "💓 خلوا بالكم... الخبر كبير!", delay: 3000 },
-    { text: "🤫 هل توقعاتكم صحيحة؟", delay: 2500 },
-    { text: "🔮 الجواب بعد لحظات...", delay: 3000 },
-    { text: "😍 ترى الجواب... مو أي جواب!", delay: 2500 },
-    { text: "3️⃣", delay: 1200 },
-    { text: "2️⃣", delay: 1200 },
-    { text: "1️⃣", delay: 1200 },
-    { text: "🎉🎉🎉", delay: 1500 }
+    { text: "⏳ خلص الوقت!", delay: 5000 },
+    { text: "اللحظة اللي ننتظرها من زمان... <span class='emoji-fix'>🔥</span>", delay: 5000 },
+    { text: "يا ترى ولد ولا بنت؟ <span class='emoji-fix'>🤔</span>", delay: 5000 },
+    { text: "نبضات القلب تزيد... <span class='emoji-fix'>💓</span>", delay: 5000 },
+    { text: "تتوقعون إحساسكم بمحله؟ <span class='emoji-fix'>✨</span>", delay: 5000 },
+    { text: "ترقبوا الخبر الزين... <span class='emoji-fix'>🚀</span>", delay: 5000 },
+    { text: "جاهزيييين؟؟ <span class='emoji-fix'>😍</span>", delay: 5000 },
+    { text: "<span class='huge-countdown'>10</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>9</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>8</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>7</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>6</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>5</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>4</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>3</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>2</span>", delay: 1000 },
+    { text: "<span class='huge-countdown'>1</span>", delay: 1000 }
 ];
 
 // ============ DOM ============
@@ -47,6 +65,21 @@ const closeAdminBtn = document.getElementById('closeAdminBtn');
 
 let selectedGender = null;
 let countdownInterval = null;
+let isSuspenseStarted = false; // Prevent double execution
+let globalTargetDate = new Date(Date.now() + 3600000); // Default fallback
+
+// Listen to Firebase for real-time target date updates
+db.ref('settings/targetDate').on('value', (snap) => {
+    const val = snap.val();
+    if (val) {
+        globalTargetDate = new Date(val);
+        // Restart countdown with new date if it's already running
+        if (countdownPage.classList.contains('active')) {
+            clearInterval(countdownInterval);
+            startCountdown();
+        }
+    }
+});
 
 // ============ PARTICLE BACKGROUND ============
 const canvas = document.getElementById('particleCanvas');
@@ -128,15 +161,15 @@ function selectGender(gender) {
 enterBtn.addEventListener('click', () => {
     if (!selectedGender) return;
     const name = visitorName.value.trim() || 'زائر';
-    
+
     // Save prediction
     localStorage.setItem('celebPrediction', selectedGender);
     localStorage.setItem('celebVisitor', name);
-    
+
     // Show prediction label
     yourPredLabel.textContent = selectedGender === 'boy' ? '👦 ولد' : '👧 بنت';
     yourPredLabel.className = 'pred-badge ' + selectedGender;
-    
+
     // Navigate to countdown
     goToPage('countdown');
     startCountdown();
@@ -155,22 +188,14 @@ function goToPage(name) {
 }
 
 // ============ COUNTDOWN ============
-function getTargetDate() {
-    const stored = localStorage.getItem(TARGET_KEY);
-    if (stored) return new Date(stored);
-    
-    // استخدام التاريخ الموحد لجميع الزوار
-    return new Date(EVENT_DATE);
-}
-
 function startCountdown() {
-    const target = getTargetDate();
-    const totalDuration = target.getTime() - Date.now();
-    
+    const target = globalTargetDate;
+    const totalDuration = 1000 * 60 * 60 * 24; // Use 24h as a base for the excitement bar max width
+
     function update() {
         const now = Date.now();
         const diff = target.getTime() - now;
-        
+
         if (diff <= 0) {
             clearInterval(countdownInterval);
             cdDays.textContent = '00';
@@ -178,68 +203,62 @@ function startCountdown() {
             cdMinutes.textContent = '00';
             cdSeconds.textContent = '00';
             excitementFill.style.width = '100%';
-            // Go to suspense
-            setTimeout(() => startSuspense(), 1000);
+
+            // Go to suspense only once
+            if (!isSuspenseStarted) {
+                isSuspenseStarted = true;
+                setTimeout(() => startSuspense(), 1000);
+            }
             return;
         }
-        
+
         const days = Math.floor(diff / 86400000);
         const hours = Math.floor((diff % 86400000) / 3600000);
         const minutes = Math.floor((diff % 3600000) / 60000);
         const seconds = Math.floor((diff % 60000) / 1000);
-        
+
         cdDays.textContent = String(days).padStart(2, '0');
         cdHours.textContent = String(hours).padStart(2, '0');
         cdMinutes.textContent = String(minutes).padStart(2, '0');
         cdSeconds.textContent = String(seconds).padStart(2, '0');
-        
+
         // Update excitement bar
         const elapsed = totalDuration > 0 ? (1 - diff / totalDuration) * 100 : 0;
         excitementFill.style.width = Math.min(elapsed, 100) + '%';
     }
-    
+
     update();
     countdownInterval = setInterval(update, 1000);
 }
 
-// ============ SUSPENSE MESSAGES ============
-function startSuspense() {
+// ============ SUSPENSE ============
+async function startSuspense() {
     goToPage('suspense');
-    
-    let i = 0;
-    function showNext() {
-        if (i >= SUSPENSE_MESSAGES.length) {
-            // Go to reveal!
-            setTimeout(() => startReveal(), 500);
-            return;
+
+    // Play suspense heartbeat animation
+    document.body.style.animation = 'none';
+
+    for (let msg of SUSPENSE_MESSAGES) {
+        suspenseText.innerHTML = msg.text;
+
+        // Add smooth cinematic animation
+        suspenseText.style.animation = 'none';
+        void suspenseText.offsetWidth; // trigger reflow
+
+        // Shake effect for countdown numbers
+        if (msg.text.includes('huge-countdown')) {
+            suspenseText.style.animation = 'popTextNumber 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+            document.body.style.animation = 'shake 0.3s ease';
+            setTimeout(() => { document.body.style.animation = ''; }, 300);
+        } else {
+            // For 5-second sentences
+            suspenseText.style.animation = 'popTextSentence 5s ease-in-out forwards';
         }
-        
-        const msg = SUSPENSE_MESSAGES[i];
-        suspenseText.style.opacity = '0';
-        suspenseText.style.transform = 'scale(0.8)';
-        
-        setTimeout(() => {
-            suspenseText.textContent = msg.text;
-            suspenseText.style.transition = 'all 0.5s ease';
-            suspenseText.style.opacity = '1';
-            suspenseText.style.transform = 'scale(1)';
-            
-            // Shake effect for countdown numbers
-            if (['3️⃣','2️⃣','1️⃣'].includes(msg.text)) {
-                suspenseText.style.fontSize = '5rem';
-                document.body.style.animation = 'shake 0.3s ease';
-                setTimeout(() => {
-                    document.body.style.animation = '';
-                    suspenseText.style.fontSize = '';
-                }, 300);
-            }
-            
-            i++;
-            setTimeout(showNext, msg.delay);
-        }, 400);
+
+        await new Promise(r => setTimeout(r, msg.delay));
     }
-    
-    showNext();
+
+    startReveal();
 }
 
 // Add shake keyframe dynamically
@@ -256,29 +275,25 @@ document.head.appendChild(shakeStyle);
 // ============ GRAND REVEAL ============
 function startReveal() {
     goToPage('reveal');
-    
-    // Animate name letter by letter
-    const chars = BABY_NAME.split('');
-    revealName.innerHTML = '';
-    chars.forEach((char, i) => {
-        const span = document.createElement('span');
-        span.textContent = char;
-        span.style.opacity = '0';
-        span.style.display = 'inline-block';
-        span.style.animation = `letterIn 0.5s ease ${i * 0.08}s forwards`;
-        revealName.appendChild(span);
-    });
-    
-    // Add letter animation
-    const letterStyle = document.createElement('style');
-    letterStyle.textContent = `
-        @keyframes letterIn {
-            from { opacity:0; transform:translateY(20px) scale(0.5); }
+
+    // Create the dual name structure
+    revealName.innerHTML = `
+        <div class="main-name-reveal">${MAIN_BABY_NAME}</div>
+        <div class="sub-name-reveal">${SUB_BABY_NAME}</div>
+    `;
+    revealName.style.opacity = '1'; // container is visible, children animate
+
+
+    // Add name animation
+    const nameStyle = document.createElement('style');
+    nameStyle.textContent = `
+        @keyframes namePopIn {
+            from { opacity:0; transform:translateY(30px) scale(0.8); }
             to { opacity:1; transform:translateY(0) scale(1); }
         }
     `;
-    document.head.appendChild(letterStyle);
-    
+    document.head.appendChild(nameStyle);
+
     // Start confetti
     launchConfetti();
 }
@@ -289,10 +304,10 @@ function launchConfetti() {
     const cCtx = confettiCanvas.getContext('2d');
     confettiCanvas.width = window.innerWidth;
     confettiCanvas.height = window.innerHeight;
-    
+
     const pieces = [];
-    const colors = ['#ff6b9d','#ffa2c4','#f9a8d4','#c4b5fd','#a855f7','#f6d365','#ff85a1','#fbc2eb','#fff'];
-    
+    const colors = ['#ff6b9d', '#ffa2c4', '#f9a8d4', '#c4b5fd', '#a855f7', '#f6d365', '#ff85a1', '#fbc2eb', '#fff'];
+
     function addBurst() {
         for (let i = 0; i < 80; i++) {
             pieces.push({
@@ -309,15 +324,15 @@ function launchConfetti() {
             });
         }
     }
-    
+
     addBurst();
     setTimeout(addBurst, 1000);
     setTimeout(addBurst, 2500);
     setTimeout(addBurst, 4000);
-    
+
     function animateConfetti() {
         cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        
+
         for (let i = pieces.length - 1; i >= 0; i--) {
             const p = pieces[i];
             cCtx.save();
@@ -327,25 +342,25 @@ function launchConfetti() {
             cCtx.fillStyle = p.color;
             cCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
             cCtx.restore();
-            
+
             p.x += p.speedX;
             p.y += p.speedY;
             p.speedY += 0.05; // gravity
             p.rotation += p.rotSpeed;
             p.opacity -= 0.003;
-            
+
             if (p.y > confettiCanvas.height + 20 || p.opacity <= 0) {
                 pieces.splice(i, 1);
             }
         }
-        
+
         if (pieces.length > 0) {
             requestAnimationFrame(animateConfetti);
         }
     }
-    
+
     animateConfetti();
-    
+
     // Keep adding confetti bursts
     let burstCount = 0;
     const burstInterval = setInterval(() => {
@@ -381,27 +396,29 @@ document.addEventListener('click', (e) => {
 
 function openAdmin() {
     adminPanel.style.display = 'flex';
-    const stored = localStorage.getItem(TARGET_KEY);
-    if (stored) {
-        // Format for datetime-local input
-        const d = new Date(stored);
-        const offset = d.getTimezoneOffset();
-        const local = new Date(d.getTime() - offset * 60000);
-        targetDateInput.value = local.toISOString().slice(0, 16);
-    }
+    db.ref('settings/targetDate').once('value').then((snap) => {
+        const stored = snap.val();
+        if (stored) {
+            // Format for datetime-local input
+            const d = new Date(stored);
+            const offset = d.getTimezoneOffset();
+            const local = new Date(d.getTime() - offset * 60000);
+            targetDateInput.value = local.toISOString().slice(0, 16);
+        }
+    });
 }
 
 saveTargetBtn.addEventListener('click', () => {
     const val = targetDateInput.value;
     if (val) {
-        localStorage.setItem(TARGET_KEY, new Date(val).toISOString());
-        adminPanel.style.display = 'none';
-        // Restart countdown if on countdown page
-        if (countdownPage.classList.contains('active')) {
-            clearInterval(countdownInterval);
-            startCountdown();
-        }
-        alert('✅ تم حفظ الموعد بنجاح!');
+        const dateISO = new Date(val).toISOString();
+        db.ref('settings/targetDate').set(dateISO).then(() => {
+            adminPanel.style.display = 'none';
+            alert('✅ تم حفظ الموعد ونشره لجميع الزوار بنجاح!');
+        }).catch(err => {
+            alert('حدث خطأ أثناء الحفظ');
+            console.error(err);
+        });
     }
 });
 
