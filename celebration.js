@@ -162,9 +162,16 @@ enterBtn.addEventListener('click', () => {
     if (!selectedGender) return;
     const name = visitorName.value.trim() || 'زائر';
 
-    // Save prediction
+    // Save prediction locally
     localStorage.setItem('celebPrediction', selectedGender);
     localStorage.setItem('celebVisitor', name);
+
+    // Save prediction to Firebase
+    db.ref('predictions').push({
+        name: name,
+        gender: selectedGender,
+        timestamp: Date.now()
+    });
 
     // Show prediction label
     yourPredLabel.textContent = selectedGender === 'boy' ? '👦 ولد' : '👧 بنت';
@@ -174,6 +181,8 @@ enterBtn.addEventListener('click', () => {
     goToPage('countdown');
     startCountdown();
 });
+
+
 
 // ============ PAGE NAVIGATION ============
 function goToPage(name) {
@@ -296,6 +305,52 @@ function startReveal() {
 
     // Start confetti
     launchConfetti();
+
+    // Load and show visitor predictions
+    showVisitorPredictions();
+}
+
+// ============ VISITOR PREDICTIONS ============
+async function showVisitorPredictions() {
+    const container = document.createElement('div');
+    container.className = 'predictions-wall';
+    revealPage.appendChild(container);
+
+    db.ref('predictions').once('value').then((snap) => {
+        const data = snap.val();
+        if (!data) return;
+
+        const entries = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+        
+        entries.forEach((pred, index) => {
+            setTimeout(() => {
+                const bubble = document.createElement('div');
+                const isBoy = pred.gender === 'boy';
+                bubble.className = `pred-bubble ${pred.gender}`;
+                
+                // Random scale for variety
+                const scale = Math.random() * 0.3 + 0.85; // 0.85 to 1.15
+                bubble.style.transform = `scale(${scale})`;
+                
+                bubble.innerHTML = `
+                    <div class="bubble-icon">${isBoy ? '👦' : '👧'}</div>
+                    <div class="bubble-content">
+                        <span class="bubble-name">${pred.name}</span>
+                        <span class="bubble-text">توقع ${isBoy ? 'ولد' : 'بنت'}</span>
+                    </div>
+                `;
+                
+                // Random position and timing
+                const x = Math.random() * 85 + 5; 
+                bubble.style.left = `${x}%`;
+                bubble.style.animationDuration = `${Math.random() * 5 + 12}s`;
+                bubble.style.animationDelay = `${Math.random() * 2}s`;
+                
+                container.appendChild(bubble);
+            }, index * 400); 
+        });
+
+    });
 }
 
 // ============ CONFETTI ============

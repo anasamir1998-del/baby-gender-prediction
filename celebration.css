@@ -948,3 +948,100 @@ body {
         padding: 24px 16px;
     }
 }
+
+/* ============ PREDICTION BUBBLES ============ */
+.predictions-wall {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.pred-bubble {
+    position: absolute;
+    padding: 8px 16px;
+    border-radius: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    animation: bubbleFloat 15s linear infinite;
+    min-width: 140px;
+    z-index: 2;
+}
+
+.pred-bubble.boy {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.25), rgba(0, 198, 255, 0.15));
+    border-color: rgba(79, 172, 254, 0.4);
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.25);
+}
+
+.pred-bubble.girl {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.25), rgba(251, 194, 235, 0.15));
+    border-color: rgba(255, 107, 157, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.25);
+}
+
+.bubble-icon {
+    font-size: 1.6rem;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+}
+
+.bubble-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: right;
+}
+
+.bubble-name {
+    font-size: 0.95rem;
+    font-weight: 800;
+    white-space: nowrap;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.bubble-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.9;
+    color: rgba(255,255,255,0.85);
+}
+
+@keyframes bubbleFloat {
+    0% {
+        transform: translateY(110vh) translateX(0) scale(0.8) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(90vh) translateX(10px) scale(1) rotate(2deg);
+    }
+    30% {
+        transform: translateY(70vh) translateX(-15px) scale(1.05) rotate(-2deg);
+    }
+    50% {
+        transform: translateY(50vh) translateX(15px) scale(1) rotate(2deg);
+    }
+    70% {
+        transform: translateY(30vh) translateX(-10px) scale(1.05) rotate(-2deg);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(10vh) translateX(5px) scale(1) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-20vh) translateX(0) scale(0.8) rotate(0deg);
+        opacity: 0;
+    }
+}
