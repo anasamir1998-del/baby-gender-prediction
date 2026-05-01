@@ -1,5 +1,5 @@
 // ============ CONFIG ============
-const BABY_NAME = "ميلان نايف باوزير";
+const BABY_NAME = "إيلان نايف باوزير";
 
 // ============ FIREBASE CONFIG ============
 const firebaseConfig = {
