@@ -1213,54 +1213,6 @@
 
     </div>
 
-    <!-- Hidden PDF Template -->
-    <div id="pdfExportContainer" style="position: absolute; left: -9999px; top: -9999px; width: 800px; direction: rtl;">
-        <div id="pdfContent" style="padding: 40px; background: #ffffff; font-family: 'Tajawal', sans-serif; color: #1a0a2e; direction: rtl;">
-            <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #fce7f3; padding-bottom: 20px;">
-                <div style="color: #be185d; font-size: 28px; margin: 0 0 10px 0; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 10px;">
-                    <span style="font-family: sans-serif;">🎀</span>
-                    <span dir="rtl">تقرير الكشف عن المولود</span>
-                    <span style="font-family: sans-serif;">🎀</span>
-                </div>
-                <p style="color: #6b7280; font-size: 16px; margin: 0; direction: rtl;">سجل توقعات العائلة والأصدقاء</p>
-            </div>
-            
-            <div style="display: flex; justify-content: space-around; margin-bottom: 30px; background: #fdf2f8; padding: 20px; border-radius: 12px; border: 1px solid #fbcfe8;">
-                <div style="text-align: center;">
-                    <span style="font-size: 24px; display: block; margin-bottom: 5px;">👶</span>
-                    <div style="font-weight: bold; color: #1a0a2e; font-size: 18px;">إجمالي التوقعات: <br><span id="pdfTotal" style="font-size: 24px; color: #be185d;">0</span></div>
-                </div>
-                <div style="text-align: center;">
-                    <span style="font-size: 24px; display: block; margin-bottom: 5px;">👦</span>
-                    <div style="font-weight: bold; color: #0284c7; font-size: 18px;">توقعوا ولد: <br><span id="pdfBoys" style="font-size: 24px;">0</span></div>
-                </div>
-                <div style="text-align: center;">
-                    <span style="font-size: 24px; display: block; margin-bottom: 5px;">👧</span>
-                    <div style="font-weight: bold; color: #be185d; font-size: 18px;">توقعوا بنت: <br><span id="pdfGirls" style="font-size: 24px;">0</span></div>
-                </div>
-            </div>
-
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
-                <thead>
-                    <tr style="background: #fbcfe8; color: #831843;">
-                        <th style="padding: 12px; text-align: right; border-bottom: 2px solid #f9a8d4; font-weight: bold; width: 5%;">م</th>
-                        <th style="padding: 12px; text-align: right; border-bottom: 2px solid #f9a8d4; font-weight: bold; width: 30%;">الاسم</th>
-                        <th style="padding: 12px; text-align: right; border-bottom: 2px solid #f9a8d4; font-weight: bold; width: 15%;">التوقع</th>
-                        <th style="padding: 12px; text-align: right; border-bottom: 2px solid #f9a8d4; font-weight: bold; width: 25%;">صلة القرابة</th>
-                        <th style="padding: 12px; text-align: right; border-bottom: 2px solid #f9a8d4; font-weight: bold; width: 25%;">التاريخ</th>
-                    </tr>
-                </thead>
-                <tbody id="pdfTableBody">
-                    <!-- Rows injected here -->
-                </tbody>
-            </table>
-            
-            <div style="margin-top: 50px; text-align: center; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
-                تم استخراج هذا التقرير من النظام الإلكتروني لاحتفالية المولود 💕
-            </div>
-        </div>
-    </div>
-
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -1368,15 +1320,13 @@
             return div.innerHTML;
         }
 
-        // ============ PIN (Hardcoded for Admin only) ============
-        const MASTER_PIN = '2030'; // كلمة السر الموحدة لك فقط
-
+        // ============ PIN (stored locally) ============
         function getPIN() {
-            return MASTER_PIN;
+            return localStorage.getItem(PIN_KEY);
         }
 
         function setPIN(pin) {
-            // No longer used, as we use a master PIN
+            localStorage.setItem(PIN_KEY, pin);
         }
 
         // ============ Duplicate Vote Check ============
@@ -1682,7 +1632,7 @@
             }
         });
 
-        // ============ Download PDF ============
+        // ============ Download CSV ============
         downloadBtn.addEventListener('click', function () {
             getAllPredictions().then(predictions => {
                 if (predictions.length === 0) {
@@ -1690,70 +1640,21 @@
                     return;
                 }
 
-                downloadBtn.disabled = true;
-                const originalText = downloadBtn.innerHTML;
-                downloadBtn.innerHTML = '⏳ جاري التجهيز...';
-
-                // Calculate stats
-                const boys = predictions.filter(p => p.gender === 'boy').length;
-                const girls = predictions.filter(p => p.gender === 'girl').length;
-
-                // Update PDF Template
-                document.getElementById('pdfTotal').textContent = predictions.length;
-                document.getElementById('pdfBoys').textContent = boys;
-                document.getElementById('pdfGirls').textContent = girls;
-
-                const tbody = document.getElementById('pdfTableBody');
-                tbody.innerHTML = '';
+                // BOM for Arabic support in Excel
+                let csv = '\ufeff';
+                csv += 'الرقم,الاسم,التوقع,صلة القرابة,التاريخ\n';
 
                 predictions.forEach((pred, i) => {
-                    const genderText = pred.gender === 'boy' 
-                        ? '<span dir="rtl">ولد</span> <span style="font-family: sans-serif;">👦</span>' 
-                        : '<span dir="rtl">بنت</span> <span style="font-family: sans-serif;">👧</span>';
-                    const color = pred.gender === 'boy' ? '#0284c7' : '#be185d';
-                    const bg = i % 2 === 0 ? '#ffffff' : '#fdf2f8';
-                    tbody.innerHTML += `
-                        <tr style="background: ${bg}; border-bottom: 1px solid #e5e7eb;">
-                            <td style="padding: 12px; text-align: right;">${i + 1}</td>
-                            <td style="padding: 12px; text-align: right; font-weight: bold;" dir="rtl">${escapeHTML(pred.name)}</td>
-                            <td style="padding: 12px; text-align: right; color: ${color}; font-weight: bold;">${genderText}</td>
-                            <td style="padding: 12px; text-align: right; color: #4b5563;" dir="rtl">${escapeHTML(pred.relation)}</td>
-                            <td style="padding: 12px; text-align: right; color: #6b7280; font-size: 0.9em;" dir="rtl">${pred.date}</td>
-                        </tr>
-                    `;
+                    const gender = pred.gender === 'boy' ? 'ولد' : 'بنت';
+                    csv += `${i + 1},"${pred.name}","${gender}","${pred.relation}","${pred.date}"\n`;
                 });
 
-                const element = document.getElementById('pdfContent');
-                
-                // Add html2pdf script dynamically if not loaded
-                if (typeof html2pdf === 'undefined') {
-                    const script = document.createElement('script');
-                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-                    script.onload = () => generatePDF(element, originalText);
-                    document.body.appendChild(script);
-                } else {
-                    generatePDF(element, originalText);
-                }
-
-                function generatePDF(element, originalText) {
-                    const opt = {
-                        margin:       0.5,
-                        filename:     'توقعات_المولود.pdf',
-                        image:        { type: 'jpeg', quality: 0.98 },
-                        html2canvas:  { scale: 2, useCORS: true },
-                        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-                    };
-
-                    html2pdf().set(opt).from(element).save().then(() => {
-                        downloadBtn.disabled = false;
-                        downloadBtn.innerHTML = originalText;
-                    }).catch(err => {
-                        console.error('PDF Error:', err);
-                        alert('حدث خطأ أثناء استخراج الـ PDF');
-                        downloadBtn.disabled = false;
-                        downloadBtn.innerHTML = originalText;
-                    });
-                }
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'توقعات_المولود.csv';
+                link.click();
+                URL.revokeObjectURL(link.href);
             });
         });
 
@@ -1797,5 +1698,3 @@
     </script>
 
 </body>
-
-</html>
