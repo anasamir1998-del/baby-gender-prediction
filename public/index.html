@@ -9,10 +9,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
         rel="stylesheet">
+
+    <!-- PDF Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
+
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👶</text></svg>">
     <style>
         :root {
             --boy-start: #4facfe;
-            --boy-end: #00f2fe;
+
             --girl-start: #f093fb;
             --girl-end: #f5576c;
             --purple: #7c3aed;
@@ -992,6 +1002,178 @@
             color: rgba(100, 80, 130, 0.5);
         }
 
+        /* PDF Template Styles */
+        #pdf-template, #pdf-comments-template {
+            display: none;
+            width: 1000px; /* Increased width */
+            background: white;
+            padding: 50px;
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+        }
+
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 35px;
+            border-bottom: 3px double #f8bbd0;
+            padding-bottom: 25px;
+            position: relative;
+        }
+
+        .pdf-header::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 10px;
+            background: white;
+        }
+
+        .pdf-title {
+            color: #d81b60;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .pdf-subtitle {
+            color: #666;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .pdf-stats-box {
+            background: linear-gradient(135deg, #fff0f5 0%, #fff 100%);
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 35px;
+            border: 2px solid #ffd1dc;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+
+        .pdf-stat-item {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .pdf-stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background: #ffd1dc;
+        }
+
+        .pdf-stat-icon {
+            font-size: 30px;
+            margin-bottom: 5px;
+        }
+
+        .pdf-stat-label {
+            font-weight: 700;
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .pdf-stat-value {
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .pdf-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 30px;
+            border: 1px solid #f8bbd0;
+            border-radius: 15px;
+            overflow: hidden;
+            /* Removed table-layout: fixed */
+        }
+
+        .pdf-table th {
+            background-color: #fce4ec;
+            color: #d81b60;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 18px;
+            border-bottom: 2px solid #f8bbd0;
+            border-left: 1px solid #f8bbd0;
+            white-space: nowrap; /* Keep headers on one line */
+        }
+
+        .pdf-table th:last-child {
+            border-left: none;
+        }
+
+        .pdf-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #fce4ec;
+            border-left: 1px solid #fce4ec;
+            color: #333;
+            font-size: 17px;
+            white-space: nowrap; /* Added to prevent wrapping */
+            vertical-align: middle;
+        }
+
+        .pdf-table td:last-child {
+            border-left: none;
+        }
+
+        .pdf-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pdf-table tr:nth-child(even) {
+            background-color: #fffbfc;
+        }
+
+        .pdf-badge-boy {
+            color: #0284c7;
+            background: #e0f2fe;
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .pdf-badge-girl {
+            color: #db2777;
+            background: #fdf2f8;
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .pdf-footer {
+            text-align: center;
+            color: #888;
+            font-size: 15px;
+            margin-top: 40px;
+            border-top: 2px solid #fce4ec;
+            padding-top: 25px;
+            font-weight: 500;
+        }
+
+        .pdf-timestamp {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .card {
@@ -1023,8 +1205,8 @@
             }
 
             .stats-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
+                grid-template-columns: 1fr;
+                gap: 10px;
             }
 
             .stat-card {
@@ -1042,13 +1224,22 @@
 
             .action-buttons {
                 flex-direction: column;
+                gap: 8px;
             }
 
             .action-btn {
                 justify-content: center;
             }
 
+            .results-table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                margin: 0 -5px;
+                padding: 0 5px;
+            }
+
             .results-table {
+                min-width: 500px;
                 font-size: 0.82rem;
             }
 
@@ -1067,6 +1258,87 @@
 
     <!-- Confetti Container -->
     <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Hidden PDF Template for Predictions -->
+    <div id="pdf-template">
+        <div class="pdf-header">
+            <div class="pdf-title"><span>🎀</span> تقرير الكشف عن المولود <span>🎀</span></div>
+            <div class="pdf-subtitle">سجل توقعات العائلة والأصدقاء</div>
+        </div>
+
+        <div class="pdf-stats-box">
+            <div class="pdf-stat-item">
+                <div class="pdf-stat-icon">👶</div>
+                <div class="pdf-stat-label">إجمالي التوقعات</div>
+                <div id="pdf-total-val" class="pdf-stat-value">0</div>
+            </div>
+            <div class="pdf-stat-item">
+                <div class="pdf-stat-icon">👦</div>
+                <div class="pdf-stat-label" style="color: #0284c7;">توقعوا ولد</div>
+                <div id="pdf-boy-val" class="pdf-stat-value" style="color: #0284c7;">0</div>
+            </div>
+            <div class="pdf-stat-item">
+                <div class="pdf-stat-icon">👧</div>
+                <div class="pdf-stat-label" style="color: #db2777;">توقعوا بنت</div>
+                <div id="pdf-girl-val" class="pdf-stat-value" style="color: #db2777;">0</div>
+            </div>
+        </div>
+
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">م</th>
+                    <th>الاسم</th>
+                    <th>التوقع</th>
+                    <th>صلة القرابة</th>
+                    <th>التاريخ</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-table-body">
+                <!-- Rows will be injected here -->
+            </tbody>
+        </table>
+
+        <div class="pdf-footer">
+            <div>تم استخراج هذا التقرير من النظام الإلكتروني لاحتفالية المولود 💕</div>
+            <div class="pdf-timestamp" id="pdf-timestamp-predictions"></div>
+        </div>
+    </div>
+
+    <!-- Hidden PDF Template for Comments -->
+    <div id="pdf-comments-template">
+        <div class="pdf-header">
+            <div class="pdf-title"><span>💬</span> سجل التهاني والتعليقات <span>💬</span></div>
+            <div class="pdf-subtitle">أجمل اللحظات والكلمات من أحبائنا</div>
+        </div>
+
+        <div class="pdf-stats-box">
+            <div class="pdf-stat-item">
+                <div class="pdf-stat-icon">💌</div>
+                <div class="pdf-stat-label">إجمالي التعليقات</div>
+                <div id="pdf-comments-total-val" class="pdf-stat-value">0</div>
+            </div>
+        </div>
+
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">م</th>
+                    <th style="width: 150px;">الاسم</th>
+                    <th>التعليق</th>
+                    <th style="width: 180px;">التاريخ والوقت</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-comments-table-body">
+                <!-- Rows will be injected here -->
+            </tbody>
+        </table>
+
+        <div class="pdf-footer">
+            <div>تم استخراج سجل التعليقات من النظام الإلكتروني لاحتفالية المولود 💕</div>
+            <div class="pdf-timestamp" id="pdf-timestamp-comments"></div>
+        </div>
+    </div>
 
     <!-- Success Overlay -->
     <div class="success-overlay" id="successOverlay">
@@ -1159,7 +1431,7 @@
                         <div class="form-group">
                             <label>💝 صلة القرابة</label>
                             <input type="text" name="relation" id="relationInput"
-                                placeholder="مثال: خالة، صديقة، جدة..." maxlength="50">
+                                placeholder="مثال: خالة، صديقة، جدة..." required maxlength="50">
                         </div>
 
                         <button type="submit" class="submit-btn" id="submitBtn">✨ أرسل توقعك ✨</button>
@@ -1188,7 +1460,8 @@
                     <h2>📊 نتائج التوقعات</h2>
                     <div class="action-buttons">
                         <button class="action-btn btn-back" id="backBtn">→ رجوع</button>
-                        <button class="action-btn btn-download" id="downloadBtn">⬇ تحميل</button>
+                        <button class="action-btn btn-download" id="downloadBtn" title="تحميل التوقعات">⬇ التوقعات</button>
+                        <button class="action-btn btn-download" id="downloadCommentsBtn" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);" title="تحميل التعليقات">💬 التعليقات</button>
                         <button class="action-btn btn-delete" id="clearAllBtn">🗑 حذف الكل</button>
                     </div>
                 </div>
@@ -1213,26 +1486,11 @@
 
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <!-- API Backend (PHP + MySQL) -->
 
     <script>
-        // ============ FIREBASE CONFIG ============
-        const firebaseConfig = {
-            apiKey: "AIzaSyCcEiiFAMHe_Q-YXlh3OKs1RA2qt57KIEI",
-            authDomain: "baby-prediction-cd7f0.firebaseapp.com",
-            databaseURL: "https://baby-prediction-cd7f0-default-rtdb.firebaseio.com",
-            projectId: "baby-prediction-cd7f0",
-            storageBucket: "baby-prediction-cd7f0.firebasestorage.app",
-            messagingSenderId: "746478336440",
-            appId: "1:746478336440:web:9734916b1e1a0f6338374d"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const predictionsRef = db.ref('predictions');
+        // ============ API CONFIG ============
+        const API_BASE = 'api';
 
         // ============ DOM ============
         const predictionPage = document.getElementById('predictionPage');
@@ -1243,6 +1501,7 @@
         const adminLink = document.getElementById('adminLink');
         const backBtn = document.getElementById('backBtn');
         const downloadBtn = document.getElementById('downloadBtn');
+        const downloadCommentsBtn = document.getElementById('downloadCommentsBtn');
         const clearAllBtn = document.getElementById('clearAllBtn');
         const successOverlay = document.getElementById('successOverlay');
         const confettiContainer = document.getElementById('confettiContainer');
@@ -1273,44 +1532,57 @@
         checkVotedStatus();
         listenToLiveCount();
 
-        // ============ FIREBASE DATA ============
-        // Listen for live prediction count
+        // ============ API DATA FUNCTIONS ============
+        // Poll for live prediction count
         function listenToLiveCount() {
-            predictionsRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                const count = data ? Object.keys(data).length : 0;
-                liveCount.textContent = count;
-                if (count > 0) {
-                    liveBadge.style.display = 'inline-flex';
+            async function fetchCount() {
+                try {
+                    const res = await fetch(`${API_BASE}/predictions.php?count=1`);
+                    const data = await res.json();
+                    const count = parseInt(data.total) || 0;
+                    liveCount.textContent = count;
+                    if (count > 0) {
+                        liveBadge.style.display = 'inline-flex';
+                    }
+                } catch (e) {
+                    console.log('Count poll error:', e);
                 }
-            });
+            }
+            fetchCount();
+            setInterval(fetchCount, 5000);
         }
 
-        // Add prediction to Firebase
+        // Add prediction via API
         function addPrediction(prediction) {
-            return predictionsRef.push(prediction);
+            return fetch(`${API_BASE}/predictions.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(prediction)
+            }).then(res => res.json());
         }
 
-        // Get all predictions from Firebase
+        // Get all predictions via API
         function getAllPredictions() {
-            return predictionsRef.once('value').then(snapshot => {
-                const data = snapshot.val();
-                if (!data) return [];
-                return Object.entries(data).map(([key, val]) => ({
-                    firebaseKey: key,
-                    ...val
-                }));
-            });
+            return fetch(`${API_BASE}/predictions.php`)
+                .then(res => res.json())
+                .then(data => {
+                    if (!Array.isArray(data)) return [];
+                    return data;
+                });
         }
 
         // Delete single prediction
-        function deletePrediction(firebaseKey) {
-            return predictionsRef.child(firebaseKey).remove();
+        function deletePrediction(id) {
+            return fetch(`${API_BASE}/predictions.php?id=${id}`, {
+                method: 'DELETE'
+            }).then(res => res.json());
         }
 
         // Delete all predictions
         function deleteAllPredictions() {
-            return predictionsRef.remove();
+            return fetch(`${API_BASE}/predictions.php?all=1`, {
+                method: 'DELETE'
+            }).then(res => res.json());
         }
 
         // ============ XSS Protection ============
@@ -1355,7 +1627,11 @@
             const relationVal = document.getElementById('relationInput').value.trim();
             const genderEl = document.querySelector('input[name="gender"]:checked');
 
-            if (!genderEl || !nameVal) return;
+            if (!genderEl || !nameVal || !relationVal) {
+                alert('يرجى ملء جميع الحقول (الاسم وصلة القرابة) واختيار توقعك.');
+                return;
+            }
+
 
             // Disable button
             const submitBtn = document.getElementById('submitBtn');
@@ -1374,7 +1650,7 @@
             localStorage.setItem('celebPrediction', prediction.gender);
             localStorage.setItem('celebVisitor', prediction.name);
 
-            // Save to Firebase
+            // Save to API
             addPrediction(prediction)
                 .then(() => {
                     markVoted();
@@ -1438,41 +1714,17 @@
 
         // ============ Admin / Results Navigation ============
         adminLink.addEventListener('click', function () {
-            const pin = getPIN();
-            if (!pin) {
-                pinSetupModal.classList.add('show');
-                pinSetupInput.value = '';
-                pinSetupInput.focus();
-            } else {
-                pinModal.classList.add('show');
-                pinInput.value = '';
-                pinError.style.display = 'none';
-                pinInput.focus();
-            }
-        });
-
-        // PIN Setup
-        pinSetupConfirmBtn.addEventListener('click', function () {
-            const val = pinSetupInput.value.trim();
-            if (val.length === 4 && /^\d{4}$/.test(val)) {
-                setPIN(val);
-                pinSetupModal.classList.remove('show');
-                goToResults();
-            } else {
-                pinSetupError.style.display = 'block';
-                pinSetupInput.focus();
-            }
-        });
-
-        pinSetupCancelBtn.addEventListener('click', function () {
-            pinSetupModal.classList.remove('show');
-            goToResults();
+            // Use fixed PIN 2030 for everyone
+            pinModal.classList.add('show');
+            pinInput.value = '';
+            pinError.style.display = 'none';
+            pinInput.focus();
         });
 
         // PIN Verify
         pinConfirmBtn.addEventListener('click', function () {
             const val = pinInput.value.trim();
-            if (val === getPIN()) {
+            if (val === "2030") { // FIXED PASSWORD
                 pinModal.classList.remove('show');
                 goToResults();
             } else {
@@ -1481,6 +1733,7 @@
                 pinInput.focus();
             }
         });
+
 
         pinCancelBtn.addEventListener('click', function () {
             pinModal.classList.remove('show');
@@ -1501,7 +1754,7 @@
             predictionPage.classList.add('active');
         });
 
-        // ============ Display Results (from Firebase) ============
+        // ============ Display Results (from API) ============
         function displayResults() {
             const statsContainer = document.getElementById('statsContainer');
             const progressContainer = document.getElementById('progressContainer');
@@ -1578,26 +1831,28 @@
                         <td>${escapeHTML(pred.name)}</td>
                         <td><span class="badge ${badgeClass}">${genderText}</span></td>
                         <td>${escapeHTML(pred.relation)}</td>
-                        <td>${escapeHTML(pred.date)}</td>
-                        <td><button class="delete-row-btn" data-key="${pred.firebaseKey}" title="حذف">✕</button></td>
+                        <td>${escapeHTML(pred.date_text || pred.date || '')}</td>
+                        <td><button class="delete-row-btn" data-key="${pred.id}" title="حذف">✕</button></td>
                     </tr>
                 `;
                 });
 
                 resultsContainer.innerHTML = `
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>الاسم</th>
-                            <th>التوقع</th>
-                            <th>القرابة</th>
-                            <th>التاريخ</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
+                <div class="results-table-container">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الاسم</th>
+                                <th>التوقع</th>
+                                <th>القرابة</th>
+                                <th>التاريخ</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
             `;
 
                 // Bind delete buttons
@@ -1632,48 +1887,206 @@
             }
         });
 
-        // ============ Download CSV ============
-        downloadBtn.addEventListener('click', function () {
-            getAllPredictions().then(predictions => {
+        // ============ PDF Helper: render a page template to canvas ============
+        function createPdfPageHtml(headerHtml, rows, columns, pageNum, totalLabel) {
+            let html = '<div style="width:800px;background:#fff;padding:40px 35px;font-family:Tajawal,sans-serif;direction:rtl;">';
+            if (headerHtml) html += headerHtml;
+            html += '<table style="width:100%;border-collapse:separate;border-spacing:0;border:1px solid #f8bbd0;border-radius:12px;overflow:hidden;">';
+            html += '<thead><tr>';
+            columns.forEach(col => {
+                html += '<th style="background:#fce4ec;color:#d81b60;padding:14px 8px;font-weight:800;font-size:16px;border-bottom:2px solid #f8bbd0;white-space:nowrap;">' + col + '</th>';
+            });
+            html += '</tr></thead><tbody>';
+            html += rows;
+            html += '</tbody></table>';
+            html += '<div style="text-align:center;color:#999;font-size:12px;margin-top:20px;padding-top:12px;border-top:1px solid #fce4ec;">';
+            html += totalLabel + ' — صفحة ' + pageNum + ' — ' + new Date().toLocaleString('ar-EG');
+            html += '</div></div>';
+            return html;
+        }
+
+        async function renderPageToPdf(pdf, htmlContent, pdfW, margin, isFirstPage) {
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'position:absolute;left:-9999px;top:0;';
+            wrapper.innerHTML = htmlContent;
+            document.body.appendChild(wrapper);
+            try {
+                const canvas = await html2canvas(wrapper.firstChild, {
+                    scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 800
+                });
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const imgW = pdfW - margin * 2;
+                const imgH = (canvas.height * imgW) / canvas.width;
+                if (!isFirstPage) pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', margin, margin, imgW, imgH);
+            } finally {
+                document.body.removeChild(wrapper);
+            }
+        }
+
+        // ============ Download PDF (Predictions) ============
+        downloadBtn.addEventListener('click', async function () {
+            const originalBtnText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '⏳ جاري التجهيز...';
+            downloadBtn.disabled = true;
+            try {
+                const predictions = await getAllPredictions();
                 if (predictions.length === 0) {
                     alert('لا توجد بيانات لتحميلها');
+                    downloadBtn.innerHTML = originalBtnText;
+                    downloadBtn.disabled = false;
+                    return;
+                }
+                predictions.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+                const boys = predictions.filter(p => p.gender === 'boy').length;
+                const girls = predictions.length - boys;
+                const total = predictions.length;
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfW = pdf.internal.pageSize.getWidth();
+                const margin = 10;
+                const ROWS_FIRST = 14;
+                const ROWS_OTHER = 22;
+                const columns = ['م', 'الاسم', 'التوقع', 'صلة القرابة', 'التاريخ'];
+
+                const headerHtml = `
+                    <div style="text-align:center;margin-bottom:25px;border-bottom:3px double #f8bbd0;padding-bottom:20px;">
+                        <div style="color:#d81b60;font-size:30px;font-weight:800;margin-bottom:8px;">🎀 تقرير الكشف عن المولود 🎀</div>
+                        <div style="color:#666;font-size:17px;">سجل توقعات العائلة والأصدقاء</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-around;margin-bottom:25px;background:linear-gradient(135deg,#fff0f5,#fff);border:2px solid #ffd1dc;border-radius:16px;padding:20px;">
+                        <div style="text-align:center;flex:1;"><div style="font-size:24px;">👶</div><div style="font-weight:700;color:#555;font-size:14px;">إجمالي</div><div style="font-size:26px;font-weight:900;">${total}</div></div>
+                        <div style="text-align:center;flex:1;border-right:1px solid #ffd1dc;border-left:1px solid #ffd1dc;"><div style="font-size:24px;">👦</div><div style="font-weight:700;color:#0284c7;font-size:14px;">ولد</div><div style="font-size:26px;font-weight:900;color:#0284c7;">${boys}</div></div>
+                        <div style="text-align:center;flex:1;"><div style="font-size:24px;">👧</div><div style="font-weight:700;color:#db2777;font-size:14px;">بنت</div><div style="font-size:26px;font-weight:900;color:#db2777;">${girls}</div></div>
+                    </div>`;
+
+                let currentRow = 0;
+                let pageNum = 0;
+                while (currentRow < predictions.length) {
+                    const isFirst = pageNum === 0;
+                    const count = isFirst ? ROWS_FIRST : ROWS_OTHER;
+                    const pageRows = predictions.slice(currentRow, currentRow + count);
+                    let rowsHtml = '';
+                    pageRows.forEach((pred, i) => {
+                        const idx = currentRow + i + 1;
+                        const bg = i % 2 === 0 ? '#fff' : '#fffbfc';
+                        const gText = pred.gender === 'boy' ? 'ولد' : 'بنت';
+                        const gEmoji = pred.gender === 'boy' ? '👦' : '👧';
+                        const bStyle = pred.gender === 'boy'
+                            ? 'color:#0284c7;background:#e0f2fe;padding:3px 10px;border-radius:8px;font-weight:700;'
+                            : 'color:#db2777;background:#fdf2f8;padding:3px 10px;border-radius:8px;font-weight:700;';
+                        rowsHtml += '<tr style="background:' + bg + ';">';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:15px;">' + idx + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:15px;font-weight:800;color:#1e1b4b;">' + escapeHTML(pred.name) + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:15px;"><span style="' + bStyle + '">' + gEmoji + ' ' + gText + '</span></td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:15px;">' + escapeHTML(pred.relation || '-') + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:13px;color:#666;">' + escapeHTML(pred.date || '-') + '</td>';
+                        rowsHtml += '</tr>';
+                    });
+                    const header = isFirst ? headerHtml : '';
+                    const pageHtml = createPdfPageHtml(header, rowsHtml, columns, pageNum + 1, 'تقرير التوقعات');
+                    await renderPageToPdf(pdf, pageHtml, pdfW, margin, pageNum === 0);
+                    currentRow += count;
+                    pageNum++;
+                }
+                pdf.save('توقعات_المولود.pdf');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء إنشاء الملف');
+            }
+            downloadBtn.innerHTML = originalBtnText;
+            downloadBtn.disabled = false;
+        });
+
+        // ============ Download PDF (Comments) ============
+        downloadCommentsBtn.addEventListener('click', async function () {
+            const originalBtnText = downloadCommentsBtn.innerHTML;
+            downloadCommentsBtn.innerHTML = '⏳ جاري التجهيز...';
+            downloadCommentsBtn.disabled = true;
+            try {
+                const res = await fetch(`${API_BASE}/chat.php`);
+                const messages = await res.json();
+                if (!Array.isArray(messages) || messages.length === 0) {
+                    alert('لا توجد تعليقات لتحميلها');
+                    downloadCommentsBtn.innerHTML = originalBtnText;
+                    downloadCommentsBtn.disabled = false;
                     return;
                 }
 
-                // BOM for Arabic support in Excel
-                let csv = '\ufeff';
-                csv += 'الرقم,الاسم,التوقع,صلة القرابة,التاريخ\n';
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfW = pdf.internal.pageSize.getWidth();
+                const margin = 10;
+                const ROWS_FIRST = 14;
+                const ROWS_OTHER = 22;
+                const columns = ['م', 'الاسم', 'التعليق', 'التاريخ والوقت'];
 
-                predictions.forEach((pred, i) => {
-                    const gender = pred.gender === 'boy' ? 'ولد' : 'بنت';
-                    csv += `${i + 1},"${pred.name}","${gender}","${pred.relation}","${pred.date}"\n`;
-                });
+                const headerHtml = `
+                    <div style="text-align:center;margin-bottom:25px;border-bottom:3px double #c4b5fd;padding-bottom:20px;">
+                        <div style="color:#7c3aed;font-size:30px;font-weight:800;margin-bottom:8px;">💬 سجل التهاني والتعليقات 💬</div>
+                        <div style="color:#666;font-size:17px;">أجمل الكلمات من أحبائنا</div>
+                    </div>
+                    <div style="display:flex;justify-content:center;margin-bottom:25px;background:linear-gradient(135deg,#f5f3ff,#fff);border:2px solid #c4b5fd;border-radius:16px;padding:20px;">
+                        <div style="text-align:center;"><div style="font-size:24px;">💌</div><div style="font-weight:700;color:#555;font-size:14px;">إجمالي التعليقات</div><div style="font-size:26px;font-weight:900;color:#7c3aed;">${messages.length}</div></div>
+                    </div>`;
 
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'توقعات_المولود.csv';
-                link.click();
-                URL.revokeObjectURL(link.href);
-            });
+                let currentRow = 0;
+                let pageNum = 0;
+                while (currentRow < messages.length) {
+                    const isFirst = pageNum === 0;
+                    const count = isFirst ? ROWS_FIRST : ROWS_OTHER;
+                    const pageRows = messages.slice(currentRow, currentRow + count);
+                    let rowsHtml = '';
+                    pageRows.forEach((msg, i) => {
+                        const idx = currentRow + i + 1;
+                        const bg = i % 2 === 0 ? '#fff' : '#faf8ff';
+                        const dateStr = msg.ts ? new Date(parseInt(msg.ts)).toLocaleString('ar-EG') : '-';
+                        rowsHtml += '<tr style="background:' + bg + ';">';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #ede9fe;font-size:15px;">' + idx + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #ede9fe;font-size:15px;font-weight:800;color:#1e1b4b;">' + escapeHTML(msg.name) + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:right;border-bottom:1px solid #ede9fe;font-size:15px;line-height:1.4;">' + escapeHTML(msg.text) + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #ede9fe;font-size:13px;color:#666;">' + escapeHTML(dateStr) + '</td>';
+                        rowsHtml += '</tr>';
+                    });
+                    const header = isFirst ? headerHtml : '';
+                    const pageHtml = createPdfPageHtml(header, rowsHtml, columns, pageNum + 1, 'سجل التعليقات');
+                    await renderPageToPdf(pdf, pageHtml, pdfW, margin, pageNum === 0);
+                    currentRow += count;
+                    pageNum++;
+                }
+                pdf.save('تعليقات_الاحتفالية.pdf');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء إنشاء الملف');
+            }
+            downloadCommentsBtn.innerHTML = originalBtnText;
+            downloadCommentsBtn.disabled = false;
         });
+
 
         // ============ Admin Target Date Control ============
         const adminTargetDate = document.getElementById('adminTargetDate');
         const saveTimeBtn = document.getElementById('saveTimeBtn');
 
-        // Load initial target date
-        db.ref('settings/targetDate').on('value', (snap) => {
-            const val = snap.val();
-            if (val) {
-                const d = new Date(val);
-                const offset = d.getTimezoneOffset();
-                const local = new Date(d.getTime() - offset * 60000);
-                adminTargetDate.value = local.toISOString().slice(0, 16);
+        // Load initial target date from API
+        async function loadTargetDate() {
+            try {
+                const res = await fetch(`${API_BASE}/settings.php?key=targetDate`);
+                const data = await res.json();
+                if (data.value) {
+                    const d = new Date(data.value);
+                    const offset = d.getTimezoneOffset();
+                    const local = new Date(d.getTime() - offset * 60000);
+                    adminTargetDate.value = local.toISOString().slice(0, 16);
+                }
+            } catch (e) {
+                console.log('Failed to load target date:', e);
             }
-        });
+        }
+        loadTargetDate();
 
-        saveTimeBtn.addEventListener('click', () => {
+        saveTimeBtn.addEventListener('click', async () => {
             const val = adminTargetDate.value;
             if (!val) {
                 alert('الرجاء تحديد التاريخ والوقت أولاً');
@@ -1683,17 +2096,25 @@
             saveTimeBtn.disabled = true;
             saveTimeBtn.textContent = 'جاري الحفظ...';
 
-            const dateISO = new Date(val).toISOString();
-            db.ref('settings/targetDate').set(dateISO).then(() => {
-                alert('تم نشر الموعد بنجاح لجميع الزوار! 🚀');
-                saveTimeBtn.disabled = false;
-                saveTimeBtn.textContent = 'حفظ ونشر الموعد';
-            }).catch(err => {
+            try {
+                const dateISO = new Date(val).toISOString();
+                const res = await fetch(`${API_BASE}/settings.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key: 'targetDate', value: dateISO })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert('تم نشر الموعد بنجاح لجميع الزوار! 🚀');
+                } else {
+                    alert('حدث خطأ أثناء الحفظ');
+                }
+            } catch (err) {
                 alert('حدث خطأ أثناء الحفظ');
                 console.error(err);
-                saveTimeBtn.disabled = false;
-                saveTimeBtn.textContent = 'حفظ ونشر الموعد';
-            });
+            }
+            saveTimeBtn.disabled = false;
+            saveTimeBtn.textContent = 'حفظ ونشر الموعد';
         });
     </script>
 
