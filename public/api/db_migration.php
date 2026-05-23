@@ -126,9 +126,13 @@ try {
 
     if ($checkEvent->rowCount() === 0) {
         $targetDate = null;
-        $getSetting = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'targetDate'");
-        if ($getSetting->rowCount() > 0) {
-            $targetDate = $getSetting->fetch()['setting_value'];
+        try {
+            $getSetting = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'targetDate'");
+            if ($getSetting && $getSetting->rowCount() > 0) {
+                $targetDate = $getSetting->fetch()['setting_value'];
+            }
+        } catch (Exception $e) {
+            // تجاهل الخطأ في حال عدم وجود جدول settings في قاعدة البيانات الفارغة
         }
         if (!$targetDate) {
             $targetDate = date('Y-m-d H:i:s', strtotime('+1 hour'));
