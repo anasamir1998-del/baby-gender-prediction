@@ -26,6 +26,14 @@ switch ($action) {
             jsonResponse(['error' => 'Method not allowed'], 405);
         }
 
+        // التحقق من إعداد مفتاح Tap
+        if ($TAP_SECRET_KEY === 'YOUR_TAP_SECRET_KEY_HERE' || empty($TAP_SECRET_KEY)) {
+            jsonResponse([
+                'error' => 'لم يتم إعداد مفتاح بوابة Tap بعد. يرجى إضافة مفتاح Tap السري في ملف payment.php على الخادم.',
+                'code' => 'TAP_KEY_MISSING'
+            ], 400);
+        }
+
         // التحقق من تسجيل الدخول
         if (!isset($_SESSION['user_id'])) {
             jsonResponse(['error' => 'غير مصرح، يرجى تسجيل الدخول أولاً'], 401);
@@ -37,7 +45,7 @@ switch ($action) {
         // إنشاء رابط العودة callback بشكل تلقائي بناء على اسم الدومين الحالي
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
-        $callbackUrl = "$protocol://$host/api/payment.php?action=callback";
+        $callbackUrl = "$protocol://$host/public/api/payment.php?action=callback";
 
         // تجهيز بيانات الطلب لبوابة Tap
         $payload = [
@@ -67,12 +75,22 @@ switch ($action) {
         ]);
 
         $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, HTTP_CODE);
+        $curlError = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+
+        // التحقق من أخطاء cURL
+        if ($response === false) {
+            jsonResponse([
+                'error' => 'فشل الاتصال بخوادم Tap',
+                'details' => $curlError
+            ], 500);
+        }
 
         if ($httpCode !== 200) {
             jsonResponse([
                 'error' => 'فشل إنشاء فاتورة الدفع من خوادم Tap',
+                'http_code' => $httpCode,
                 'details' => json_decode($response, true)
             ], 500);
         }
@@ -82,11 +100,22 @@ switch ($action) {
         $transactionUrl = $responseData['transaction']['url'] ?? '';
 
         if (empty($chargeId) || empty($transactionUrl)) {
-            jsonResponse(['error' => 'البيانات المسترجعة من Tap غير كاملة'], 500);
+            jsonResponse(['error' => 'البيانات المسترجعة من Tap غير كاملة', 'raw' => $responseData], 500);
         }
 
         // حفظ معاملة الدفع في جدول المدفوعات بحالة INIT (انتظار الدفع)
         try {
+            // إنشاء جدول payments تلقائياً لو مش موجود
+            $pdo->exec("CREATE TABLE IF NOT EXISTS payments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                charge_id VARCHAR(100) UNIQUE NOT NULL,
+                amount DECIMAL(10,2) NOT NULL,
+                currency VARCHAR(3) NOT NULL,
+                status VARCHAR(20) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
             $stmt = $pdo->prepare("INSERT INTO payments (user_id, charge_id, amount, currency, status) VALUES (?, ?, ?, ?, 'INIT')");
             $stmt->execute([$userId, $chargeId, $PRICE, $CURRENCY]);
 
