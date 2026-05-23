@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | صانع احتفاليات الكشف عن جنس المولود 👶</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- PDF Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+    
+    <style>
+        :root {
+            --purple: #7c3aed;
+            --purple-light: #a78bfa;
+            --purple-dark: #5b21b6;
+            --bg-start: #f5f3ff;
+            --bg-end: #ede9fe;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-dark: #1e1b4b;
+            --text-muted: #6b7280;
+            --shadow: 0 10px 30px rgba(124, 58, 237, 0.08);
+            --radius: 16px;
+            --boy: #4facfe;
+            --girl: #f5576c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding-bottom: 60px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            padding: 18px 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #fca5a5;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Welcome Bar & Status Card */
+        .dashboard-header {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .welcome-card {
+            flex: 2;
+            min-width: 320px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .welcome-card p {
+            opacity: 0.85;
+            font-size: 1rem;
+        }
+
+        .status-card {
+            flex: 1;
+            min-width: 280px;
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            border: 2px solid #eef2f6;
+        }
+
+        .status-badge {
+            background: #ede9fe;
+            color: var(--purple);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .status-badge.expired {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .btn-upgrade {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-upgrade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        /* Card Base */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid #f3f4f6;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid #f3f4f6;
+            padding-bottom: 12px;
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'Tajawal', sans-serif;
+            background: #fafafa;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--purple-light);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.08);
+        }
+
+        .btn-save {
+            background: var(--purple);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.2);
+        }
+
+        .btn-save:hover {
+            background: var(--purple-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Copy link box */
+        .link-copy-box {
+            background: #faf8ff;
+            border: 2px dashed var(--purple-light);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .link-text {
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: var(--purple);
+            overflow-x: auto;
+            white-space: nowrap;
+            direction: ltr;
+        }
+
+        .btn-copy {
+            background: var(--purple);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-copy:hover {
+            background: var(--purple-dark);
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .stat-widget {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #f3f4f6;
+        }
+
+        .stat-num {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        /* Progress Fill */
+        .progress-bar-wrap {
+            background: #e5e7eb;
+            height: 16px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .bar-boy {
+            background: var(--boy);
+            transition: width 0.5s;
+        }
+
+        .bar-girl {
+            background: var(--girl);
+            transition: width 0.5s;
+        }
+
+        .bar-lbls {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        /* Tables & Lists */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-pdf {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background: #059669;
+        }
+
+        .btn-clear {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .btn-clear:hover {
+            background: #fca5a5;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #f3f4f6;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        th {
+            background: #fafafa;
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        td {
+            color: #374151;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .badge-boy {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .badge-girl {
+            background: #fdf2f8;
+            color: #db2777;
+        }
+
+        .btn-del-row {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .btn-del-row:hover {
+            background: #fee2e2;
+        }
+
+        /* Modals and notifications */
+        .alert-box {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-weight: 700;
+            text-align: center;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        /* Souvenir card mockup for PDF generation */
+        .souvenir-card-template {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            width: 500px;
+            background: linear-gradient(135deg, #fff5f7 0%, #fff0f5 100%);
+            border: 10px solid #ffd1dc;
+            border-radius: 24px;
+            padding: 45px 35px;
+            text-align: center;
+            box-shadow: 0 15px 45px rgba(255, 182, 193, 0.3);
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+        }
+
+        .card-inner {
+            border: 2px dashed #f8bbd0;
+            border-radius: 16px;
+            padding: 30px 20px;
+        }
+
+        .card-header {
+            font-size: 1.1rem;
+            color: #db2777;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        .card-main-name {
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: #db2777;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 10px rgba(219, 39, 119, 0.15);
+        }
+
+        .card-sub-text {
+            font-size: 1.2rem;
+            color: #6b7280;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .card-gender-tag {
+            display: inline-block;
+            background: #db2777;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 15px rgba(219, 39, 119, 0.3);
+        }
+
+        .card-footer {
+            font-size: 1.05rem;
+            color: #4b5563;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="landing.html" class="logo">🎉 صانع الاحتفاليات</a>
+        <div class="nav-actions">
+            <span id="userEmailSpan" style="font-weight: 700; font-size: 0.95rem; color: var(--text-muted);">...</span>
+            <button class="btn-logout" id="logoutBtn">تسجيل خروج</button>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <!-- Alerts -->
+        <div id="successAlert" class="alert-box alert-success"></div>
+        <div id="errorAlert" class="alert-box alert-error"></div>
+
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="welcome-card">
+                <h2>أهلاً بك في لوحة تحكم فرحتك! 👋</h2>
+                <p>قم بتخصيص احتفاليتك، ومشاركة الرابط المخصص مع أحبابك وعائلتك لمراقبة توقعاتهم على الفور!</p>
+            </div>
+            
+            <div class="status-card">
+                <div>
+                    <span class="status-badge" id="statusBadge">جاري التحميل...</span>
+                    <h3 id="statusTitle" style="font-size: 1.15rem; margin-bottom: 6px;">باقة الاحتفالية</h3>
+                    <p id="statusDesc" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">...</p>
+                </div>
+                <button class="btn-upgrade" id="upgradeBtn" style="display: none;">💡 تفعيل الاحتفالية مدى الحياة</button>
+            </div>
+        </div>
+
+        <!-- Main Workspace -->
+        <div class="content-grid">
+            
+            <!-- 1. Event Customization Card -->
+            <div class="card">
+                <h3 class="card-title">⚙️ تخصيص وتعديل الاحتفالية</h3>
+                
+                <!-- Link Box -->
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>رابط الاحتفالية للجمهور:</label>
+                </div>
+                <div class="link-copy-box">
+                    <span class="link-text" id="liveEventLink">جاري التحميل...</span>
+                    <button class="btn-copy" id="copyLinkBtn">نسخ الرابط</button>
+                </div>
+
+                <form id="eventForm">
+                    <div class="form-group">
+                        <label for="babyNameInput">اسم المولود (عند الكشف):</label>
+                        <input type="text" id="babyNameInput" placeholder="مثال: إيلان" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subBabyNameInput">الاسم الثاني أو اللقب:</label>
+                        <input type="text" id="subBabyNameInput" placeholder="مثال: نايف باوزير">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genderSelect">جنس المولود الفعلي (سرّي لا يظهر للجمهور):</label>
+                        <select id="genderSelect">
+                            <option value="girl">👧 بنت</option>
+                            <option value="boy">👦 ولد</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetDateInput">تاريخ ووقت انتهاء العد التنازلي:</label>
+                        <input type="datetime-local" id="targetDateInput" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="slugInput">الرابط المخصص الفريد (Slug):</label>
+                        <input type="text" id="slugInput" placeholder="مثال: ilan" required>
+                        <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px; display: block;">سيكون رابطك: domain.com/e/ilan</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminPinInput">رمز الـ PIN لصفحة النتائج المحلية (اختياري):</label>
+                        <input type="text" id="adminPinInput" value="2030" placeholder="مثال: 2030">
+                    </div>
+
+                    <button type="submit" class="btn-save" id="saveEventBtn">💾 حفظ ونشر الإعدادات</button>
+                </form>
+            </div>
+
+            <!-- 2. Live Analytics Card -->
+            <div class="card">
+                <h3 class="card-title">📊 إحصائيات التوقعات الحية</h3>
+                
+                <div class="stats-row">
+                    <div class="stat-widget">
+                        <div class="stat-num" id="totalPredictions">0</div>
+                        <div class="stat-lbl">إجمالي التوقعات</div>
+                    </div>
+                    <div class="stat-widget" style="border-right: 3px solid var(--boy);">
+                        <div class="stat-num" id="boyPredictions" style="color: var(--boy);">0</div>
+                        <div class="stat-lbl">ولد 👦</div>
+                    </div>
+                    <div class="stat-widget" style="border-right: 3px solid var(--girl);">
+                        <div class="stat-num" id="girlPredictions" style="color: var(--girl);">0</div>
+                        <div class="stat-lbl">بنت 👧</div>
+                    </div>
+                </div>
+
+                <div class="bar-lbls">
+                    <span style="color: var(--boy);" id="boyPctText">ولد 👦 50%</span>
+                    <span style="color: var(--girl);" id="girlPctText">بنت 👧 50%</span>
+                </div>
+                <div class="progress-bar-wrap">
+                    <div class="bar-boy" id="boyBarFill" style="width: 50%;"></div>
+                    <div class="bar-girl" id="girlBarFill" style="width: 50%;"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">تريد الكشف الفوري كبث مباشر؟</p>
+                    <a href="" id="liveRevealBtn" target="_blank" class="btn-save" style="background: var(--purple-light); display: inline-block; text-decoration: none; text-align: center; width: auto; padding: 10px 24px;">📺 تشغيل شاشة الاحتفالية الكبرى</a>
+                </div>
+            </div>
+
+            <!-- 3. Manage Predictions (Full Width) -->
+            <div class="card full-width">
+                <div class="list-header">
+                    <h3 class="card-title" style="border: none; margin-bottom: 0; padding-bottom: 0;">👶 جدول توقعات الزوار</h3>
+                    <div class="action-btns">
+                        <button class="action-btn btn-pdf" id="downloadPdfBtn">📥 تحميل PDF</button>
+                        <button class="action-btn btn-clear" id="clearAllPredictionsBtn">✕ حذف جميع التوقعات</button>
+                    </div>
+                </div>
+
+                <div class="table-container" id="predictionsTableContainer">
+                    <!-- Dynamic Table Content -->
+                </div>
+            </div>
+
+            <!-- 4. Manage Live Chat / Comments (Full Width) -->
+            <div class="card full-width">
+                <div class="list-header">
+                    <h3 class="card-title" style="border: none; margin-bottom: 0; padding-bottom: 0;">💬 سجل تهاني وتبريكات الأحباب</h3>
+                    <div class="action-btns">
+                        <button class="action-btn btn-pdf" id="downloadCommentsPdfBtn">📥 تحميل PDF</button>
+                    </div>
+                </div>
+
+                <div class="table-container" id="chatTableContainer">
+                    <!-- Dynamic Chat Content -->
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ============ JAVASCRIPT LOGIC ============ -->
+    <script>
+        const API_BASE = 'api';
+        let currentEvent = null;
+        let currentUser = null;
+
+        // Check Login Status on Page Load
+        async function checkAuth() {
+            try {
+                const res = await fetch(`${API_BASE}/auth.php?action=status`);
+                const data = await res.json();
+                
+                if (!data.logged_in) {
+                    // Redirect to login page if not logged in
+                    window.location.href = 'landing.html';
+                    return;
+                }
+                
+                currentUser = data.user;
+                document.getElementById('userEmailSpan').textContent = currentUser.email;
+
+                // Handle Subscription Status display
+                updateSubscriptionDisplay();
+
+                // Load Event Details
+                await loadEventDetails();
+            } catch (e) {
+                console.error("Auth check failed:", e);
+                window.location.href = 'landing.html';
+            }
+        }
+
+        function updateSubscriptionDisplay() {
+            const badge = document.getElementById('statusBadge');
+            const desc = document.getElementById('statusDesc');
+            const upgradeBtn = document.getElementById('upgradeBtn');
+
+            if (currentUser.subscription_status === 'active') {
+                badge.textContent = 'نشط مدى الحياة 🎈';
+                badge.className = 'status-badge active';
+                desc.textContent = 'احتفاليتك نشطة مدى الحياة بدون قيود وبدون إعلانات!';
+                upgradeBtn.style.display = 'none';
+            } else if (currentUser.subscription_status === 'trial') {
+                badge.textContent = `فترة تجريبية (متبقي ${currentUser.days_left} يوم)`;
+                badge.className = 'status-badge';
+                desc.textContent = 'احتفاليتك نشطة حالياً. يرجى الترقية لتفعيلها للأبد قبل انقضاء المدة.';
+                upgradeBtn.style.display = 'block';
+            } else {
+                badge.textContent = 'منتهي الصلاحية 🔴';
+                badge.className = 'status-badge expired';
+                desc.textContent = 'انتهت الفترة التجريبية للاحتفالية. يرجى الدفع لإعادة تفعيلها للجمهور.';
+                upgradeBtn.style.display = 'block';
+            }
+        }
+
+        // Load Event Configuration
+        async function loadEventDetails() {
+            try {
+                const res = await fetch(`${API_BASE}/events.php`);
+                const data = await res.json();
+
+                if (data.success && data.event) {
+                    currentEvent = data.event;
+                    
+                    // Fill inputs
+                    document.getElementById('babyNameInput').value = currentEvent.baby_name || '';
+                    document.getElementById('subBabyNameInput').value = currentEvent.sub_baby_name || '';
+                    document.getElementById('genderSelect').value = currentEvent.revealed_gender || 'girl';
+                    document.getElementById('slugInput').value = currentEvent.slug || '';
+                    document.getElementById('adminPinInput').value = currentEvent.admin_pin || '2030';
+                    
+                    // Set local timezone for datetime input
+                    if (currentEvent.target_date) {
+                        const d = new Date(currentEvent.target_date);
+                        const offset = d.getTimezoneOffset();
+                        const local = new Date(d.getTime() - offset * 60000);
+                        document.getElementById('targetDateInput').value = local.toISOString().slice(0, 16);
+                    }
+
+                    // Render event links
+                    const protocol = window.location.protocol;
+                    const host = window.location.host;
+                    const cleanLink = `${protocol}//${host}/e/${currentEvent.slug}`;
+                    const liveLinkSpan = document.getElementById('liveEventLink');
+                    liveLinkSpan.textContent = cleanLink;
+                    
+                    // Bind live reveal links
+                    const revealUrl = `celebration.html?event=${currentEvent.slug}`;
+                    document.getElementById('liveRevealBtn').href = revealUrl;
+
+                    // Load Analytics & Tables
+                    await loadAnalytics();
+                } else {
+                    // No event exists yet, guide user
+                    document.getElementById('liveEventLink').textContent = 'قم بإنشاء احتفاليتك الأولى بالأسفل!';
+                    document.getElementById('liveRevealBtn').style.display = 'none';
+                    showErrorAlert("يرجى تعبئة الحقول بالأسفل لإنشاء احتفاليتك الأولى وحفظ الرابط!");
+                }
+            } catch (e) {
+                console.error("Failed to load event:", e);
+                showErrorAlert("فشل تحميل بيانات الحدث من قاعدة البيانات");
+            }
+        }
+
+        // Save/Update Event Configuration
+        document.getElementById('eventForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            
+            const saveBtn = document.getElementById('saveEventBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'جاري الحفظ والتحميل...';
+
+            const payload = {
+                baby_name: document.getElementById('babyNameInput').value.trim(),
+                sub_baby_name: document.getElementById('subBabyNameInput').value.trim(),
+                revealed_gender: document.getElementById('genderSelect').value,
+                target_date: new Date(document.getElementById('targetDateInput').value).toISOString(),
+                slug: document.getElementById('slugInput').value.trim(),
+                admin_pin: document.getElementById('adminPinInput').value.trim()
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/events.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showSuccessAlert(data.message);
+                    await loadEventDetails();
+                } else {
+                    showErrorAlert(data.error || 'حدث خطأ أثناء حفظ البيانات');
+                }
+            } catch (err) {
+                console.error(err);
+                showErrorAlert('تعذر الاتصال بالخادم لحفظ الإعدادات');
+            }
+            saveBtn.disabled = false;
+            saveBtn.textContent = '💾 حفظ ونشر الإعدادات';
+        });
+
+        // Load Live Analytics & Tables
+        async function loadAnalytics() {
+            if (!currentEvent) return;
+            const slug = currentEvent.slug;
+
+            try {
+                // 1. Stats Counter
+                const resStats = await fetch(`${API_BASE}/predictions.php?slug=${slug}&count=1`);
+                const stats = await resStats.json();
+
+                const total = parseInt(stats.total) || 0;
+                const boys = parseInt(stats.boys) || 0;
+                const girls = parseInt(stats.girls) || 0;
+
+                document.getElementById('totalPredictions').textContent = total;
+                document.getElementById('boyPredictions').textContent = boys;
+                document.getElementById('girlPredictions').textContent = girls;
+
+                const boyPct = total > 0 ? Math.round((boys / total) * 100) : 50;
+                const girlPct = 100 - boyPct;
+
+                document.getElementById('boyPctText').textContent = `ولد 👦 ${boyPct}%`;
+                document.getElementById('girlPctText').textContent = `بنت 👧 ${girlPct}%`;
+                document.getElementById('boyBarFill').style.width = `${boyPct}%`;
+                document.getElementById('girlBarFill').style.width = `${girlPct}%`;
+
+                // 2. Load Predictions Table
+                const resPreds = await fetch(`${API_BASE}/predictions.php?slug=${slug}`);
+                const preds = await resPreds.json();
+                renderPredictionsTable(preds);
+
+                // 3. Load Chat Table
+                const resChat = await fetch(`${API_BASE}/chat.php?slug=${slug}`);
+                const chat = await resChat.json();
+                renderChatTable(chat);
+
+            } catch (e) {
+                console.error("Failed to load analytics:", e);
+            }
+        }
+
+        // Render Predictions Table
+        function renderPredictionsTable(predictions) {
+            const container = document.getElementById('predictionsTableContainer');
+            if (!predictions || predictions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <p>لا توجد توقعات حية مسجلة بعد لهذه الاحتفالية.</p>
+                    </div>`;
+                return;
+            }
+
+            let rows = '';
+            predictions.forEach((pred, i) => {
+                const gBadge = pred.gender === 'boy' ? 'badge-boy' : 'badge-girl';
+                const gText = pred.gender === 'boy' ? 'ولد 👦' : 'بنت 👧';
+                rows += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td style="font-weight: 800;">${escapeHTML(pred.name)}</td>
+                        <td><span class="badge ${gBadge}">${gText}</span></td>
+                        <td>${escapeHTML(pred.relation || 'لم يُحدد')}</td>
+                        <td style="font-size: 0.8rem; color: var(--text-muted);">${escapeHTML(pred.date_text || pred.date || '')}</td>
+                        <td><button class="btn-del-row" onclick="deleteSinglePrediction(${pred.id})">✕</button></td>
+                    </tr>`;
+            });
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الاسم</th>
+                            <th>التوقع</th>
+                            <th>صلة القرابة</th>
+                            <th>التاريخ والوقت</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+        }
+
+        // Render Chat Table
+        function renderChatTable(messages) {
+            const container = document.getElementById('chatTableContainer');
+            if (!messages || messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💬</div>
+                        <p>لم يقم أحد بإضافة تعليقات تهنئة حتى الآن.</p>
+                    </div>`;
+                return;
+            }
+
+            let rows = '';
+            messages.forEach((msg, i) => {
+                const dateStr = msg.ts ? new Date(parseInt(msg.ts)).toLocaleString('ar-EG') : '-';
+                rows += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td style="font-weight: 800;">${escapeHTML(msg.name)}</td>
+                        <td style="text-align: right; max-width: 400px; overflow-wrap: break-word;">${escapeHTML(msg.text)}</td>
+                        <td style="font-size: 0.8rem; color: var(--text-muted);">${escapeHTML(dateStr)}</td>
+                    </tr>`;
+            });
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الاسم</th>
+                            <th>نص التهنئة</th>
+                            <th>التاريخ والوقت</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+        }
+
+        // Delete Single Prediction
+        async function deleteSinglePrediction(id) {
+            if (!confirm('هل أنت متأكد من رغبتك في حذف هذا التوقع؟')) return;
+            try {
+                const res = await fetch(`${API_BASE}/predictions.php?id=${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    showSuccessAlert("تم حذف التوقع بنجاح");
+                    await loadAnalytics();
+                } else {
+                    showErrorAlert(data.error);
+                }
+            } catch (e) {
+                showErrorAlert("فشل إرسال طلب الحذف للخادم");
+            }
+        }
+
+        // Clear All Predictions
+        document.getElementById('clearAllPredictionsBtn').addEventListener('click', async function () {
+            if (!currentEvent) return;
+            if (!confirm('🚨 هل أنت متأكد تماماً من رغبتك في مسح كافة التوقعات لهذا الحدث؟\nلا يمكن التراجع عن هذا الإجراء مطلقاً!')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/predictions.php?slug=${currentEvent.slug}&all=1`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    showSuccessAlert(data.message);
+                    await loadAnalytics();
+                } else {
+                    showErrorAlert(data.error);
+                }
+            } catch (e) {
+                showErrorAlert("فشل إرسال طلب الحذف الكلي");
+            }
+        });
+
+        // Trigger Tap Payment Creation
+        document.getElementById('upgradeBtn').addEventListener('click', async function () {
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = '⏳ جاري الاتصال ببوابة Tap...';
+
+            try {
+                const res = await fetch(`${API_BASE}/payment.php?action=create`, { method: 'POST' });
+                const data = await res.json();
+
+                if (data.success && data.redirect_url) {
+                    // Redirect browser to Tap Checkout page
+                    window.location.href = data.redirect_url;
+                } else {
+                    showErrorAlert(data.error || 'فشل الاتصال ببوابة Tap لإصدار الفاتورة');
+                    btn.disabled = false;
+                    btn.textContent = '💡 تفعيل الاحتفالية مدى الحياة';
+                }
+            } catch (e) {
+                showErrorAlert('حدث خطأ فني أثناء الاتصال بالدفع');
+                btn.disabled = false;
+                btn.textContent = '💡 تفعيل الاحتفالية مدى الحياة';
+            }
+        });
+
+        // Handle Logout
+        document.getElementById('logoutBtn').addEventListener('click', async function () {
+            try {
+                await fetch(`${API_BASE}/auth.php?action=logout`);
+                window.location.href = 'landing.html';
+            } catch (e) {
+                window.location.href = 'landing.html';
+            }
+        });
+
+        // Copy Link Action
+        document.getElementById('copyLinkBtn').addEventListener('click', function () {
+            const linkText = document.getElementById('liveEventLink').textContent;
+            if (!linkText || linkText.includes('...')) return;
+            
+            navigator.clipboard.writeText(linkText).then(() => {
+                const originalText = this.textContent;
+                this.textContent = '✓ تم النسخ';
+                setTimeout(() => this.textContent = originalText, 2000);
+            }).catch(() => {
+                alert('فشل النسخ التلقائي، يرجى تظليل الرابط ونسخه يدوياً.');
+            });
+        });
+
+        // PDF Helper functions
+        function createPdfPageHtml(headerHtml, rows, columns, pageNum, totalLabel) {
+            let html = '<div style="width:800px;background:#fff;padding:40px 35px;font-family:Tajawal,sans-serif;direction:rtl;">';
+            if (headerHtml) html += headerHtml;
+            html += '<table style="width:100%;border-collapse:separate;border-spacing:0;border:1px solid #f8bbd0;border-radius:12px;overflow:hidden;">';
+            html += '<thead><tr>';
+            columns.forEach(col => {
+                html += '<th style="background:#fce4ec;color:#d81b60;padding:14px 8px;font-weight:800;font-size:16px;border-bottom:2px solid #f8bbd0;white-space:nowrap;">' + col + '</th>';
+            });
+            html += '</tr></thead><tbody>';
+            html += rows;
+            html += '</tbody></table>';
+            html += '<div style="text-align:center;color:#999;font-size:12px;margin-top:20px;padding-top:12px;border-top:1px solid #fce4ec;">';
+            html += totalLabel + ' — صفحة ' + pageNum + ' — ' + new Date().toLocaleString('ar-EG');
+            html += '</div></div>';
+            return html;
+        }
+
+        async function renderPageToPdf(pdf, htmlContent, pdfW, margin, isFirstPage) {
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'position:absolute;left:-9999px;top:0;';
+            wrapper.innerHTML = htmlContent;
+            document.body.appendChild(wrapper);
+            try {
+                const canvas = await html2canvas(wrapper.firstChild, {
+                    scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 800
+                });
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const imgW = pdfW - margin * 2;
+                const imgH = (canvas.height * imgW) / canvas.width;
+                if (!isFirstPage) pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', margin, margin, imgW, imgH);
+            } finally {
+                document.body.removeChild(wrapper);
+            }
+        }
+
+        // Download Predictions PDF
+        document.getElementById('downloadPdfBtn').addEventListener('click', async function () {
+            if (!currentEvent) return;
+            const originalBtnText = this.innerHTML;
+            this.innerHTML = '⏳ جاري التجهيز...';
+            this.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE}/predictions.php?slug=${currentEvent.slug}`);
+                const predictions = await res.json();
+                
+                if (!Array.isArray(predictions) || predictions.length === 0) {
+                    alert('لا توجد بيانات توقعات لتحميلها');
+                    this.innerHTML = originalBtnText;
+                    this.disabled = false;
+                    return;
+                }
+
+                predictions.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+                const boys = predictions.filter(p => p.gender === 'boy').length;
+                const girls = predictions.length - boys;
+                const total = predictions.length;
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfW = pdf.internal.pageSize.getWidth();
+                const margin = 10;
+                const ROWS_FIRST = 14;
+                const ROWS_OTHER = 22;
+                const columns = ['م', 'الاسم', 'التوقع', 'صلة القرابة', 'التاريخ'];
+
+                const headerHtml = `
+                    <div style="text-align:center;margin-bottom:25px;border-bottom:3px double #f8bbd0;padding-bottom:20px;">
+                        <div style="color:#d81b60;font-size:30px;font-weight:800;margin-bottom:8px;">🎀 تقرير توقعات جنس المولود 🎀</div>
+                        <div style="color:#666;font-size:17px;">الاسم: ${currentEvent.baby_name} ${currentEvent.sub_baby_name}</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-around;margin-bottom:25px;background:linear-gradient(135deg,#fff0f5,#fff);border:2px solid #ffd1dc;border-radius:16px;padding:20px;">
+                        <div style="text-align:center;flex:1;"><div style="font-size:24px;">👶</div><div style="font-weight:700;color:#555;font-size:14px;">إجمالي</div><div style="font-size:26px;font-weight:900;">${total}</div></div>
+                        <div style="text-align:center;flex:1;border-right:1px solid #ffd1dc;border-left:1px solid #ffd1dc;"><div style="font-size:24px;">👦</div><div style="font-weight:700;color:#0284c7;font-size:14px;">ولد</div><div style="font-size:26px;font-weight:900;color:#0284c7;">${boys}</div></div>
+                        <div style="text-align:center;flex:1;"><div style="font-size:24px;">👧</div><div style="font-weight:700;color:#db2777;font-size:14px;">بنت</div><div style="font-size:26px;font-weight:900;color:#db2777;">${girls}</div></div>
+                    </div>`;
+
+                let currentRow = 0;
+                let pageNum = 0;
+                while (currentRow < predictions.length) {
+                    const isFirst = pageNum === 0;
+                    const count = isFirst ? ROWS_FIRST : ROWS_OTHER;
+                    const pageRows = predictions.slice(currentRow, currentRow + count);
+                    let rowsHtml = '';
+                    pageRows.forEach((pred, i) => {
+                        const idx = currentRow + i + 1;
+                        const bg = i % 2 === 0 ? '#fff' : '#fffbfc';
+                        const gText = pred.gender === 'boy' ? 'ولد' : 'بنت';
+                        const gEmoji = pred.gender === 'boy' ? '👦' : '👧';
+                        const bStyle = pred.gender === 'boy'
+                            ? 'color:#0284c7;background:#e0f2fe;padding:3px 10px;border-radius:8px;font-weight:700;'
+                            : 'color:#db2777;background:#fdf2f8;padding:3px 10px;border-radius:8px;font-weight:700;';
+                        rowsHtml += '<tr style="background:' + bg + ';">';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:15px;">' + idx + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:15px;font-weight:800;color:#1e1b4b;">' + escapeHTML(pred.name) + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:15px;"><span style="' + bStyle + '">' + gEmoji + ' ' + gText + '</span></td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:15px;">' + escapeHTML(pred.relation || '-') + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #fce4ec;font-size:13px;color:#666;">' + escapeHTML(pred.date_text || pred.date || '-') + '</td>';
+                        rowsHtml += '</tr>';
+                    });
+                    const header = isFirst ? headerHtml : '';
+                    const pageHtml = createPdfPageHtml(header, rowsHtml, columns, pageNum + 1, 'تقرير التوقعات');
+                    await renderPageToPdf(pdf, pageHtml, pdfW, margin, pageNum === 0);
+                    currentRow += count;
+                    pageNum++;
+                }
+                pdf.save(`توقعات_المولود_${currentEvent.slug}.pdf`);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء إنشاء ملف الـ PDF');
+            }
+            this.innerHTML = originalBtnText;
+            this.disabled = false;
+        });
+
+        // Download Comments PDF
+        document.getElementById('downloadCommentsPdfBtn').addEventListener('click', async function () {
+            if (!currentEvent) return;
+            const originalBtnText = this.innerHTML;
+            this.innerHTML = '⏳ جاري التجهيز...';
+            this.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE}/chat.php?slug=${currentEvent.slug}`);
+                const messages = await res.json();
+                
+                if (!Array.isArray(messages) || messages.length === 0) {
+                    alert('لا توجد رسائل تهاني لتحميلها');
+                    this.innerHTML = originalBtnText;
+                    this.disabled = false;
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfW = pdf.internal.pageSize.getWidth();
+                const margin = 10;
+                const ROWS_FIRST = 14;
+                const ROWS_OTHER = 22;
+                const columns = ['م', 'الاسم', 'التعليق والتهنئة', 'التاريخ والوقت'];
+
+                const headerHtml = `
+                    <div style="text-align:center;margin-bottom:25px;border-bottom:3px double #c4b5fd;padding-bottom:20px;">
+                        <div style="color:#7c3aed;font-size:30px;font-weight:800;margin-bottom:8px;">💬 سجل تهاني وتبريكات الأحباب 💬</div>
+                        <div style="color:#666;font-size:17px;">أجمل الأمنيات المسجلة للاحتفالية</div>
+                    </div>
+                    <div style="display:flex;justify-content:center;margin-bottom:25px;background:linear-gradient(135deg,#f5f3ff,#fff);border:2px solid #c4b5fd;border-radius:16px;padding:20px;">
+                        <div style="text-align:center;"><div style="font-size:24px;">💌</div><div style="font-weight:700;color:#555;font-size:14px;">إجمالي التهاني</div><div style="font-size:26px;font-weight:900;color:#7c3aed;">${messages.length}</div></div>
+                    </div>`;
+
+                let currentRow = 0;
+                let pageNum = 0;
+                while (currentRow < messages.length) {
+                    const isFirst = pageNum === 0;
+                    const count = isFirst ? ROWS_FIRST : ROWS_OTHER;
+                    const pageRows = messages.slice(currentRow, currentRow + count);
+                    let rowsHtml = '';
+                    pageRows.forEach((msg, i) => {
+                        const idx = currentRow + i + 1;
+                        const bg = i % 2 === 0 ? '#fff' : '#faf8ff';
+                        const dateStr = msg.ts ? new Date(parseInt(msg.ts)).toLocaleString('ar-EG') : '-';
+                        rowsHtml += '<tr style="background:' + bg + ';">';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #ede9fe;font-size:15px;">' + idx + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #ede9fe;font-size:15px;font-weight:800;color:#1e1b4b;">' + escapeHTML(msg.name) + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:right;border-bottom:1px solid #ede9fe;font-size:15px;line-height:1.4;">' + escapeHTML(msg.text) + '</td>';
+                        rowsHtml += '<td style="padding:11px 8px;text-align:center;border-bottom:1px solid #ede9fe;font-size:13px;color:#666;">' + escapeHTML(dateStr) + '</td>';
+                        rowsHtml += '</tr>';
+                    });
+                    const header = isFirst ? headerHtml : '';
+                    const pageHtml = createPdfPageHtml(header, rowsHtml, columns, pageNum + 1, 'سجل رسائل التهنئة');
+                    await renderPageToPdf(pdf, pageHtml, pdfW, margin, pageNum === 0);
+                    currentRow += count;
+                    pageNum++;
+                }
+                pdf.save(`تهاني_الاحتفالية_${currentEvent.slug}.pdf`);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء إنشاء ملف الـ PDF');
+            }
+            this.innerHTML = originalBtnText;
+            this.disabled = false;
+        });
+
+        // Helpers
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+
+        function showSuccessAlert(msg) {
+            const el = document.getElementById('successAlert');
+            el.textContent = msg;
+            el.style.display = 'block';
+            document.getElementById('errorAlert').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => el.style.display = 'none', 5000);
+        }
+
+        function showErrorAlert(msg) {
+            const el = document.getElementById('errorAlert');
+            el.textContent = msg;
+            el.style.display = 'block';
+            document.getElementById('successAlert').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Read query parameters for payment results
+        function checkPaymentResults() {
+            const params = new URLSearchParams(window.location.search);
+            const payment = params.get('payment');
+            if (payment === 'success') {
+                showSuccessAlert("🎉 مبارك! تم تفعيل اشتراكك وباقة الاحتفالية مدى الحياة بنجاح عبر Tap Payments! 🚀");
+            } else if (payment === 'failed') {
+                showErrorAlert("❌ فشلت عملية الدفع عبر بوابة Tap. يرجى المحاولة مرة أخرى أو التحقق من بطاقتك.");
+            } else if (payment === 'error') {
+                showErrorAlert("❌ حدث خطأ فني أثناء إتمام الدفع. تواصل مع الدعم الفني.");
+            }
+        }
+
+        // Init
+        checkAuth().then(checkPaymentResults);
+    </script>
+
+</body>
+</html>

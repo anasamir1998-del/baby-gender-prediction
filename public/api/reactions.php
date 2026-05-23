@@ -1,13 +1,35 @@
 <?php
 /**
- * Reactions API
- * GET  /api/reactions.php?after=X  → جلب الريأكشنات الجديدة بعد معرف معين
- * POST /api/reactions.php          → إرسال ريأكشن جديد
+ * Reactions API (Multi-Tenant)
+ * GET  /api/reactions.php?slug=ilan&after=X  → جلب الريأكشنات الجديدة بعد معرف معين لحدث معين
+ * POST /api/reactions.php?slug=ilan          → إرسال ريأكشن جديد لحدث معين
  */
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
+$slug = sanitize($_GET['slug'] ?? '');
+
+// التحقق من وجود الـ Slug وحلّه إلى event_id
+$eventId = null;
+if (!empty($slug)) {
+    $stmt = $pdo->prepare("SELECT id FROM events WHERE slug = ?");
+    $stmt->execute([$slug]);
+    $event = $stmt->fetch();
+    if ($event) {
+        $eventId = intval($event['id']);
+    } else {
+        jsonResponse(['error' => 'الحدث المخصص غير موجود'], 404);
+    }
+}
+
+if (!$eventId) {
+    jsonResponse(['error' => 'الرابط المخصص مطلوب'], 400);
+}
 
 switch ($method) {
     case 'GET':
@@ -16,10 +38,10 @@ switch ($method) {
         $stmt = $pdo->prepare("SELECT id, emoji, 
             UNIX_TIMESTAMP(created_at) * 1000 as ts 
             FROM reactions 
-            WHERE id > ? 
+            WHERE event_id = ? AND id > ? 
             ORDER BY created_at ASC 
             LIMIT 20");
-        $stmt->execute([$afterId]);
+        $stmt->execute([$eventId, $afterId]);
         
         $reactions = $stmt->fetchAll();
         jsonResponse($reactions);
@@ -29,13 +51,13 @@ switch ($method) {
         $data = getJsonInput();
         $emoji = $data['emoji'] ?? '';
 
-        // Validate emoji (basic check)
+        // التحقق من الإيموجي
         if (empty($emoji) || mb_strlen($emoji) > 10) {
             jsonResponse(['error' => 'Invalid emoji'], 400);
         }
 
-        $stmt = $pdo->prepare("INSERT INTO reactions (emoji) VALUES (?)");
-        $stmt->execute([$emoji]);
+        $stmt = $pdo->prepare("INSERT INTO reactions (event_id, emoji) VALUES (?, ?)");
+        $stmt->execute([$eventId, $emoji]);
 
         jsonResponse([
             'success' => true,

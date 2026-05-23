@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <base href="/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>توقع جنس المولود 👶</title>
@@ -1527,17 +1528,62 @@
         const PIN_KEY = 'babyGenderPIN';
         const VOTED_KEY = 'babyGenderVoted';
 
-        // ============ INIT ============
-        initParticles();
-        checkVotedStatus();
-        listenToLiveCount();
+        // ============ INIT (Dynamic Event Loading) ============
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventSlug = urlParams.get('event');
+        let eventData = null;
+
+        if (!eventSlug) {
+            window.location.href = 'landing.html';
+        } else {
+            loadEvent();
+        }
+
+        async function loadEvent() {
+            try {
+                const res = await fetch(`${API_BASE}/events.php?slug=${eventSlug}`);
+                const data = await res.json();
+                
+                if (!data.success) {
+                    if (data.status === 'expired') {
+                        showExpiredOverlay();
+                    } else {
+                        alert('الاحتفالية غير موجودة!');
+                        window.location.href = 'landing.html';
+                    }
+                    return;
+                }
+                
+                eventData = data;
+                document.title = `توقع جنس المولود | ${eventData.baby_name}`;
+                
+                initParticles();
+                checkVotedStatus();
+                listenToLiveCount();
+            } catch (e) {
+                console.error(e);
+                alert('فشل تحميل بيانات الاحتفالية من الخادم');
+            }
+        }
+
+        function showExpiredOverlay() {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.96);backdrop-filter:blur(10px);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;font-family:"Tajawal",sans-serif;direction:rtl;';
+            overlay.innerHTML = `
+                <div style="font-size:5rem;margin-bottom:20px;animation:bounce 2s infinite;">⏳</div>
+                <h1 style="color:#7c3aed;font-size:2rem;font-weight:900;margin-bottom:12px;">انتهت الفترة التجريبية للاحتفالية</h1>
+                <p style="color:#6b7280;font-size:1.1rem;max-width:500px;margin-bottom:30px;line-height:1.6;">عذراً، انتهت الفترة التجريبية الخاصة بهذه الصفحة. يرجى من منظم الاحتفالية الدخول للوحة التحكم وتفعيل الاشتراك مدى الحياة لإتاحتها للزوار.</p>
+                <a href="landing.html" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;text-decoration:none;padding:14px 35px;border-radius:50px;font-weight:800;font-size:1.1rem;box-shadow:0 8px 24px rgba(124,58,237,0.3);">الذهاب للموقع الرئيسي</a>
+            `;
+            document.body.appendChild(overlay);
+        }
 
         // ============ API DATA FUNCTIONS ============
         // Poll for live prediction count
         function listenToLiveCount() {
             async function fetchCount() {
                 try {
-                    const res = await fetch(`${API_BASE}/predictions.php?count=1`);
+                    const res = await fetch(`${API_BASE}/predictions.php?slug=${eventSlug}&count=1`);
                     const data = await res.json();
                     const count = parseInt(data.total) || 0;
                     liveCount.textContent = count;
@@ -1554,7 +1600,7 @@
 
         // Add prediction via API
         function addPrediction(prediction) {
-            return fetch(`${API_BASE}/predictions.php`, {
+            return fetch(`${API_BASE}/predictions.php?slug=${eventSlug}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(prediction)
@@ -1563,7 +1609,7 @@
 
         // Get all predictions via API
         function getAllPredictions() {
-            return fetch(`${API_BASE}/predictions.php`)
+            return fetch(`${API_BASE}/predictions.php?slug=${eventSlug}`)
                 .then(res => res.json())
                 .then(data => {
                     if (!Array.isArray(data)) return [];
@@ -1573,14 +1619,14 @@
 
         // Delete single prediction
         function deletePrediction(id) {
-            return fetch(`${API_BASE}/predictions.php?id=${id}`, {
+            return fetch(`${API_BASE}/predictions.php?slug=${eventSlug}&id=${id}`, {
                 method: 'DELETE'
             }).then(res => res.json());
         }
 
         // Delete all predictions
         function deleteAllPredictions() {
-            return fetch(`${API_BASE}/predictions.php?all=1`, {
+            return fetch(`${API_BASE}/predictions.php?slug=${eventSlug}&all=1`, {
                 method: 'DELETE'
             }).then(res => res.json());
         }
@@ -1724,7 +1770,7 @@
         // PIN Verify
         pinConfirmBtn.addEventListener('click', function () {
             const val = pinInput.value.trim();
-            if (val === "2030") { // FIXED PASSWORD
+            if (val === eventData.admin_pin) { // Dynamic custom PIN from event settings
                 pinModal.classList.remove('show');
                 goToResults();
             } else {
@@ -2005,7 +2051,7 @@
             downloadCommentsBtn.innerHTML = '⏳ جاري التجهيز...';
             downloadCommentsBtn.disabled = true;
             try {
-                const res = await fetch(`${API_BASE}/chat.php`);
+                const res = await fetch(`${API_BASE}/chat.php?slug=${eventSlug}`);
                 const messages = await res.json();
                 if (!Array.isArray(messages) || messages.length === 0) {
                     alert('لا توجد تعليقات لتحميلها');

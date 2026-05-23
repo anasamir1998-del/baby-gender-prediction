@@ -1,10 +1,18 @@
 // ============ CONFIG ============
-const MAIN_BABY_NAME = "إيلان";
-const SUB_BABY_NAME = "نايف باوزير";
-
+let MAIN_BABY_NAME = "";
+let SUB_BABY_NAME = "";
 
 // ============ API CONFIG ============
 const API_BASE = 'api';
+
+// ============ EVENT DYNAMICS ============
+const urlParams = new URLSearchParams(window.location.search);
+const eventSlug = urlParams.get('event');
+let eventData = null;
+
+if (!eventSlug) {
+    window.location.href = 'landing.html';
+}
 
 // ============ LIVE PRESENCE (VIEWERS COUNT) ============
 const liveViewersBadge = document.getElementById('liveViewersBadge');
@@ -22,7 +30,7 @@ function startPresenceTracking() {
     // Send heartbeat to register presence
     async function sendHeartbeat() {
         try {
-            await fetch(`${API_BASE}/presence.php`, {
+            await fetch(`${API_BASE}/presence.php?slug=${eventSlug}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ sessionId: mySessionId })
@@ -35,7 +43,7 @@ function startPresenceTracking() {
     // Poll viewer count
     async function fetchViewerCount() {
         try {
-            const res = await fetch(`${API_BASE}/presence.php`);
+            const res = await fetch(`${API_BASE}/presence.php?slug=${eventSlug}`);
             const data = await res.json();
             const count = data.count || 0;
             liveViewersCount.textContent = String(count);
@@ -56,10 +64,10 @@ function startPresenceTracking() {
 
     // Cleanup on page leave
     window.addEventListener('pagehide', () => {
-        navigator.sendBeacon(`${API_BASE}/presence.php?session=${mySessionId}`, '');
+        navigator.sendBeacon(`${API_BASE}/presence.php?slug=${eventSlug}&session=${mySessionId}`, '');
     });
     window.addEventListener('beforeunload', () => {
-        navigator.sendBeacon(`${API_BASE}/presence.php?session=${mySessionId}`, '');
+        navigator.sendBeacon(`${API_BASE}/presence.php?slug=${eventSlug}&session=${mySessionId}`, '');
     });
 }
 
@@ -250,10 +258,10 @@ let globalTargetDate = new Date(Date.now() + 3600000); // Default fallback
 // Fetch target date from API and poll for updates
 async function fetchTargetDate() {
     try {
-        const res = await fetch(`${API_BASE}/settings.php?key=targetDate`);
+        const res = await fetch(`${API_BASE}/events.php?slug=${eventSlug}`);
         const data = await res.json();
-        if (data.value) {
-            globalTargetDate = new Date(data.value);
+        if (data.success && data.target_date) {
+            globalTargetDate = new Date(data.target_date);
             // Restart countdown with new date if it's already running
             if (countdownPage.classList.contains('active')) {
                 clearInterval(countdownInterval);
@@ -264,9 +272,6 @@ async function fetchTargetDate() {
         console.log('Failed to fetch target date:', e);
     }
 }
-fetchTargetDate();
-// Poll for target date changes every 10 seconds
-setInterval(fetchTargetDate, 10000);
 
 // ============ PARTICLE BACKGROUND ============
 const canvas = document.getElementById('particleCanvas');
@@ -354,7 +359,7 @@ enterBtn.addEventListener('click', () => {
     localStorage.setItem('celebVisitor', name);
 
     // Save prediction to API
-    fetch(`${API_BASE}/predictions.php`, {
+    fetch(`${API_BASE}/predictions.php?slug=${eventSlug}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -389,7 +394,7 @@ function updateLiveStats() {
 
     async function fetchStats() {
         try {
-            const res = await fetch(`${API_BASE}/predictions.php?count=1`);
+            const res = await fetch(`${API_BASE}/predictions.php?slug=${eventSlug}&count=1`);
             const data = await res.json();
             const total = parseInt(data.total) || 0;
             const boys = parseInt(data.boys) || 0;
@@ -420,7 +425,7 @@ function updateLiveStats() {
 
 // ============ IDEA 3: LIVE REACTIONS ============
 function sendReaction(emoji) {
-    fetch(`${API_BASE}/reactions.php`, {
+    fetch(`${API_BASE}/reactions.php?slug=${eventSlug}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emoji: emoji })
@@ -431,7 +436,7 @@ let lastReactionId = 0;
 function listenForReactions() {
     async function pollReactions() {
         try {
-            const res = await fetch(`${API_BASE}/reactions.php?after=${lastReactionId}`);
+            const res = await fetch(`${API_BASE}/reactions.php?slug=${eventSlug}&after=${lastReactionId}`);
             const reactions = await res.json();
             if (Array.isArray(reactions)) {
                 reactions.forEach(r => {
@@ -530,7 +535,7 @@ function initLiveChat() {
     // Initial load of last 50 messages
     async function loadMessages() {
         try {
-            const res = await fetch(`${API_BASE}/chat.php`);
+            const res = await fetch(`${API_BASE}/chat.php?slug=${eventSlug}`);
             const messages = await res.json();
             if (Array.isArray(messages)) {
                 messages.forEach(msg => {
@@ -548,7 +553,7 @@ function initLiveChat() {
     async function pollNewMessages() {
         if (isInitialLoad) return;
         try {
-            const res = await fetch(`${API_BASE}/chat.php?after=${lastChatId}`);
+            const res = await fetch(`${API_BASE}/chat.php?slug=${eventSlug}&after=${lastChatId}`);
             const messages = await res.json();
             if (Array.isArray(messages)) {
                 messages.forEach(msg => {
@@ -570,7 +575,7 @@ function initLiveChat() {
         
         const myName = localStorage.getItem('celebVisitor') || 'زائر';
         
-        fetch(`${API_BASE}/chat.php`, {
+        fetch(`${API_BASE}/chat.php?slug=${eventSlug}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -783,7 +788,7 @@ async function showVisitorPredictions() {
     revealPage.appendChild(container);
 
     try {
-        const res = await fetch(`${API_BASE}/predictions.php`);
+        const res = await fetch(`${API_BASE}/predictions.php?slug=${eventSlug}`);
         const entries = await res.json();
         if (!Array.isArray(entries) || entries.length === 0) return;
 
@@ -964,23 +969,125 @@ closeAdminBtn.addEventListener('click', () => {
 
 // ============ INITIALIZE ============
 document.addEventListener('DOMContentLoaded', () => {
-    startPresenceTracking();
-
-    const existingPrediction = localStorage.getItem('celebPrediction');
-    if (existingPrediction) {
-        // Skip welcome and go straight to countdown
-        selectedGender = existingPrediction;
-        yourPredLabel.textContent = selectedGender === 'boy' ? '👦 ولد' : '👧 بنت';
-        yourPredLabel.className = 'pred-badge ' + selectedGender;
-        goToPage('countdown');
-        startCountdown();
-        
-        // Fix: Call live updates for returning users
-        updateLiveStats();
-        listenForReactions();
-        
-    } else {
-        goToPage('welcome');
-    }
-
+    loadEvent();
 });
+
+async function loadEvent() {
+    try {
+        const res = await fetch(`${API_BASE}/events.php?slug=${eventSlug}`);
+        const data = await res.json();
+        
+        if (!data.success) {
+            if (data.status === 'expired') {
+                showExpiredOverlay();
+            } else {
+                alert('الاحتفالية غير موجودة!');
+                window.location.href = 'landing.html';
+            }
+            return;
+        }
+        
+        eventData = data;
+        MAIN_BABY_NAME = eventData.baby_name;
+        SUB_BABY_NAME = eventData.sub_baby_name;
+        globalTargetDate = new Date(eventData.target_date);
+        
+        // Dynamic Title
+        document.title = `🎀 احتفالية الكشف | ${MAIN_BABY_NAME}`;
+
+        // Apply custom gender styles
+        applyGenderStyles();
+
+        // Start presence
+        startPresenceTracking();
+
+        const existingPrediction = localStorage.getItem('celebPrediction');
+        if (existingPrediction) {
+            selectedGender = existingPrediction;
+            yourPredLabel.textContent = selectedGender === 'boy' ? '👦 ولد' : '👧 بنت';
+            yourPredLabel.className = 'pred-badge ' + selectedGender;
+            goToPage('countdown');
+            startCountdown();
+            updateLiveStats();
+            listenForReactions();
+        } else {
+            goToPage('welcome');
+        }
+        
+        // Poll for target date changes
+        setInterval(fetchTargetDate, 10000);
+    } catch (e) {
+        console.error(e);
+        alert('فشل تحميل بيانات الاحتفالية من الخادم');
+    }
+}
+
+function showExpiredOverlay() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.96);backdrop-filter:blur(10px);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;font-family:"Tajawal",sans-serif;direction:rtl;';
+    overlay.innerHTML = `
+        <div style="font-size:5rem;margin-bottom:20px;animation:bounce 2s infinite;">⏳</div>
+        <h1 style="color:#7c3aed;font-size:2rem;font-weight:900;margin-bottom:12px;">انتهت الفترة التجريبية للاحتفالية</h1>
+        <p style="color:#6b7280;font-size:1.1rem;max-width:500px;margin-bottom:30px;line-height:1.6;">عذراً، انتهت الفترة التجريبية الخاصة بهذه الصفحة. يرجى من منظم الاحتفالية الدخول للوحة التحكم وتفعيل الاشتراك مدى الحياة لإتاحتها للزوار.</p>
+        <a href="landing.html" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;text-decoration:none;padding:14px 35px;border-radius:50px;font-weight:800;font-size:1.1rem;box-shadow:0 8px 24px rgba(124,58,237,0.3);">الذهاب للموقع الرئيسي</a>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function applyGenderStyles() {
+    const revealIcon = document.querySelector('.reveal-icon');
+    const revealTitle = document.querySelector('.reveal-title');
+    const cardGenderTag = document.querySelector('.card-gender-tag');
+    
+    // Update souvenir card text
+    const cardName = document.getElementById('cardName');
+    const cardSubText = document.getElementById('cardSubText');
+    if (cardName) cardName.textContent = MAIN_BABY_NAME;
+    if (cardSubText) cardSubText.textContent = SUB_BABY_NAME;
+
+    if (eventData.revealed_gender === 'boy') {
+        if (revealIcon) revealIcon.innerHTML = '👦⭐';
+        if (revealTitle) revealTitle.textContent = 'إنه ولد!';
+        if (cardGenderTag) {
+            cardGenderTag.textContent = 'إنه ولد! 👦';
+            cardGenderTag.style.background = '#0284c7';
+            cardGenderTag.style.boxShadow = '0 6px 15px rgba(2, 132, 199, 0.3)';
+        }
+        // Souvenir card customizations for boy
+        const souvenirCard = document.getElementById('souvenirCard');
+        if (souvenirCard) {
+            souvenirCard.style.background = 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)';
+            souvenirCard.style.border = '10px solid #bae6fd';
+            const inner = souvenirCard.querySelector('.card-inner');
+            if (inner) inner.style.borderColor = '#7dd3fc';
+            const head = souvenirCard.querySelector('.card-header');
+            if (head) {
+                head.style.color = '#0284c7';
+                head.textContent = '✨ ذكرى الكشف عن المولود ✨';
+            }
+            const mainName = souvenirCard.querySelector('.card-main-name');
+            if (mainName) {
+                mainName.style.color = '#0284c7';
+                mainName.style.textShadow = '0 4px 10px rgba(2, 132, 199, 0.15)';
+            }
+            const foot = souvenirCard.querySelector('.card-footer');
+            if (foot) {
+                foot.style.color = '#0284c7';
+                foot.innerHTML = '<p>اللهم أنبته نباتاً حسناً 🤲</p><div id="cardDate" style="margin-top:10px; font-size: 0.8rem; opacity: 0.5;"></div>';
+            }
+        }
+        // Grand reveal background colors can also be boy-themed
+        const revealPage = document.getElementById('revealPage');
+        if (revealPage) {
+            revealPage.style.background = 'linear-gradient(-45deg, #e0f2fe, #bae6fd, #e0c3fc, #d4b8f0)';
+        }
+    } else {
+        if (revealIcon) revealIcon.innerHTML = '👸🎀';
+        if (revealTitle) revealTitle.textContent = 'إنها بنت!';
+        if (cardGenderTag) {
+            cardGenderTag.textContent = 'إنها بنت! 👸';
+            cardGenderTag.style.background = '#db2777';
+            cardGenderTag.style.boxShadow = '0 6px 15px rgba(219, 39, 119, 0.3)';
+        }
+    }
+}
