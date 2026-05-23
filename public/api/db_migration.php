@@ -8,8 +8,6 @@
 require_once 'config.php';
 
 try {
-    $pdo->beginTransaction();
-
     echo "⏳ البدء في ترقية وتأسيس قاعدة البيانات...<br>";
 
     // 1. إنشاء الجداول الأساسية للتطبيق إن لم تكن موجودة
@@ -154,12 +152,8 @@ try {
         }
     }
 
-    $pdo->commit();
     echo "<br>🎉 <b>تمت عملية الترقية وتأسيس قاعدة البيانات بنجاح تام!</b>";
 
 } catch (Exception $e) {
-    if ($pdo->inTransaction()) {
-        $pdo->rollBack();
-    }
     echo "<br>❌ <b>فشلت الترقية:</b> " . $e->getMessage();
 }
