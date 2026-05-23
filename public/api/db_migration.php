@@ -2,7 +2,7 @@
 /**
  * Database Migration Script
  * يرقي قاعدة البيانات الحالية لتدعم نظام SaaS متعدد المستخدمين
- * ويحفظ البيانات القديمة ويربطها بحدث افتراضي للطفلة إيلان حتى لا يضيع أي شيء!
+ * ويقوم بإنشاء الجداول الأساسية تلقائياً إن لم تكن موجودة (في حال استخدام قاعدة بيانات فارغة تماماً)
  */
 
 require_once 'config.php';
@@ -10,9 +10,48 @@ require_once 'config.php';
 try {
     $pdo->beginTransaction();
 
-    echo "⏳ البدء في ترقية قاعدة البيانات...<br>";
+    echo "⏳ البدء في ترقية وتأسيس قاعدة البيانات...<br>";
 
-    // 1. إنشاء جدول المستخدمين users
+    // 1. إنشاء الجداول الأساسية للتطبيق إن لم تكن موجودة
+    $pdo->exec("CREATE TABLE IF NOT EXISTS predictions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        relation VARCHAR(100) DEFAULT '',
+        gender ENUM('boy','girl') NOT NULL,
+        date_text VARCHAR(100) DEFAULT '',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_gender (gender),
+        INDEX idx_created (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    echo "✔ تم التحقق/إنشاء جدول predictions بنجاح.<br>";
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS live_chat (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        text VARCHAR(500) NOT NULL,
+        sender_id VARCHAR(50) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_created (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    echo "✔ تم التحقق/إنشاء جدول live_chat بنجاح.<br>";
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS reactions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        emoji VARCHAR(10) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_created (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    echo "✔ تم التحقق/إنشاء جدول reactions بنجاح.<br>";
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS presence (
+        session_id VARCHAR(50) PRIMARY KEY,
+        last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_last_seen (last_seen)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    echo "✔ تم التحقق/إنشاء جدول presence بنجاح.<br>";
+
+
+    // 2. إنشاء الجداول الجديدة الخاصة بالـ SaaS
     $pdo->exec("CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         email VARCHAR(100) UNIQUE NOT NULL,
@@ -23,7 +62,6 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     echo "✔ تم إنشاء جدول users بنجاح.<br>";
 
-    // 2. إنشاء جدول الاحتفاليات events
     $pdo->exec("CREATE TABLE IF NOT EXISTS events (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
@@ -38,7 +76,6 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     echo "✔ تم إنشاء جدول events بنجاح.<br>";
 
-    // 3. إنشاء جدول المعاملات المالية payments
     $pdo->exec("CREATE TABLE IF NOT EXISTS payments (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
@@ -50,10 +87,10 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     echo "✔ تم إنشاء جدول payments بنجاح.<br>";
 
-    // 4. ترقية الجداول القديمة بإضافة عمود event_id إذا لم يكن موجوداً
+
+    // 3. ترقية الجداول القديمة بإضافة عمود event_id إذا لم يكن موجوداً
     $tablesToUpgrade = ['predictions', 'live_chat', 'reactions', 'presence'];
     foreach ($tablesToUpgrade as $table) {
-        // التحقق من وجود العمود مسبقاً
         $check = $pdo->query("SHOW COLUMNS FROM `$table` LIKE 'event_id'");
         if ($check->rowCount() === 0) {
             $pdo->exec("ALTER TABLE `$table` ADD COLUMN event_id INT DEFAULT NULL");
@@ -64,17 +101,15 @@ try {
         }
     }
 
-    // 5. الحفاظ على البيانات القديمة وربطها بمستند افتراضي (إيلان)
-    // نتحقق أولاً هل يوجد مستخدم افتراضي
+
+    // 4. الحفاظ على البيانات القديمة وربطها بمستند افتراضي (إيلان)
     $adminEmail = 'ilan@baby.com';
     $checkUser = $pdo->prepare("SELECT id FROM users WHERE email = ?");
     $checkUser->execute([$adminEmail]);
     $userId = null;
 
     if ($checkUser->rowCount() === 0) {
-        // إنشاء مستخدم افتراضي
         $dummyPassword = password_hash('ilan2026', PASSWORD_BCRYPT);
-        // فترة تجربة تنتهي بعد 100 سنة أو حساب نشط فوراً
         $trialEnds = date('Y-m-d H:i:s', strtotime('+100 years'));
         
         $insertUser = $pdo->prepare("INSERT INTO users (email, password_hash, trial_ends_at, subscription_status) VALUES (?, ?, ?, 'active')");
@@ -85,13 +120,11 @@ try {
         $userId = $checkUser->fetch()['id'];
     }
 
-    // نتحقق هل توجد احتفالية افتراضية 'ilan'
     $checkEvent = $pdo->prepare("SELECT id FROM events WHERE slug = 'ilan'");
     $checkEvent->execute();
     $eventId = null;
 
     if ($checkEvent->rowCount() === 0) {
-        // جلب الإعداد الحالي للتوقيت المستهدف
         $targetDate = null;
         $getSetting = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'targetDate'");
         if ($getSetting->rowCount() > 0) {
@@ -109,7 +142,7 @@ try {
         $eventId = $checkEvent->fetch()['id'];
     }
 
-    // ربط كافة البيانات القديمة التي تحتوي على NULL في event_id بالحدث الافتراضي إيلان
+    // ربط كافة البيانات القديمة بالحدث الافتراضي إيلان
     foreach ($tablesToUpgrade as $table) {
         $updateCount = $pdo->exec("UPDATE `$table` SET event_id = $eventId WHERE event_id IS NULL");
         if ($updateCount > 0) {
@@ -118,11 +151,11 @@ try {
     }
 
     $pdo->commit();
-    echo "🎉 <b>تمت عملية الترقية وترحيل البيانات بنجاح تام!</b>";
+    echo "<br>🎉 <b>تمت عملية الترقية وتأسيس قاعدة البيانات بنجاح تام!</b>";
 
 } catch (Exception $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    echo "❌ <b>فشلت الترقية:</b> " . $e->getMessage();
+    echo "<br>❌ <b>فشلت الترقية:</b> " . $e->getMessage();
 }
