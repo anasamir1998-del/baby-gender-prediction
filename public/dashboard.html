@@ -814,9 +814,13 @@
                     // Render event links
                     const protocol = window.location.protocol;
                     const host = window.location.host;
-                    const cleanLink = `${protocol}//${host}/e/${currentEvent.slug}`;
+                    const pathParts = window.location.pathname.split('/');
+                    pathParts.pop(); // Remove "dashboard.html"
+                    const basePath = pathParts.join('/'); // e.g., "/public" or ""
+                    const cleanLink = `${protocol}//${host}${basePath}/e/${currentEvent.slug}`;
                     const liveLinkSpan = document.getElementById('liveEventLink');
                     liveLinkSpan.textContent = cleanLink;
+
                     
                     // Bind live reveal links
                     const revealUrl = `celebration.html?event=${currentEvent.slug}`;
