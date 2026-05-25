@@ -1,0 +1,11 @@
+# ========================================================
+# Root Rewrite Rules to Redirect visitors to the SaaS Landing
+# ========================================================
+RewriteEngine On
+
+# 1. Redirect root domain directly to the beautiful landing page
+RewriteRule ^$ public/landing.html [L,R=301]
+
+# 2. Redirect root favicon requests to prevent 404 errors
+RewriteRule ^favicon\.ico$ public/favicon.ico [L]
+
