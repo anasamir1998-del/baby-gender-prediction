@@ -773,10 +773,12 @@
                 desc.textContent = 'احتفاليتك نشطة مدى الحياة بدون قيود وبدون إعلانات!';
                 upgradeBtn.style.display = 'none';
             } else if (currentUser.subscription_status === 'trial') {
-                badge.textContent = `فترة تجريبية (متبقي ${currentUser.days_left} يوم)`;
+                const timeLeft = currentUser.time_left_text || `${currentUser.days_left} يوم`;
+                badge.textContent = `فترة تجريبية (متبقي ${timeLeft})`;
                 badge.className = 'status-badge';
                 desc.textContent = 'احتفاليتك نشطة حالياً. يرجى الترقية لتفعيلها للأبد قبل انقضاء المدة.';
                 upgradeBtn.style.display = 'block';
+
             } else {
                 badge.textContent = 'منتهي الصلاحية 🔴';
                 badge.className = 'status-badge expired';

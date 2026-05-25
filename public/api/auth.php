@@ -47,9 +47,9 @@ switch ($action) {
             jsonResponse(['error' => 'البريد الإلكتروني مسجل بالفعل'], 400);
         }
 
-        // تشفير كلمة المرور وتحديد نهاية الفترة التجريبية (7 أيام)
+        // تشفير كلمة المرور وتحديد نهاية الفترة التجريبية (ساعة واحدة)
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
-        $trialEnds = date('Y-m-d H:i:s', strtotime('+7 days'));
+        $trialEnds = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
         try {
             $stmt = $pdo->prepare("INSERT INTO users (email, password_hash, trial_ends_at, subscription_status) VALUES (?, ?, ?, 'trial')");
@@ -63,7 +63,8 @@ switch ($action) {
 
             jsonResponse([
                 'success' => true,
-                'message' => 'تم تسجيل الحساب بنجاح وعضوية تجريبية لمدة 7 أيام',
+                'message' => 'تم تسجيل الحساب بنجاح وعضوية تجريبية لمدة ساعة واحدة',
+
                 'user' => [
                     'id' => $userId,
                     'email' => $email
@@ -140,12 +141,24 @@ switch ($action) {
             jsonResponse(['logged_in' => false]);
         }
 
-        // حساب الأيام المتبقية في الفترة التجريبية
+        // حساب الوقت المتبقي في الفترة التجريبية بدقة
         $now = time();
         $trialEndTs = strtotime($user['trial_ends_at']);
         $secondsLeft = $trialEndTs - $now;
+        if ($secondsLeft < 0) $secondsLeft = 0;
+
         $daysLeft = ceil($secondsLeft / 86400);
-        if ($daysLeft < 0) $daysLeft = 0;
+
+        if ($secondsLeft >= 86400) {
+            $days = ceil($secondsLeft / 86400);
+            $timeLeftText = "$days يوم";
+        } elseif ($secondsLeft >= 3600) {
+            $hours = ceil($secondsLeft / 3600);
+            $timeLeftText = "$hours ساعة";
+        } else {
+            $minutes = ceil($secondsLeft / 60);
+            $timeLeftText = "$minutes دقيقة";
+        }
 
         // تحديث حالة الحساب تلقائياً إذا انتهت الفترة التجريبية ولم يكن مفعلاً
         $status = $user['subscription_status'];
@@ -162,9 +175,11 @@ switch ($action) {
                 'email' => $user['email'],
                 'subscription_status' => $status,
                 'trial_ends_at' => $user['trial_ends_at'],
-                'days_left' => $daysLeft
+                'days_left' => $daysLeft,
+                'time_left_text' => $timeLeftText
             ]
         ]);
+
         break;
 
     default:
