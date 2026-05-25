@@ -3,9 +3,10 @@
 // غيّر البيانات دي حسب إعدادات هوستنجر
 
 $DB_HOST = 'localhost';          // عادةً localhost في هوستنجر
-$DB_NAME = 'u123456789_baby';    // اسم قاعدة البيانات - غيّره
-$DB_USER = 'u123456789_admin';   // اسم المستخدم - غيّره  
-$DB_PASS = 'YOUR_PASSWORD_HERE'; // كلمة السر - غيّرها
+$DB_NAME = 'u127645123_baby';    // اسم قاعدة البيانات
+$DB_USER = 'u127645123_admin';   // اسم المستخدم
+$DB_PASS = 'Ss@371998';          // كلمة السر
+
 
 // ============ CORS & HEADERS ============
 header('Content-Type: application/json; charset=utf-8');

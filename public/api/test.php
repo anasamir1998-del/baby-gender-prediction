@@ -14,9 +14,10 @@ echo json_encode([
 echo "\n\n--- اختبار الاتصال بقاعدة البيانات ---\n";
 
 $DB_HOST = 'localhost';
-$DB_NAME = 'u123456789_baby';
-$DB_USER = 'u123456789_admin';
-$DB_PASS = 'YOUR_PASSWORD_HERE';
+$DB_NAME = 'u127645123_baby';
+$DB_USER = 'u127645123_admin';
+$DB_PASS = 'Ss@371998';
+
 
 try {
     $pdo = new PDO(
