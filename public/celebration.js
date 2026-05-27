@@ -1050,40 +1050,72 @@ function applyGenderStyles() {
         if (revealTitle) revealTitle.textContent = 'إنه ولد!';
         if (cardGenderTag) {
             cardGenderTag.textContent = 'إنه ولد! 👦';
-            cardGenderTag.style.background = 'linear-gradient(135deg, #2d8a6e, #3da87e)';
-            cardGenderTag.style.boxShadow = '0 4px 12px rgba(45, 138, 110, 0.25)';
+            cardGenderTag.style.background = 'linear-gradient(135deg, #d4a017, #c49a15)';
+            cardGenderTag.style.boxShadow = '0 4px 12px rgba(212, 160, 23, 0.35)';
         }
-        // Garden card customizations for boy - blue-green palette
+        // ========== LITTLE PRINCE THEME FOR BOY ==========
         if (souvenirCard) {
-            souvenirCard.style.background = 'linear-gradient(160deg, #f0faf5 0%, #e8f5ee 30%, #dff0e5 60%, #f0faf5 100%)';
+            // Dark royal navy background
+            souvenirCard.style.background = 'linear-gradient(160deg, #0c1a3a 0%, #132952 30%, #0f2040 60%, #0c1a3a 100%)';
+            
+            // Change corner decorations to stars & crowns
+            const corners = souvenirCard.querySelectorAll('.garden-corner');
+            const boyCorners = ['⭐👑', '👑⭐', '🌟✨', '✨🌟'];
+            corners.forEach((c, i) => { c.textContent = boyCorners[i] || '⭐'; });
+            
+            // Change butterflies to stars/moons
+            const butterflies = souvenirCard.querySelectorAll('.garden-butterfly');
+            const boyDecos = ['🌙', '⭐', '💫'];
+            butterflies.forEach((b, i) => { b.textContent = boyDecos[i] || '⭐'; });
+
+            // Inner border - gold dashed
             const inner = souvenirCard.querySelector('.card-inner');
             if (inner) {
-                inner.style.borderColor = '#8fbfa5';
+                inner.style.borderColor = '#d4af37';
+                inner.style.background = 'linear-gradient(180deg, rgba(212,175,55,0.05) 0%, rgba(12,26,58,0.1) 100%)';
+                inner.style.color = '#e8dcc8';
             }
+
+            // Header
             const head = souvenirCard.querySelector('.card-header');
             if (head) {
-                head.style.color = '#4a8a6a';
-                head.textContent = '🌺 ذكرى الكشف عن المولود 🌺';
+                head.style.color = '#d4af37';
+                head.textContent = '👑 ذكرى الكشف عن المولود 👑';
             }
+
+            // Main name - gold/white
             const mainName = souvenirCard.querySelector('.card-main-name');
             if (mainName) {
-                mainName.style.color = '#2d8a6e';
-                mainName.style.textShadow = '0 3px 8px rgba(45, 138, 110, 0.15)';
+                mainName.style.color = '#ffffff';
+                mainName.style.textShadow = '0 3px 12px rgba(212, 175, 55, 0.4)';
             }
+
+            // Sub text
             const subText = souvenirCard.querySelector('.card-sub-text');
-            if (subText) subText.style.color = '#4a8a6a';
-            // Ribbon folds for boy
+            if (subText) {
+                subText.style.color = '#d4af37';
+            }
+
+            // Ribbon folds - gold
             const foldLeft = souvenirCard.querySelector('.ribbon-fold-left');
             const foldRight = souvenirCard.querySelector('.ribbon-fold-right');
-            if (foldLeft) foldLeft.style.borderColor = 'transparent transparent transparent #8fbfa5';
-            if (foldRight) foldRight.style.borderColor = 'transparent #8fbfa5 transparent transparent';
+            if (foldLeft) foldLeft.style.borderColor = 'transparent transparent transparent #8a7020';
+            if (foldRight) foldRight.style.borderColor = 'transparent #8a7020 transparent transparent';
+
+            // Footer
             const foot = souvenirCard.querySelector('.card-footer');
             if (foot) {
-                foot.style.color = '#3a7a5a';
-                foot.innerHTML = '<p>اللهم أنبته نباتاً حسناً 🤲</p><div id="cardDate" style="margin-top:10px; font-size: 0.8rem; opacity: 0.5;"></div>';
+                foot.style.color = '#c8b880';
+                foot.innerHTML = '<p>اللهم أنبته نباتاً حسناً 🤲</p><div id="cardDate" style="margin-top:10px; font-size: 0.8rem; opacity: 0.4; color: #8a8060;"></div>';
+            }
+
+            // Bottom floral -> stars
+            const bottomFloral = souvenirCard.querySelector('.card-bottom-floral');
+            if (bottomFloral) {
+                bottomFloral.textContent = '✨⭐🌟⭐✨';
             }
         }
-        // Grand reveal background colors boy-themed
+        // Grand reveal background boy-themed
         const revealPage = document.getElementById('revealPage');
         if (revealPage) {
             revealPage.style.background = 'linear-gradient(-45deg, #e0f2fe, #bae6fd, #e0c3fc, #d4b8f0)';
@@ -1096,6 +1128,6 @@ function applyGenderStyles() {
             cardGenderTag.style.background = 'linear-gradient(135deg, #c75b7a, #d4728e)';
             cardGenderTag.style.boxShadow = '0 4px 12px rgba(199, 91, 122, 0.25)';
         }
-        // Girl garden card is the default CSS - no extra changes needed
+        // Girl enchanted garden card is the default CSS - no extra changes needed
     }
 }
