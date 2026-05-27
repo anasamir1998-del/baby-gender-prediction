@@ -128,6 +128,36 @@ try {
         status VARCHAR(20) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+    // ============ SELF-HEALING DATABASE SCHEMA UPDATES ============
+    // Check and add missing columns in case tables were created with an older schema version
+    
+    // 1. Check events table for target_date and admin_pin
+    $stmt = $pdo->prepare("SHOW COLUMNS FROM events LIKE 'target_date'");
+    $stmt->execute();
+    if ($stmt->rowCount() == 0) {
+        $pdo->exec("ALTER TABLE events ADD COLUMN target_date TIMESTAMP NULL AFTER revealed_gender");
+    }
+    
+    $stmt = $pdo->prepare("SHOW COLUMNS FROM events LIKE 'admin_pin'");
+    $stmt->execute();
+    if ($stmt->rowCount() == 0) {
+        $pdo->exec("ALTER TABLE events ADD COLUMN admin_pin VARCHAR(20) DEFAULT '2030' AFTER target_date");
+    }
+
+    // 2. Check users table for subscription_status and trial_ends_at
+    $stmt = $pdo->prepare("SHOW COLUMNS FROM users LIKE 'subscription_status'");
+    $stmt->execute();
+    if ($stmt->rowCount() == 0) {
+        $pdo->exec("ALTER TABLE users ADD COLUMN subscription_status ENUM('trial', 'active', 'expired') DEFAULT 'trial'");
+    }
+
+    $stmt = $pdo->prepare("SHOW COLUMNS FROM users LIKE 'trial_ends_at'");
+    $stmt->execute();
+    if ($stmt->rowCount() == 0) {
+        $pdo->exec("ALTER TABLE users ADD COLUMN trial_ends_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+    }
+
 } catch (PDOException $e) {
     // تجاهل - الجداول موجودة بالفعل
 }
