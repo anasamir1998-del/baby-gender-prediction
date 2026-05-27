@@ -1317,6 +1317,16 @@
 
 <body>
 
+    <!-- Global Defs for SVG Gradients (Ensures visibility even when parent elements are hidden/none) -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="genderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f093fb" />
+          <stop offset="100%" stop-color="#4facfe" />
+        </linearGradient>
+      </defs>
+    </svg>
+
     <!-- Background Particles -->
     <div class="bg-particles" id="bgParticles"></div>
 
@@ -1407,12 +1417,6 @@
     <!-- Success Overlay -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-box">
-            <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
-              <linearGradient id="genderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#f093fb" />
-                <stop offset="100%" stop-color="#4facfe" />
-              </linearGradient>
-            </svg>
             <div class="success-checkmark-container" style="margin-top: 10px;">
                 <svg class="success-checkmark" viewBox="0 0 52 52">
                     <circle class="success-checkmark-circle" cx="26" cy="26" r="23" />
