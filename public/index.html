@@ -391,26 +391,78 @@
             transform: none !important;
         }
 
-        /* Already Voted State */
+        /* Already Voted & Success Checkmark State */
         .already-voted {
             text-align: center;
             padding: 40px 20px;
         }
 
-        .already-voted .voted-icon {
-            font-size: 4rem;
-            margin-bottom: 16px;
-        }
-
         .already-voted h2 {
-            color: var(--text-dark);
-            font-size: 1.6rem;
-            margin-bottom: 8px;
+            font-size: 1.9rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--purple) 0%, #d946ef 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .already-voted p {
             color: var(--text-muted);
-            font-size: 1.05rem;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        /* Success Checkmark Premium Animation */
+        .success-checkmark-container {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 28px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            box-shadow: 0 12px 30px rgba(124, 58, 237, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .success-checkmark {
+            width: 76px;
+            height: 76px;
+            display: block;
+        }
+
+        .success-checkmark-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 4;
+            stroke: url(#genderGradient);
+            fill: none;
+            stroke-linecap: round;
+            animation: stroke-circle .6s cubic-bezier(0.650, 0.000, 0.450, 1.000) forwards;
+        }
+
+        .success-checkmark-check {
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            stroke-width: 5;
+            stroke: url(#genderGradient);
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            animation: stroke-check .4s cubic-bezier(0.650, 0.000, 0.450, 1.000) .6s forwards;
+        }
+
+        @keyframes stroke-circle {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes stroke-check {
+            100% {
+                stroke-dashoffset: 0;
+            }
         }
 
         /* Success Message */
@@ -444,20 +496,19 @@
             width: 90%;
         }
 
-        .success-box .success-icon {
-            font-size: 4rem;
-            margin-bottom: 16px;
-        }
-
         .success-box h2 {
-            color: var(--text-dark);
-            font-size: 1.5rem;
-            margin-bottom: 8px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--purple) 0%, #d946ef 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .success-box p {
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
         }
 
         @keyframes popIn {
@@ -1356,11 +1407,22 @@
     <!-- Success Overlay -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-box">
-            <div class="success-icon">🎉</div>
+            <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+              <linearGradient id="genderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f093fb" />
+                <stop offset="100%" stop-color="#4facfe" />
+              </linearGradient>
+            </svg>
+            <div class="success-checkmark-container" style="margin-top: 10px;">
+                <svg class="success-checkmark" viewBox="0 0 52 52">
+                    <circle class="success-checkmark-circle" cx="26" cy="26" r="23" />
+                    <path class="success-checkmark-check" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            </div>
             <h2>تم حفظ توقعك!</h2>
             <p>شكراً لمشاركتك 💕</p>
             <a href="celebration.html" class="submit-btn"
-                style="text-decoration:none; display:inline-block; margin-top:16px;">🎉 ادخل الاحتفالية 🎉</a>
+                style="text-decoration:none; display:inline-block; margin-top:20px;">🎉 ادخل الاحتفالية 🎉</a>
         </div>
     </div>
 
@@ -1453,7 +1515,12 @@
 
                 <!-- Already Voted State -->
                 <div id="alreadyVoted" class="already-voted" style="display:none;">
-                    <div class="voted-icon">✅</div>
+                    <div class="success-checkmark-container">
+                        <svg class="success-checkmark" viewBox="0 0 52 52">
+                            <circle class="success-checkmark-circle" cx="26" cy="26" r="23" />
+                            <path class="success-checkmark-check" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                        </svg>
+                    </div>
                     <h2>تم تسجيل توقعك!</h2>
                     <p>شكراً لمشاركتك، لقد سجّلت توقعك مسبقاً 💕</p>
                     <a href="celebration.html" class="submit-btn"
