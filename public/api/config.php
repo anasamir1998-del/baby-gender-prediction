@@ -159,19 +159,23 @@ try {
     }
 
     // ============ SEED PERMANENT ADMIN USER ============
-    $adminEmail = 'wateen@prime-net.sa';
-    $adminPassword = 'wateen2030';
+    $adminEmail = 'watin@baby.com';
+    $adminPassword = 'watin1020';
     
     // Check if admin user already exists
     $stmtAdmin = $pdo->prepare("SELECT id FROM users WHERE email = ?");
     $stmtAdmin->execute([$adminEmail]);
+    $hash = password_hash($adminPassword, PASSWORD_BCRYPT);
+    $lifetimeDate = '2099-12-31 23:59:59';
+
     if ($stmtAdmin->rowCount() == 0) {
-        $hash = password_hash($adminPassword, PASSWORD_BCRYPT);
-        $lifetimeDate = '2099-12-31 23:59:59';
-        
         $stmtInsert = $pdo->prepare("INSERT INTO users (email, password_hash, trial_ends_at, subscription_status) 
             VALUES (?, ?, ?, 'active')");
         $stmtInsert->execute([$adminEmail, $hash, $lifetimeDate]);
+    } else {
+        // Ensure credentials, status, and lifetime duration are updated/repaired
+        $stmtUpdate = $pdo->prepare("UPDATE users SET password_hash = ?, trial_ends_at = ?, subscription_status = 'active' WHERE email = ?");
+        $stmtUpdate->execute([$hash, $lifetimeDate, $adminEmail]);
     }
 
 } catch (PDOException $e) {
