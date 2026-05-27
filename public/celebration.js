@@ -1043,38 +1043,47 @@ function applyGenderStyles() {
     if (cardName) cardName.textContent = MAIN_BABY_NAME;
     if (cardSubText) cardSubText.textContent = SUB_BABY_NAME;
 
+    const souvenirCard = document.getElementById('souvenirCard');
+
     if (eventData.revealed_gender === 'boy') {
         if (revealIcon) revealIcon.innerHTML = '👦⭐';
         if (revealTitle) revealTitle.textContent = 'إنه ولد!';
         if (cardGenderTag) {
             cardGenderTag.textContent = 'إنه ولد! 👦';
-            cardGenderTag.style.background = '#0284c7';
-            cardGenderTag.style.boxShadow = '0 6px 15px rgba(2, 132, 199, 0.3)';
+            cardGenderTag.style.background = 'linear-gradient(135deg, #2d8a6e, #3da87e)';
+            cardGenderTag.style.boxShadow = '0 4px 12px rgba(45, 138, 110, 0.25)';
         }
-        // Souvenir card customizations for boy
-        const souvenirCard = document.getElementById('souvenirCard');
+        // Garden card customizations for boy - blue-green palette
         if (souvenirCard) {
-            souvenirCard.style.background = 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)';
-            souvenirCard.style.border = '10px solid #bae6fd';
+            souvenirCard.style.background = 'linear-gradient(160deg, #f0faf5 0%, #e8f5ee 30%, #dff0e5 60%, #f0faf5 100%)';
             const inner = souvenirCard.querySelector('.card-inner');
-            if (inner) inner.style.borderColor = '#7dd3fc';
+            if (inner) {
+                inner.style.borderColor = '#8fbfa5';
+            }
             const head = souvenirCard.querySelector('.card-header');
             if (head) {
-                head.style.color = '#0284c7';
-                head.textContent = '✨ ذكرى الكشف عن المولود ✨';
+                head.style.color = '#4a8a6a';
+                head.textContent = '🌺 ذكرى الكشف عن المولود 🌺';
             }
             const mainName = souvenirCard.querySelector('.card-main-name');
             if (mainName) {
-                mainName.style.color = '#0284c7';
-                mainName.style.textShadow = '0 4px 10px rgba(2, 132, 199, 0.15)';
+                mainName.style.color = '#2d8a6e';
+                mainName.style.textShadow = '0 3px 8px rgba(45, 138, 110, 0.15)';
             }
+            const subText = souvenirCard.querySelector('.card-sub-text');
+            if (subText) subText.style.color = '#4a8a6a';
+            // Ribbon folds for boy
+            const foldLeft = souvenirCard.querySelector('.ribbon-fold-left');
+            const foldRight = souvenirCard.querySelector('.ribbon-fold-right');
+            if (foldLeft) foldLeft.style.borderColor = 'transparent transparent transparent #8fbfa5';
+            if (foldRight) foldRight.style.borderColor = 'transparent #8fbfa5 transparent transparent';
             const foot = souvenirCard.querySelector('.card-footer');
             if (foot) {
-                foot.style.color = '#0284c7';
+                foot.style.color = '#3a7a5a';
                 foot.innerHTML = '<p>اللهم أنبته نباتاً حسناً 🤲</p><div id="cardDate" style="margin-top:10px; font-size: 0.8rem; opacity: 0.5;"></div>';
             }
         }
-        // Grand reveal background colors can also be boy-themed
+        // Grand reveal background colors boy-themed
         const revealPage = document.getElementById('revealPage');
         if (revealPage) {
             revealPage.style.background = 'linear-gradient(-45deg, #e0f2fe, #bae6fd, #e0c3fc, #d4b8f0)';
@@ -1084,8 +1093,9 @@ function applyGenderStyles() {
         if (revealTitle) revealTitle.textContent = 'إنها بنت!';
         if (cardGenderTag) {
             cardGenderTag.textContent = 'إنها بنت! 👸';
-            cardGenderTag.style.background = '#db2777';
-            cardGenderTag.style.boxShadow = '0 6px 15px rgba(219, 39, 119, 0.3)';
+            cardGenderTag.style.background = 'linear-gradient(135deg, #c75b7a, #d4728e)';
+            cardGenderTag.style.boxShadow = '0 4px 12px rgba(199, 91, 122, 0.25)';
         }
+        // Girl garden card is the default CSS - no extra changes needed
     }
 }
