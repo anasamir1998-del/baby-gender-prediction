@@ -651,7 +651,7 @@
                     <div class="form-group">
                         <label for="slugInput">الرابط المخصص الفريد (Slug):</label>
                         <input type="text" id="slugInput" placeholder="مثال: ilan" required>
-                        <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px; display: block;">سيكون رابطك: domain.com/e/ilan</small>
+                        <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px; display: block;">سيكون رابطك: domain.com/celebration.html?event=ilan</small>
                     </div>
 
                     <div class="form-group">
@@ -818,7 +818,7 @@
                     const pathParts = window.location.pathname.split('/');
                     pathParts.pop(); // Remove "dashboard.html"
                     const basePath = pathParts.join('/'); // e.g., "/public" or ""
-                    const cleanLink = `${protocol}//${host}${basePath}/e/${currentEvent.slug}`;
+                    const cleanLink = `${protocol}//${host}${basePath}/celebration.html?event=${currentEvent.slug}`;
                     const liveLinkSpan = document.getElementById('liveEventLink');
                     liveLinkSpan.textContent = cleanLink;
 

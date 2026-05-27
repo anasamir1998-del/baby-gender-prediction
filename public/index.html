@@ -1560,6 +1560,11 @@
                 initParticles();
                 checkVotedStatus();
                 listenToLiveCount();
+
+                // Update celebration links to include the event slug
+                document.querySelectorAll('a[href^="celebration.html"]').forEach(link => {
+                    link.href = `celebration.html?event=${eventSlug}`;
+                });
             } catch (e) {
                 console.error(e);
                 alert('فشل تحميل بيانات الاحتفالية من الخادم');
