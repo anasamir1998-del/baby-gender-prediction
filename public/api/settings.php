@@ -51,12 +51,17 @@ try {
 
             // 2. If key is targetDate and slug is provided, also update events table!
             if ($key === 'targetDate' && !empty($slug)) {
-                // Convert ISO 8601 date to MySQL TIMESTAMP format (YYYY-MM-DD HH:MM:SS)
                 $mysqlDate = null;
                 if (!empty($value)) {
-                    $timestamp = strtotime($value);
-                    if ($timestamp !== false) {
-                        $mysqlDate = date('Y-m-d H:i:s', $timestamp);
+                    // If it is already in MySQL datetime format (YYYY-MM-DD HH:MM:SS), save it directly
+                    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value)) {
+                        $mysqlDate = $value;
+                    } else {
+                        // Otherwise, parse it with strtotime (fallback for ISO dates)
+                        $timestamp = strtotime($value);
+                        if ($timestamp !== false) {
+                            $mysqlDate = date('Y-m-d H:i:s', $timestamp);
+                        }
                     }
                 }
                 

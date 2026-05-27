@@ -929,10 +929,8 @@ async function openAdmin() {
         const res = await fetch(`${API_BASE}/settings.php?key=targetDate&slug=${eventSlug}`);
         const data = await res.json();
         if (data.value) {
-            const d = new Date(data.value);
-            const offset = d.getTimezoneOffset();
-            const local = new Date(d.getTime() - offset * 60000);
-            targetDateInput.value = local.toISOString().slice(0, 16);
+            const formatted = data.value.replace(' ', 'T').slice(0, 16);
+            targetDateInput.value = formatted;
         }
     } catch (e) {
         console.log('Failed to load admin settings:', e);
@@ -943,11 +941,11 @@ saveTargetBtn.addEventListener('click', async () => {
     const val = targetDateInput.value;
     if (val) {
         try {
-            const dateISO = new Date(val).toISOString();
+            const dateVal = val.replace('T', ' ') + ':00';
             const res = await fetch(`${API_BASE}/settings.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: 'targetDate', value: dateISO, slug: eventSlug })
+                body: JSON.stringify({ key: 'targetDate', value: dateVal, slug: eventSlug })
             });
             const result = await res.json();
             if (result.success) {

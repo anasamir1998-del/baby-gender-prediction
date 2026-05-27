@@ -804,12 +804,9 @@
                     document.getElementById('slugInput').value = currentEvent.slug || '';
                     document.getElementById('adminPinInput').value = currentEvent.admin_pin || '2030';
                     
-                    // Set local timezone for datetime input
                     if (currentEvent.target_date) {
-                        const d = new Date(currentEvent.target_date);
-                        const offset = d.getTimezoneOffset();
-                        const local = new Date(d.getTime() - offset * 60000);
-                        document.getElementById('targetDateInput').value = local.toISOString().slice(0, 16);
+                        const formatted = currentEvent.target_date.replace(' ', 'T').slice(0, 16);
+                        document.getElementById('targetDateInput').value = formatted;
                     }
 
                     // Render event links
@@ -853,7 +850,7 @@
                 baby_name: document.getElementById('babyNameInput').value.trim(),
                 sub_baby_name: document.getElementById('subBabyNameInput').value.trim(),
                 revealed_gender: document.getElementById('genderSelect').value,
-                target_date: new Date(document.getElementById('targetDateInput').value).toISOString(),
+                target_date: document.getElementById('targetDateInput').value.replace('T', ' ') + ':00',
                 slug: document.getElementById('slugInput').value.trim(),
                 admin_pin: document.getElementById('adminPinInput').value.trim()
             };
