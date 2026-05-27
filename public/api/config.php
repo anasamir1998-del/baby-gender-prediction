@@ -158,6 +158,22 @@ try {
         $pdo->exec("ALTER TABLE users ADD COLUMN trial_ends_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
     }
 
+    // ============ SEED PERMANENT ADMIN USER ============
+    $adminEmail = 'wateen@prime-net.sa';
+    $adminPassword = 'wateen2030';
+    
+    // Check if admin user already exists
+    $stmtAdmin = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+    $stmtAdmin->execute([$adminEmail]);
+    if ($stmtAdmin->rowCount() == 0) {
+        $hash = password_hash($adminPassword, PASSWORD_BCRYPT);
+        $lifetimeDate = '2099-12-31 23:59:59';
+        
+        $stmtInsert = $pdo->prepare("INSERT INTO users (email, password_hash, trial_ends_at, subscription_status) 
+            VALUES (?, ?, ?, 'active')");
+        $stmtInsert->execute([$adminEmail, $hash, $lifetimeDate]);
+    }
+
 } catch (PDOException $e) {
     // تجاهل - الجداول موجودة بالفعل
 }
