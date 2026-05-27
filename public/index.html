@@ -35,18 +35,18 @@
     <style>
         :root {
             --boy-start: #4facfe;
-
+            --boy-end: #00f2fe;
             --girl-start: #f093fb;
             --girl-end: #f5576c;
-            --purple: #7c3aed;
-            --purple-light: #a78bfa;
-            --bg-start: #e0c3fc;
-            --bg-end: #8ec5fc;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(255, 255, 255, 0.6);
-            --text-dark: #1e1b4b;
-            --text-muted: #6b7280;
-            --shadow: 0 20px 60px rgba(100, 80, 160, 0.25);
+            --purple: #a855f7;
+            --purple-light: #c4b5fd;
+            --bg-start: #0f0a1a;
+            --bg-end: #1b1236;
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-dark: #f8f8ff;
+            --text-muted: rgba(255, 255, 255, 0.55);
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
             --radius: 24px;
         }
 
@@ -63,24 +63,9 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            background: linear-gradient(-45deg, #e0c3fc, #d4b8f0, #8ec5fc, #b8d4f0, #f0c6d4);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: radial-gradient(circle at center, var(--bg-end) 0%, var(--bg-start) 100%);
             overflow-x: hidden;
-        }
-
-        @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+            color: var(--text-dark);
         }
 
         /* Floating background particles */
@@ -195,9 +180,12 @@
         h1 {
             font-size: 2.2rem;
             font-weight: 900;
-            color: var(--text-dark);
+            background: linear-gradient(135deg, #ffa2c4 0%, #a855f7 50%, #8ec5fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 6px;
             letter-spacing: 0.5px;
+            display: inline-block;
         }
 
         .subtitle {
@@ -232,14 +220,16 @@
         .gender-card {
             padding: 28px 16px;
             border-radius: 20px;
-            border: 3px solid #e5e7eb;
+            border: 3px solid rgba(255, 255, 255, 0.1);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: white;
+            background: rgba(255, 255, 255, 0.04);
+            color: white;
         }
 
         .gender-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 12px 30px rgba(168, 85, 247, 0.15);
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
         .gender-option input:checked+.gender-card.boy-card {
@@ -314,32 +304,33 @@
         .form-group label {
             display: block;
             font-weight: 700;
-            color: var(--text-dark);
+            color: #f8f8ff;
             margin-bottom: 8px;
             font-size: 1rem;
+            opacity: 0.9;
         }
 
         .form-group input {
             width: 100%;
             padding: 14px 18px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
             font-size: 1rem;
             font-family: 'Tajawal', sans-serif;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.06);
             transition: all 0.3s ease;
             outline: none;
-            color: var(--text-dark);
+            color: white;
         }
 
         .form-group input:focus {
-            border-color: var(--purple-light);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+            border-color: var(--purple);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
         }
 
         .form-group input::placeholder {
-            color: #b0b0b0;
+            color: rgba(255, 255, 255, 0.3);
         }
 
         /* Submit Button */
@@ -486,11 +477,12 @@
         }
 
         .success-box {
-            background: white;
+            background: rgba(17, 12, 40, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.12);
             border-radius: var(--radius);
             padding: 48px 40px;
             text-align: center;
-            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             max-width: 400px;
             width: 90%;
@@ -572,18 +564,20 @@
         }
 
         .pin-box {
-            background: white;
+            background: rgba(17, 12, 40, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.12);
             border-radius: var(--radius);
             padding: 40px;
             text-align: center;
-            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
             animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             max-width: 380px;
             width: 90%;
+            color: white;
         }
 
         .pin-box h3 {
-            color: var(--text-dark);
+            color: #f8f8ff;
             font-size: 1.3rem;
             margin-bottom: 20px;
         }
@@ -591,19 +585,22 @@
         .pin-input {
             width: 100%;
             padding: 14px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
             font-size: 1.5rem;
             font-family: 'Tajawal', sans-serif;
             text-align: center;
             letter-spacing: 12px;
             outline: none;
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
             transition: all 0.3s;
         }
 
         .pin-input:focus {
-            border-color: var(--purple-light);
-            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+            border-color: var(--purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .pin-error {
