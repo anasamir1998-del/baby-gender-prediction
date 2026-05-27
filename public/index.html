@@ -2,7 +2,19 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <base href="/baby/public/">
+    <script>
+        (function() {
+            var path = window.location.pathname;
+            var publicIdx = path.indexOf('/public/');
+            var baseEl = document.createElement('base');
+            if (publicIdx !== -1) {
+                baseEl.href = path.substring(0, publicIdx + 8);
+            } else {
+                baseEl.href = './';
+            }
+            document.head.appendChild(baseEl);
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>توقع جنس المولود 👶</title>
