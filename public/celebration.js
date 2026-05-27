@@ -926,7 +926,7 @@ document.addEventListener('click', (e) => {
 async function openAdmin() {
     adminPanel.style.display = 'flex';
     try {
-        const res = await fetch(`${API_BASE}/settings.php?key=targetDate`);
+        const res = await fetch(`${API_BASE}/settings.php?key=targetDate&slug=${eventSlug}`);
         const data = await res.json();
         if (data.value) {
             const d = new Date(data.value);
@@ -947,7 +947,7 @@ saveTargetBtn.addEventListener('click', async () => {
             const res = await fetch(`${API_BASE}/settings.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: 'targetDate', value: dateISO })
+                body: JSON.stringify({ key: 'targetDate', value: dateISO, slug: eventSlug })
             });
             const result = await res.json();
             if (result.success) {

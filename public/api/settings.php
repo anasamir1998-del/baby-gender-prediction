@@ -12,7 +12,19 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case 'GET':
         $key = sanitize($_GET['key'] ?? 'targetDate');
+        $slug = sanitize($_GET['slug'] ?? '');
         
+        // 1. If key is targetDate and slug is provided, fetch from events table
+        if ($key === 'targetDate' && !empty($slug)) {
+            $stmtEvent = $pdo->prepare("SELECT target_date FROM events WHERE slug = ?");
+            $stmtEvent->execute([$slug]);
+            $event = $stmtEvent->fetch();
+            if ($event && !empty($event['target_date'])) {
+                jsonResponse(['key' => $key, 'value' => $event['target_date']]);
+            }
+        }
+
+        // 2. Fallback to settings table
         $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
         $stmt->execute([$key]);
         $result = $stmt->fetch();
@@ -28,11 +40,19 @@ switch ($method) {
         $data = getJsonInput();
         $key = sanitize($data['key'] ?? 'targetDate');
         $value = $data['value'] ?? '';
+        $slug = sanitize($data['slug'] ?? '');
 
+        // 1. Save in settings table
         $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) 
             VALUES (?, ?) 
             ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
         $stmt->execute([$key, $value]);
+
+        // 2. If key is targetDate and slug is provided, also update events table!
+        if ($key === 'targetDate' && !empty($slug)) {
+            $stmtEvent = $pdo->prepare("UPDATE events SET target_date = ? WHERE slug = ?");
+            $stmtEvent->execute([$value, $slug]);
+        }
 
         jsonResponse(['success' => true, 'message' => 'تم حفظ الإعداد']);
         break;
