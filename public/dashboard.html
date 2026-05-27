@@ -604,7 +604,7 @@
                     <h3 id="statusTitle" style="font-size: 1.15rem; margin-bottom: 6px;">باقة الاحتفالية</h3>
                     <p id="statusDesc" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">...</p>
                 </div>
-                <button class="btn-upgrade" id="upgradeBtn" style="display: none;">💡 تفعيل الاحتفالية مدى الحياة</button>
+                <button class="btn-upgrade" id="upgradeBtn" style="display: none;">💡 تفعيل الاحتفالية لمدة 5 أيام</button>
             </div>
         </div>
 
@@ -768,15 +768,16 @@
             const upgradeBtn = document.getElementById('upgradeBtn');
 
             if (currentUser.subscription_status === 'active') {
-                badge.textContent = 'نشط مدى الحياة 🎈';
+                const timeLeft = currentUser.time_left_text || `${currentUser.days_left} يوم`;
+                badge.textContent = `نشط المميز 🎈 (متبقي ${timeLeft})`;
                 badge.className = 'status-badge active';
-                desc.textContent = 'احتفاليتك نشطة مدى الحياة بدون قيود وبدون إعلانات!';
+                desc.textContent = 'احتفاليتك نشطة الآن بالباقة المميزة بدون قيود وبدون إعلانات!';
                 upgradeBtn.style.display = 'none';
             } else if (currentUser.subscription_status === 'trial') {
                 const timeLeft = currentUser.time_left_text || `${currentUser.days_left} يوم`;
                 badge.textContent = `فترة تجريبية (متبقي ${timeLeft})`;
                 badge.className = 'status-badge';
-                desc.textContent = 'احتفاليتك نشطة حالياً. يرجى الترقية لتفعيلها للأبد قبل انقضاء المدة.';
+                desc.textContent = 'احتفاليتك نشطة حالياً. يرجى الترقية لتفعيلها لمدة 5 أيام قبل انقضاء المدة.';
                 upgradeBtn.style.display = 'block';
 
             } else {
@@ -1053,12 +1054,12 @@
                 } else {
                     showErrorAlert(data.error || 'فشل الاتصال ببوابة Tap لإصدار الفاتورة');
                     btn.disabled = false;
-                    btn.textContent = '💡 تفعيل الاحتفالية مدى الحياة';
+                    btn.textContent = '💡 تفعيل الاحتفالية لمدة 5 أيام';
                 }
             } catch (e) {
                 showErrorAlert('حدث خطأ فني أثناء الاتصال بالدفع');
                 btn.disabled = false;
-                btn.textContent = '💡 تفعيل الاحتفالية مدى الحياة';
+                btn.textContent = '💡 تفعيل الاحتفالية لمدة 5 أيام';
             }
         });
 
@@ -1300,7 +1301,7 @@
             const params = new URLSearchParams(window.location.search);
             const payment = params.get('payment');
             if (payment === 'success') {
-                showSuccessAlert("🎉 مبارك! تم تفعيل اشتراكك وباقة الاحتفالية مدى الحياة بنجاح عبر Tap Payments! 🚀");
+                showSuccessAlert("🎉 مبارك! تم تفعيل اشتراكك وباقة الاحتفالية المميزة لمدة 5 أيام بنجاح عبر Tap Payments! 🚀");
             } else if (payment === 'failed') {
                 showErrorAlert("❌ فشلت عملية الدفع عبر بوابة Tap. يرجى المحاولة مرة أخرى أو التحقق من بطاقتك.");
             } else if (payment === 'error') {

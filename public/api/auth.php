@@ -160,9 +160,9 @@ switch ($action) {
             $timeLeftText = "$minutes دقيقة";
         }
 
-        // تحديث حالة الحساب تلقائياً إذا انتهت الفترة التجريبية ولم يكن مفعلاً
+        // تحديث حالة الحساب تلقائياً إذا انتهت الفترة التجريبية أو الاشتراك
         $status = $user['subscription_status'];
-        if ($status === 'trial' && $secondsLeft <= 0) {
+        if (($status === 'trial' || $status === 'active') && $secondsLeft <= 0) {
             $status = 'expired';
             $update = $pdo->prepare("UPDATE users SET subscription_status = 'expired' WHERE id = ?");
             $update->execute([$userId]);

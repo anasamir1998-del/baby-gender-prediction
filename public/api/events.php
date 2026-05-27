@@ -34,13 +34,15 @@ if ($method === 'GET' && isset($_GET['slug'])) {
         jsonResponse(['error' => 'الاحتفالية غير موجودة'], 404);
     }
 
-    // التحقق من انتهاء الفترة التجريبية وصلاحية الحساب
+    // التحقق من انتهاء الفترة التجريبية/الاشتراك وصلاحية الحساب
     $now = time();
     $trialEndTs = strtotime($event['trial_ends_at']);
-    $isTrialExpired = ($event['subscription_status'] === 'trial' && $trialEndTs <= $now) || $event['subscription_status'] === 'expired';
-    $isPaid = ($event['subscription_status'] === 'active');
+    
+    // يعتبر منتهي الصلاحية إذا كانت الحالة expired، أو كان (trial أو active) وانتهى الوقت المحدد له
+    $isExpired = $event['subscription_status'] === 'expired' || 
+                 (($event['subscription_status'] === 'trial' || $event['subscription_status'] === 'active') && $trialEndTs <= $now);
 
-    if ($isTrialExpired && !$isPaid) {
+    if ($isExpired) {
         // تحديث الحالة لـ expired في الخلفية
         if ($event['subscription_status'] !== 'expired') {
             $update = $pdo->prepare("UPDATE users SET subscription_status = 'expired' WHERE id = ?");
@@ -50,7 +52,7 @@ if ($method === 'GET' && isset($_GET['slug'])) {
         jsonResponse([
             'success' => false,
             'status' => 'expired',
-            'message' => 'عذراً، انتهت الفترة التجريبية لهذه الاحتفالية.'
+            'message' => 'عذراً، انتهت صلاحية اشتراك هذه الاحتفالية.'
         ]);
     }
 

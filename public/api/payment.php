@@ -14,8 +14,8 @@ require_once 'config.php';
 // ============ CONFIGURATION ============
 // سعر الباقة المميزة وعملتها ومفاتيح Tap
 $TAP_SECRET_KEY = 'YOUR_TAP_SECRET_KEY_HERE'; // ضَع مفتاح Tap السري الخاص بك هنا
-$PRICE = 15.00;
-$CURRENCY = 'USD'; // يمكنك تغييرها لـ SAR أو KWD أو EGP حسب الحاجة
+$PRICE = 300.00;
+$CURRENCY = 'SAR'; // يمكنك تغييرها لـ SAR أو KWD أو EGP حسب الحاجة
 
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -53,7 +53,7 @@ switch ($action) {
             "currency" => $CURRENCY,
             "threeDSecure" => true,
             "save_card" => false,
-            "description" => "تفعيل الباقة المميزة مدى الحياة لاحتفالية كشف جنس المولود",
+            "description" => "تفعيل الباقة المميزة لمدة 5 أيام لاحتفالية كشف جنس المولود",
             "statement_descriptor" => "BABY_REVEAL",
             "customer" => [
                 "first_name" => "Host",
@@ -174,9 +174,10 @@ switch ($action) {
             $updatePayment->execute([$paymentStatus, $tapId]);
 
             if ($paymentStatus === 'CAPTURED') {
-                // ترقية حساب المستخدم ليكون نشطاً للأبد!
-                $updateUser = $pdo->prepare("UPDATE users SET subscription_status = 'active' WHERE id = ?");
-                $updateUser->execute([$userId]);
+                // ترقية حساب المستخدم ليكون نشطاً لمدة 5 أيام!
+                $subscriptionEnds = date('Y-m-d H:i:s', strtotime('+5 days'));
+                $updateUser = $pdo->prepare("UPDATE users SET subscription_status = 'active', trial_ends_at = ? WHERE id = ?");
+                $updateUser->execute([$subscriptionEnds, $userId]);
 
                 // إعادة توجيه للوحة التحكم مع رسالة نجاح مبهجة
                 header("Location: ../dashboard.html?payment=success");
