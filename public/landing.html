@@ -542,8 +542,9 @@
             
             <form id="registerForm">
                 <div class="form-group">
-                    <label for="regEmail">البريد الإلكتروني:</label>
-                    <input type="email" id="regEmail" placeholder="example@email.com" required>
+                    <label for="regEmail">اسم المستخدم:</label>
+                    <input type="text" id="regEmail" placeholder="اكتب اسم المستخدم (مثال: watin)" required>
+                    <small style="display: block; margin-top: 5px; color: var(--text-muted); font-size: 0.8rem;">سيكون حسابك بامتداد @baby.com تلقائياً</small>
                 </div>
                 <div class="form-group">
                     <label for="regPassword">كلمة المرور:</label>
@@ -565,8 +566,9 @@
             
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="loginEmail">البريد الإلكتروني:</label>
-                    <input type="email" id="loginEmail" placeholder="example@email.com" required>
+                    <label for="loginEmail">اسم المستخدم:</label>
+                    <input type="text" id="loginEmail" placeholder="اكتب اسم المستخدم (مثال: watin)" required>
+                    <small style="display: block; margin-top: 5px; color: var(--text-muted); font-size: 0.8rem;">سواءً كتبت الاسم فقط أو الايميل، سيتم الدخول بـ @baby.com</small>
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">كلمة المرور:</label>
@@ -637,8 +639,11 @@
             submitBtn.textContent = 'جاري تسجيل حسابك...';
             errorDiv.style.display = 'none';
 
+            let rawEmail = document.getElementById('regEmail').value.trim();
+            let processedEmail = rawEmail.split('@')[0] + '@baby.com';
+
             const payload = {
-                email: document.getElementById('regEmail').value,
+                email: processedEmail,
                 password: document.getElementById('regPassword').value
             };
 
@@ -678,8 +683,11 @@
             submitBtn.textContent = 'جاري التحقق والدخول...';
             errorDiv.style.display = 'none';
 
+            let rawEmail = document.getElementById('loginEmail').value.trim();
+            let processedEmail = rawEmail.split('@')[0] + '@baby.com';
+
             const payload = {
-                email: document.getElementById('loginEmail').value,
+                email: processedEmail,
                 password: document.getElementById('loginPassword').value
             };
 

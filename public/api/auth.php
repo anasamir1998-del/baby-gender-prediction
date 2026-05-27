@@ -24,7 +24,12 @@ switch ($action) {
         }
 
         $data = getJsonInput();
-        $email = strtolower(trim($data['email'] ?? ''));
+        $emailInput = strtolower(trim($data['email'] ?? ''));
+        $email = '';
+        if (!empty($emailInput)) {
+            $parts = explode('@', $emailInput);
+            $email = $parts[0] . '@baby.com';
+        }
         $password = $data['password'] ?? '';
 
         // التحقق من المدخلات
@@ -82,7 +87,12 @@ switch ($action) {
         }
 
         $data = getJsonInput();
-        $email = strtolower(trim($data['email'] ?? ''));
+        $emailInput = strtolower(trim($data['email'] ?? ''));
+        $email = '';
+        if (!empty($emailInput)) {
+            $parts = explode('@', $emailInput);
+            $email = $parts[0] . '@baby.com';
+        }
         $password = $data['password'] ?? '';
 
         if (empty($email) || empty($password)) {
