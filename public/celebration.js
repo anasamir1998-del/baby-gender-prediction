@@ -264,8 +264,10 @@ async function fetchTargetDate() {
         const data = await res.json();
         if (data.success) {
             eventData = data;
-            MAIN_BABY_NAME = eventData.baby_name;
-            SUB_BABY_NAME = eventData.sub_baby_name;
+            
+            // Normalize names by trimming whitespace and handling null/undefined safely
+            MAIN_BABY_NAME = (eventData.baby_name || "").trim();
+            SUB_BABY_NAME = (eventData.sub_baby_name || "").trim();
             globalTargetDate = new Date(eventData.target_date);
             
             // Apply any live updates to gender styling dynamically
@@ -1062,8 +1064,8 @@ async function loadEvent() {
         }
         
         eventData = data;
-        MAIN_BABY_NAME = eventData.baby_name;
-        SUB_BABY_NAME = eventData.sub_baby_name;
+        MAIN_BABY_NAME = (eventData.baby_name || "").trim();
+        SUB_BABY_NAME = (eventData.sub_baby_name || "").trim();
         globalTargetDate = new Date(eventData.target_date);
         
         // Dynamic Title
