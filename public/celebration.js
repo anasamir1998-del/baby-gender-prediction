@@ -257,13 +257,20 @@ let countdownInterval = null;
 let isSuspenseStarted = false; // Prevent double execution
 let globalTargetDate = new Date(Date.now() + 3600000); // Default fallback
 
-// Fetch target date from API and poll for updates
+// Fetch target date and live configurations from API and poll for updates
 async function fetchTargetDate() {
     try {
         const res = await fetch(`${API_BASE}/events.php?slug=${eventSlug}`);
         const data = await res.json();
-        if (data.success && data.target_date) {
-            globalTargetDate = new Date(data.target_date);
+        if (data.success) {
+            eventData = data;
+            MAIN_BABY_NAME = eventData.baby_name;
+            SUB_BABY_NAME = eventData.sub_baby_name;
+            globalTargetDate = new Date(eventData.target_date);
+            
+            // Apply any live updates to gender styling dynamically
+            applyGenderStyles();
+            
             // Restart countdown with new date if it's already running
             if (countdownPage.classList.contains('active')) {
                 clearInterval(countdownInterval);
@@ -271,7 +278,7 @@ async function fetchTargetDate() {
             }
         }
     } catch (e) {
-        console.log('Failed to fetch target date:', e);
+        console.log('Failed to fetch live updates:', e);
     }
 }
 

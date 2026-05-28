@@ -56,12 +56,13 @@ if ($method === 'GET' && isset($_GET['slug'])) {
         ]);
     }
 
-    // إرجاع البيانات العامة (تخطي إرجاع الجنس الفعلي للزوار لحفظ السرية التامة قبل الفرقعة!)
+    // إرجاع البيانات العامة
     jsonResponse([
         'success' => true,
         'id' => $event['id'],
         'baby_name' => $event['baby_name'],
         'sub_baby_name' => $event['sub_baby_name'],
+        'revealed_gender' => $event['revealed_gender'],
         'target_date' => $event['target_date'],
         'admin_pin' => $event['admin_pin'], // مستخدم لتخطي لوحة النتائج محلياً
         'status' => $event['subscription_status'],
