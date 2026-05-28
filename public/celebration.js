@@ -276,6 +276,14 @@ async function fetchTargetDate() {
                 clearInterval(countdownInterval);
                 startCountdown();
             }
+
+            // Dynamically update the names on screen if already in the reveal page without refresh
+            if (revealPage && revealPage.classList.contains('active') && revealName) {
+                revealName.innerHTML = `
+                    <div class="main-name-reveal">${MAIN_BABY_NAME}</div>
+                    <div class="sub-name-reveal">${SUB_BABY_NAME}</div>
+                `;
+            }
         }
     } catch (e) {
         console.log('Failed to fetch live updates:', e);
