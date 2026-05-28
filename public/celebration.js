@@ -277,12 +277,20 @@ async function fetchTargetDate() {
                 startCountdown();
             }
 
-            // Dynamically update the names on screen if already in the reveal page without refresh
+            // Dynamically update the names on screen only if they actually changed (to prevent animation re-triggers)
             if (revealPage && revealPage.classList.contains('active') && revealName) {
-                revealName.innerHTML = `
-                    <div class="main-name-reveal">${MAIN_BABY_NAME}</div>
-                    <div class="sub-name-reveal">${SUB_BABY_NAME}</div>
-                `;
+                const currentMainNode = revealName.querySelector('.main-name-reveal');
+                const currentSubNode = revealName.querySelector('.sub-name-reveal');
+                
+                const currentMain = currentMainNode ? currentMainNode.textContent.trim() : '';
+                const currentSub = currentSubNode ? currentSubNode.textContent.trim() : '';
+                
+                if (currentMain !== MAIN_BABY_NAME || currentSub !== SUB_BABY_NAME) {
+                    revealName.innerHTML = `
+                        <div class="main-name-reveal">${MAIN_BABY_NAME}</div>
+                        <div class="sub-name-reveal">${SUB_BABY_NAME}</div>
+                    `;
+                }
             }
         }
     } catch (e) {
