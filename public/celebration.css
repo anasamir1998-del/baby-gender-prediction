@@ -1158,139 +1158,222 @@ body {
 }
 
 /* ============ IDEA 5: SOUVENIR CARD - ENCHANTED GARDEN ============ */
+/* ============ NEW PREMIUM SOUVENIR CARD ============ */
 .souvenir-card-template {
     position: fixed;
     top: -3000px; /* Way out of view */
     left: 0;
     width: 600px;
     height: 800px;
-    background: linear-gradient(160deg, #fefdf5 0%, #faf5ee 30%, #f5f0e3 60%, #fef9f0 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Tajawal', sans-serif;
     direction: rtl;
     overflow: hidden;
+    background-color: #FAF6EE;
 }
 
-/* Corner Botanical Decorations */
-.garden-corner {
+/* Background SVGs fit perfectly */
+.card-svg-frame {
     position: absolute;
-    font-size: 2.2rem;
-    z-index: 2;
-    opacity: 0.85;
-    line-height: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
-.garden-corner-tl { top: 18px; left: 18px; }
-.garden-corner-tr { top: 18px; right: 18px; }
-.garden-corner-bl { bottom: 18px; left: 18px; }
-.garden-corner-br { bottom: 18px; right: 18px; }
 
-/* Floating Butterflies */
-.garden-butterfly {
+/* Content overlay positioning */
+.card-content-overlay {
     position: absolute;
-    font-size: 1.6rem;
-    z-index: 3;
-    opacity: 0.7;
-}
-.garden-bf-1 { top: 90px; right: 55px; transform: rotate(-15deg); }
-.garden-bf-2 { top: 200px; left: 40px; transform: rotate(20deg) scaleX(-1); }
-.garden-bf-3 { bottom: 130px; right: 70px; transform: rotate(10deg); }
-
-.card-inner {
-    width: 520px;
-    height: 720px;
-    border: 3px dashed #b5c9a8;
-    border-radius: 24px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 25px 20px;
-    color: #3d5a3a;
+    padding: 40px;
+    box-sizing: border-box;
     text-align: center;
-    position: relative;
-    background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(250,245,238,0.3) 100%);
 }
 
-.card-header {
-    font-size: 1.4rem;
-    color: #7a9e6d;
-    margin-bottom: 30px;
+/* 1. Baby Name Title */
+.card-name-title {
+    margin-top: 195px;
+    font-size: 5.6rem;
     font-weight: 800;
-    letter-spacing: 1px;
-}
-
-.card-main-name {
-    font-size: 5.5rem;
-    font-weight: 900;
-    color: #c75b7a;
-    margin-bottom: 0px;
     line-height: 1.1;
-    text-shadow: 0 3px 8px rgba(199, 91, 122, 0.15);
+    font-family: 'Reem Kufi', 'Amiri', serif;
+    letter-spacing: -1px;
+}
+.theme-girl .card-name-title {
+    color: #c75b7a;
+    text-shadow: 0 4px 10px rgba(199, 91, 122, 0.18);
+}
+.theme-boy .card-name-title {
+    color: #ffffff;
+    text-shadow: 0 4px 15px rgba(255, 255, 255, 0.3), 0 0 10px rgba(235, 204, 110, 0.4);
 }
 
-.card-sub-text {
-    font-size: 2.2rem;
-    color: #7a9e6d;
-    margin-bottom: 35px;
+/* 2. Father Subtext */
+.card-father-name {
+    margin-top: 10px;
+    margin-bottom: 30px;
+    font-size: 2.3rem;
     font-weight: 700;
+    font-family: 'Aref Ruqaa', 'Amiri', serif;
+}
+.theme-girl .card-father-name {
+    color: #5a7a52;
+}
+.theme-boy .card-father-name {
+    color: #ebcc6e;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-/* Ribbon-style gender badge */
-.card-gender-ribbon {
+/* 3. 3D Ribbon Banner */
+.card-ribbon-banner {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 320px;
+    height: 70px;
+    margin-bottom: 25px;
+}
+
+.ribbon-center {
+    position: relative;
+    width: 210px;
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 35px;
-    position: relative;
+    z-index: 4;
+    border-radius: 4px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+.theme-girl .ribbon-center {
+    background: linear-gradient(135deg, #e39ca9 0%, #c65b71 100%);
+    border: 2px solid #ffffff;
+}
+.theme-boy .ribbon-center {
+    background: linear-gradient(135deg, #ebd287 0%, #d4af37 100%);
+    border: 2px solid #ffffff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.35);
 }
 
+.ribbon-center span {
+    font-family: 'Reem Kufi', 'Tajawal', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+.theme-boy .ribbon-center span {
+    color: #0c1d3b;
+    text-shadow: none;
+}
+
+/* Folds */
 .ribbon-fold-left,
 .ribbon-fold-right {
+    position: absolute;
+    top: 48px;
     width: 0;
     height: 0;
     border-style: solid;
+    z-index: 3;
+}
+.theme-girl .ribbon-fold-left {
+    left: 47px;
+    border-width: 8px 8px 0 0;
+    border-color: #8c3647 transparent transparent transparent;
+}
+.theme-girl .ribbon-fold-right {
+    right: 47px;
+    border-width: 8px 0 0 8px;
+    border-color: #8c3647 transparent transparent transparent;
+}
+.theme-boy .ribbon-fold-left {
+    left: 47px;
+    border-width: 8px 8px 0 0;
+    border-color: #8c6d1a transparent transparent transparent;
+}
+.theme-boy .ribbon-fold-right {
+    right: 47px;
+    border-width: 8px 0 0 8px;
+    border-color: #8c6d1a transparent transparent transparent;
 }
 
-.ribbon-fold-left {
-    border-width: 28px 0 28px 18px;
-    border-color: transparent transparent transparent #d4a5b5;
+/* Tails */
+.ribbon-tail-left,
+.ribbon-tail-right {
+    position: absolute;
+    top: 8px;
+    width: 60px;
+    height: 46px;
+    z-index: 2;
+}
+.theme-girl .ribbon-tail-left {
+    left: 0px;
+    background: #e39ca9;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 25% 50%);
+    border: 2px solid #ffffff;
+    border-right: none;
+}
+.theme-girl .ribbon-tail-right {
+    right: 0px;
+    background: #e39ca9;
+    clip-path: polygon(0% 0%, 100% 0%, 75% 50%, 100% 100%, 0% 100%);
+    border: 2px solid #ffffff;
+    border-left: none;
+}
+.theme-boy .ribbon-tail-left {
+    left: 0px;
+    background: #ebd287;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 25% 50%);
+    border: 2px solid #ffffff;
+    border-right: none;
+}
+.theme-boy .ribbon-tail-right {
+    right: 0px;
+    background: #ebd287;
+    clip-path: polygon(0% 0%, 100% 0%, 75% 50%, 100% 100%, 0% 100%);
+    border: 2px solid #ffffff;
+    border-left: none;
 }
 
-.ribbon-fold-right {
-    border-width: 28px 18px 28px 0;
-    border-color: transparent #d4a5b5 transparent transparent;
-}
-
-.card-gender-tag {
-    background: linear-gradient(135deg, #c75b7a, #d4728e);
-    color: white;
-    padding: 14px 35px;
-    font-size: 2rem;
-    font-weight: 800;
-    border-radius: 0;
-    box-shadow: 0 4px 12px rgba(199, 91, 122, 0.25);
-}
-
-.card-footer {
-    font-size: 1.3rem;
-    color: #5a7a52;
+/* 4. Prayer Text */
+.card-prayer-text {
+    margin-top: 30px;
+    font-size: 2.1rem;
     font-weight: 700;
+    font-family: 'Amiri', serif;
+}
+.theme-girl .card-prayer-text {
+    color: #5a7a52;
+}
+.theme-boy .card-prayer-text {
+    color: #ebd287;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-.card-date {
-    font-size: 1rem;
-    color: rgba(93, 122, 82, 0.4);
-    margin-top: 10px;
+/* 5. Date Display */
+.card-date-display {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-family: 'Aref Ruqaa', 'Tajawal', sans-serif;
+    opacity: 0.85;
 }
-
-/* Bottom floral decoration */
-.card-bottom-floral {
-    font-size: 1.8rem;
-    margin-top: 20px;
-    letter-spacing: 8px;
-    opacity: 0.7;
+.theme-girl .card-date-display {
+    color: #8da883;
+}
+.theme-boy .card-date-display {
+    color: #ebcc6e;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 

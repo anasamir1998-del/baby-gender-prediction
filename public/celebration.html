@@ -21,9 +21,9 @@
     <meta name="description" content="احتفالية الكشف عن جنس المولود - لحظة لا تُنسى">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="celebration.css?v=9.0">
+    <link rel="stylesheet" href="celebration.css?v=10.0">
 
 
 
@@ -214,30 +214,27 @@
 
         <!-- Dedicated Souvenir Card (Hidden from view, used for capture) -->
         <div id="souvenirCard" class="souvenir-card-template">
-            <!-- Corner Botanical Decorations -->
-            <div class="garden-corner garden-corner-tl">🌿🌸</div>
-            <div class="garden-corner garden-corner-tr">🌸🌿</div>
-            <div class="garden-corner garden-corner-bl">🍃🌷</div>
-            <div class="garden-corner garden-corner-br">🌷🍃</div>
-            <!-- Floating Butterflies -->
-            <div class="garden-butterfly garden-bf-1">🦋</div>
-            <div class="garden-butterfly garden-bf-2">🦋</div>
-            <div class="garden-butterfly garden-bf-3">🦋</div>
-            <div class="card-inner">
-                <div class="card-header">🌺 ذكرى الكشف عن المولود 🌺</div>
-                <div class="card-main-name" id="cardName">إيلان</div>
-                <div class="card-sub-text" id="cardSubText">نايف باوزير</div>
-                <div class="card-gender-ribbon">
-                    <div class="ribbon-fold-left"></div>
-                    <div class="card-gender-tag">إنها بنت! 👸</div>
-                    <div class="ribbon-fold-right"></div>
+            <!-- Dynamic SVG Frame Container -->
+            <div id="cardSvgContainer" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+            
+            <!-- Text Content Overlay (Layered on top of SVG) -->
+            <div class="card-content-overlay" style="z-index: 2;">
+                <div class="card-name-title" id="cardName">وَتِين</div>
+                <div class="card-father-name" id="cardSubText">سَمِير مُحَمَّد كَمَال</div>
+                
+                <!-- Premium 3D Ribbon Banner -->
+                <div class="card-ribbon-banner">
+                    <div class="ribbon-tail-left" id="ribbonTailLeft"></div>
+                    <div class="ribbon-fold-left" id="ribbonFoldLeft"></div>
+                    <div class="ribbon-center" id="ribbonCenter">
+                        <span id="cardGenderTag">إِنَّهَا بِنْتُ!</span>
+                    </div>
+                    <div class="ribbon-fold-right" id="ribbonFoldRight"></div>
+                    <div class="ribbon-tail-right" id="ribbonTailRight"></div>
                 </div>
-                <div class="card-footer">
-                    <p>اللهم أنبتها نباتاً حسناً 🤲</p>
-                    <div id="cardDate" style="margin-top:10px; font-size: 0.8rem; opacity: 0.5;"></div>
-                </div>
-                <!-- Bottom Floral -->
-                <div class="card-bottom-floral">🌼🌿🌸🌿🌼</div>
+                
+                <div class="card-prayer-text" id="cardPrayer">اللَّهُمَّ أَنْبَتَهَا نَبَاتًا حَسَنًا</div>
+                <div class="card-date-display" id="cardDate">28/05/2026</div>
             </div>
         </div>
     </div>

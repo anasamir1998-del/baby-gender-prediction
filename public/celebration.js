@@ -1032,102 +1032,454 @@ function showExpiredOverlay() {
     document.body.appendChild(overlay);
 }
 
+// ============ PREMIUM SOUVENIR CARD FRAMES (SVG) ============
+const GIRL_SVG_FRAME = `
+<svg class="card-svg-frame" width="100%" height="100%" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Rose Gradient -->
+    <radialGradient id="roseGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff0f2" />
+      <stop offset="50%" stop-color="#f5b3be" />
+      <stop offset="100%" stop-color="#c65b71" />
+    </radialGradient>
+    
+    <!-- Peach Gradient -->
+    <radialGradient id="peachGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8f5" />
+      <stop offset="60%" stop-color="#fcc7ac" />
+      <stop offset="100%" stop-color="#d47d6c" />
+    </radialGradient>
+
+    <!-- Golden Rose/Flower Gradient -->
+    <radialGradient id="goldFlowerGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fffbf0" />
+      <stop offset="70%" stop-color="#ebd59b" />
+      <stop offset="100%" stop-color="#b59443" />
+    </radialGradient>
+    
+    <!-- Leaf Gradient -->
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d2e3cb" />
+      <stop offset="50%" stop-color="#8da883" />
+      <stop offset="100%" stop-color="#4d6643" />
+    </linearGradient>
+
+    <linearGradient id="leafGradLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8f3e3" />
+      <stop offset="100%" stop-color="#b0cca3" />
+    </linearGradient>
+    
+    <!-- Gold Lantern Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff3d1" />
+      <stop offset="40%" stop-color="#e5c158" />
+      <stop offset="100%" stop-color="#96721b" />
+    </linearGradient>
+
+    <!-- Single Rose Symbol -->
+    <g id="svg-rose-pink">
+      <circle cx="0" cy="0" r="16" fill="url(#roseGrad)" />
+      <path d="M-8,-4 C-12,4 -4,12 4,12 C12,12 12,4 8,-4 C4,-8 -4,-8 -8,-4 Z" fill="none" stroke="#a23b50" stroke-width="0.8" opacity="0.3" />
+      <circle cx="-4" cy="-4" r="8" fill="#fff0f2" opacity="0.4" />
+      <circle cx="4" cy="-4" r="8" fill="#f5b3be" opacity="0.4" />
+      <circle cx="0" cy="4" r="9" fill="#c65b71" opacity="0.3" />
+      <circle cx="0" cy="0" r="4" fill="#a23b50" />
+    </g>
+
+    <!-- Single Peach Flower Symbol -->
+    <g id="svg-flower-peach">
+      <circle cx="0" cy="0" r="13" fill="url(#peachGrad)" />
+      <circle cx="-3" cy="-3" r="6" fill="#fff8f5" opacity="0.5" />
+      <circle cx="3" cy="-3" r="6" fill="#fcc7ac" opacity="0.5" />
+      <circle cx="0" cy="3" r="7" fill="#d47d6c" opacity="0.4" />
+      <circle cx="0" cy="0" r="3" fill="#9e4a3b" />
+    </g>
+
+    <!-- Cream/Gold Rose Symbol -->
+    <g id="svg-rose-gold">
+      <circle cx="0" cy="0" r="14" fill="url(#goldFlowerGrad)" />
+      <circle cx="0" cy="0" r="4" fill="#8c6f27" />
+    </g>
+
+    <!-- Leaf Pair Symbol -->
+    <g id="svg-leaf-pair">
+      <!-- Main stem -->
+      <path d="M 0,15 L 0,-10" stroke="#4d6643" stroke-width="1" opacity="0.6" />
+      <!-- Left leaf -->
+      <path d="M 0,5 C -12,2 -16,-8 -10,-12 C -6,-10 -2,-2 0,5" fill="url(#leafGrad)" />
+      <!-- Right leaf -->
+      <path d="M 0,5 C 12,2 16,-8 10,-12 C 6,-10 2,-2 0,5" fill="url(#leafGrad)" />
+    </g>
+
+    <!-- Simple Leaf Sprig -->
+    <g id="svg-leaf-sprig">
+      <path d="M 0,20 Q -6,0 0,-20" fill="none" stroke="#4d6643" stroke-width="1.2" opacity="0.6" />
+      <path d="M 0,-10 C -8,-12 -10,-18 -6,-20 C -2,-18 -1,-12 0,-10" fill="url(#leafGradLight)" />
+      <path d="M 0,-10 C 8,-12 10,-18 6,-20 C 2,-18 1,-12 0,-10" fill="url(#leafGradLight)" />
+      <path d="M 0,5 C -8,3 -10,-3 -6,-5 C -2,-3 -1,3 0,5" fill="url(#leafGrad)" />
+      <path d="M 0,5 C 8,3 10,-3 6,-5 C 2,-3 1,3 0,5" fill="url(#leafGrad)" />
+    </g>
+
+    <!-- Traditional Lantern -->
+    <g id="svg-lantern">
+      <line x1="0" y1="-80" x2="0" y2="-12" stroke="#d4af37" stroke-width="1.2" />
+      <circle cx="0" cy="-12" r="3" fill="none" stroke="#d4af37" stroke-width="1.2" />
+      <path d="M -12,-8 L 12,-8 L 7,-14 L -7,-14 Z" fill="url(#goldGrad)" stroke="#8a6c1e" stroke-width="0.8" />
+      <path d="M -12,-8 L -15,12 L 0,26 L 15,12 L 12,-8 Z" fill="#fffdf2" stroke="#8a6c1e" stroke-width="1" />
+      <path d="M -8,-6 L -10,10 L 0,20 L 10,10 L 8,-6 Z" fill="#ffd954" opacity="0.75" />
+      <line x1="0" y1="-8" x2="0" y2="26" stroke="#8a6c1e" stroke-width="0.8" />
+      <path d="M -12,-8 Q 0,-2 12,-8" fill="none" stroke="#8a6c1e" stroke-width="0.8" />
+      <path d="M -15,12 Q 0,18 15,12" fill="none" stroke="#8a6c1e" stroke-width="0.8" />
+      <path d="M -6,26 L 6,26 L 0,32 Z" fill="url(#goldGrad)" stroke="#8a6c1e" stroke-width="0.8" />
+      <!-- Small hanging tassel -->
+      <line x1="0" y1="32" x2="0" y2="42" stroke="#d4af37" stroke-width="1" />
+      <circle cx="0" cy="42" r="1.5" fill="#d4af37" />
+    </g>
+
+    <!-- Butterfly Symbol -->
+    <g id="svg-butterfly">
+      <path d="M 0,0 C -6,-8 -12,-6 -10,2 C -8,8 -2,4 0,0" fill="#f5b3be" stroke="#c65b71" stroke-width="0.4" />
+      <path d="M 0,0 C 6,-8 12,-6 10,2 C 8,8 2,4 0,0" fill="#f5b3be" stroke="#c65b71" stroke-width="0.4" />
+      <path d="M 0,1 C -5,5 -8,3 -6,0" fill="#fcc7ac" stroke="#d47d6c" stroke-width="0.4" />
+      <path d="M 0,1 C 5,5 8,3 6,0" fill="#fcc7ac" stroke="#d47d6c" stroke-width="0.4" />
+      <circle cx="0" cy="-1" r="1" fill="#4a3b3d" />
+      <path d="M -0.5,-2 Q -2,-5 -4,-6" fill="none" stroke="#4a3b3d" stroke-width="0.4" />
+      <path d="M 0.5,-2 Q 2,-5 4,-6" fill="none" stroke="#4a3b3d" stroke-width="0.4" />
+    </g>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="600" height="800" fill="#FAF6EE" />
+  <rect width="600" height="800" fill="#f5ebd9" opacity="0.35" />
+  <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+    <stop offset="60%" stop-color="#FAF6EE" stop-opacity="0" />
+    <stop offset="100%" stop-color="#dfceb1" stop-opacity="0.3" />
+  </radialGradient>
+  <rect width="600" height="800" fill="url(#vignette)" />
+
+  <!-- Borders -->
+  <rect x="22" y="22" width="556" height="756" rx="32" ry="32" fill="none" stroke="#d5c7b3" stroke-width="1.8" stroke-dasharray="8, 5" />
+  <rect x="27" y="27" width="546" height="746" rx="27" ry="27" fill="none" stroke="#8da883" stroke-width="1.2" opacity="0.35" />
+
+  <!-- Elegant Floral Arch Structure -->
+  <path d="M 70,680 Q 60,95 300,95" fill="none" stroke="#9da694" stroke-width="1.5" opacity="0.4" />
+  <path d="M 530,680 Q 540,95 300,95" fill="none" stroke="#9da694" stroke-width="1.5" opacity="0.4" />
+
+  <!-- Dynamic Leaf sprigs along the arch -->
+  <use href="#svg-leaf-sprig" x="110" y="220" transform="rotate(-50 110 220) scale(1.1)" />
+  <use href="#svg-leaf-sprig" x="490" y="220" transform="rotate(50 490 220) scale(1.1)" />
+  <use href="#svg-leaf-sprig" x="180" y="140" transform="rotate(-30 180 140) scale(1)" />
+  <use href="#svg-leaf-sprig" x="420" y="140" transform="rotate(30 420 140) scale(1)" />
+
+  <!-- Left Side Flowers & Leaves -->
+  <use href="#svg-leaf-pair" x="75" y="580" transform="rotate(-100 75 580) scale(1.1)" />
+  <use href="#svg-rose-pink" x="80" y="550" transform="scale(1.2)" />
+  <use href="#svg-flower-peach" x="90" y="585" />
+  
+  <use href="#svg-leaf-pair" x="70" y="450" transform="rotate(-85 70 450) scale(1)" />
+  <use href="#svg-rose-gold" x="70" y="420" />
+  <use href="#svg-rose-pink" x="75" y="460" transform="scale(0.9)" />
+
+  <use href="#svg-leaf-pair" x="75" y="320" transform="rotate(-65 75 320) scale(1.1)" />
+  <use href="#svg-rose-pink" x="80" y="290" transform="scale(1.3)" />
+  <use href="#svg-flower-peach" x="72" y="335" />
+
+  <use href="#svg-leaf-pair" x="115" y="200" transform="rotate(-45 115 200) scale(1)" />
+  <use href="#svg-rose-gold" x="120" y="180" />
+  <use href="#svg-rose-pink" x="100" y="210" transform="scale(0.95)" />
+
+  <!-- Right Side Flowers & Leaves -->
+  <use href="#svg-leaf-pair" x="525" y="580" transform="rotate(100 525 580) scale(1.1)" />
+  <use href="#svg-rose-pink" x="520" y="550" transform="scale(1.2)" />
+  <use href="#svg-flower-peach" x="510" y="585" />
+
+  <use href="#svg-leaf-pair" x="530" y="450" transform="rotate(85 530 450) scale(1)" />
+  <use href="#svg-rose-gold" x="530" y="420" />
+  <use href="#svg-rose-pink" x="525" y="460" transform="scale(0.9)" />
+
+  <use href="#svg-leaf-pair" x="525" y="320" transform="rotate(65 525 320) scale(1.1)" />
+  <use href="#svg-rose-pink" x="520" y="290" transform="scale(1.3)" />
+  <use href="#svg-flower-peach" x="528" y="335" />
+
+  <use href="#svg-leaf-pair" x="485" y="200" transform="rotate(45 485 200) scale(1)" />
+  <use href="#svg-rose-gold" x="480" y="180" />
+  <use href="#svg-rose-pink" x="500" y="210" transform="scale(0.95)" />
+
+  <!-- Top Curved Arch Floral Arrangement -->
+  <use href="#svg-leaf-pair" x="300" y="85" transform="rotate(0 300 85) scale(1.3)" />
+  <use href="#svg-rose-pink" x="300" y="85" transform="scale(1.5)" />
+  <use href="#svg-flower-peach" x="260" y="90" transform="scale(1.1)" />
+  <use href="#svg-rose-gold" x="340" y="90" transform="scale(1.1)" />
+  <use href="#svg-flower-peach" x="220" y="105" />
+  <use href="#svg-rose-pink" x="380" y="105" />
+
+  <!-- Symmetrical Hanging Golden Lanterns -->
+  <use href="#svg-lantern" x="160" y="240" />
+  <use href="#svg-lantern" x="440" y="240" />
+
+  <!-- Symmetrical Butterflies -->
+  <use href="#svg-butterfly" x="125" y="380" transform="rotate(-15 125 380) scale(1.2)" />
+  <use href="#svg-butterfly" x="475" y="350" transform="rotate(25 475 350) scale(1.2)" />
+  <use href="#svg-butterfly" x="430" y="520" transform="rotate(-10 430 520) scale(1.1)" />
+  <use href="#svg-butterfly" x="170" y="560" transform="rotate(20 170 560) scale(1.1)" />
+
+  <!-- Symmetrical Beautiful Bottom Flower Clusters -->
+  <use href="#svg-leaf-pair" x="120" y="735" transform="rotate(-30 120 735) scale(1)" />
+  <use href="#svg-rose-pink" x="120" y="735" transform="scale(1.1)" />
+  <use href="#svg-flower-peach" x="155" y="745" />
+  <use href="#svg-leaf-pair" x="155" y="745" transform="rotate(10 155 745) scale(0.9)" />
+
+  <use href="#svg-leaf-pair" x="480" y="735" transform="rotate(30 480 735) scale(1)" />
+  <use href="#svg-rose-pink" x="480" y="735" transform="scale(1.1)" />
+  <use href="#svg-flower-peach" x="445" y="745" />
+  <use href="#svg-leaf-pair" x="445" y="745" transform="rotate(-10 445 745) scale(0.9)" />
+
+  <use href="#svg-leaf-pair" x="300" y="750" transform="scale(1)" />
+  <use href="#svg-rose-gold" x="300" y="750" transform="scale(1.2)" />
+  <use href="#svg-flower-peach" x="270" y="755" />
+  <use href="#svg-rose-pink" x="330" y="755" transform="scale(0.9)" />
+</svg>
+`;
+
+const BOY_SVG_FRAME = `
+<svg class="card-svg-frame" width="100%" height="100%" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Royal Dark Blue Gradient -->
+    <linearGradient id="boyBgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#071126" />
+      <stop offset="40%" stop-color="#0c1d3b" />
+      <stop offset="100%" stop-color="#142c54" />
+    </linearGradient>
+
+    <!-- Star Glow Filter -->
+    <filter id="starGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Gold Gradients -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff6db" />
+      <stop offset="35%" stop-color="#ebd287" />
+      <stop offset="70%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#8c6d1a" />
+    </linearGradient>
+
+    <radialGradient id="starGlowGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fff8db" />
+      <stop offset="70%" stop-color="#ebcc6e" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#ebcc6e" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Crown Symbol -->
+    <g id="svg-crown">
+      <path d="M -16,10 L 16,10 L 20,-2 L 10,4 L 0,-10 L -10,4 L -20,-2 Z" fill="url(#goldGrad)" stroke="#695111" stroke-width="0.8" />
+      <rect x="-14" y="8" width="28" height="2" fill="#fff" opacity="0.6" />
+      <circle cx="-16" cy="-2" r="1.5" fill="#fff" />
+      <circle cx="16" cy="-2" r="1.5" fill="#fff" />
+      <circle cx="0" cy="-10" r="2" fill="#ffd954" filter="url(#starGlow)" />
+      <circle cx="-10" cy="4" r="1.2" fill="#ffd954" />
+      <circle cx="10" cy="4" r="1.2" fill="#ffd954" />
+      <circle cx="0" cy="4" r="1.5" fill="#fff" />
+    </g>
+
+    <!-- Glowing Star Symbol -->
+    <g id="svg-star-glowing">
+      <circle cx="0" cy="0" r="10" fill="url(#starGlowGrad)" />
+      <path d="M 0,-8 L 2,-2 L 8,0 L 2,2 L 0,8 L -2,2 L -8,0 L -2,-2 Z" fill="#ffffff" />
+    </g>
+
+    <!-- Tiny Star Symbol -->
+    <g id="svg-star-tiny">
+      <path d="M 0,-4 L 1,-1 L 4,0 L 1,1 L 0,4 L -1,1 L -4,0 L -1,-1 Z" fill="#ebcc6e" opacity="0.8" />
+    </g>
+
+    <!-- Crescent Moon Symbol -->
+    <g id="svg-moon">
+      <path d="M -10,-10 A 14,14 0 1,0 12,12 A 12,12 0 1,1 -10,-10 Z" fill="url(#goldGrad)" filter="url(#starGlow)" />
+    </g>
+
+    <!-- Traditional Lantern (Boy edition) -->
+    <g id="svg-lantern-boy">
+      <line x1="0" y1="-80" x2="0" y2="-12" stroke="#ebd287" stroke-width="1.2" opacity="0.75" />
+      <circle cx="0" cy="-12" r="3" fill="none" stroke="#ebd287" stroke-width="1.2" />
+      <path d="M -12,-8 L 12,-8 L 7,-14 L -7,-14 Z" fill="url(#goldGrad)" stroke="#695111" stroke-width="0.8" />
+      <path d="M -12,-8 L -15,12 L 0,26 L 15,12 L 12,-8 Z" fill="#fffdf2" stroke="#695111" stroke-width="1" />
+      <path d="M -8,-6 L -10,10 L 0,20 L 10,10 L 8,-6 Z" fill="#ffffff" filter="url(#starGlow)" />
+      <line x1="0" y1="-8" x2="0" y2="26" stroke="#695111" stroke-width="0.8" />
+      <path d="M -12,-8 Q 0,-2 12,-8" fill="none" stroke="#695111" stroke-width="0.8" />
+      <path d="M -15,12 Q 0,18 15,12" fill="none" stroke="#695111" stroke-width="0.8" />
+      <path d="M -6,26 L 6,26 L 0,32 Z" fill="url(#goldGrad)" stroke="#695111" stroke-width="0.8" />
+      <line x1="0" y1="32" x2="0" y2="42" stroke="#ebd287" stroke-width="1" />
+      <circle cx="0" cy="42" r="1.5" fill="#ebd287" />
+    </g>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="800" fill="url(#boyBgGrad)" />
+  <radialGradient id="boyVignette" cx="50%" cy="45%" r="60%">
+    <stop offset="0%" stop-color="#142c54" stop-opacity="0.4" />
+    <stop offset="100%" stop-color="#040a17" stop-opacity="0.85" />
+  </radialGradient>
+  <rect width="600" height="800" fill="url(#boyVignette)" />
+
+  <!-- Borders -->
+  <rect x="22" y="22" width="556" height="756" rx="32" ry="32" fill="none" stroke="#ebd287" stroke-width="1.8" stroke-dasharray="8, 5" opacity="0.8" />
+  <rect x="27" y="27" width="546" height="746" rx="27" ry="27" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.15" />
+
+  <!-- Star Arch Structure -->
+  <path d="M 70,680 Q 60,95 300,95 T 530,680" fill="none" stroke="#ffffff" stroke-width="0.8" stroke-dasharray="3, 8" opacity="0.3" />
+  
+  <!-- Floating Arch Elements -->
+  <use href="#svg-crown" x="300" y="80" transform="scale(1.3)" />
+  <use href="#svg-moon" x="300" y="135" transform="rotate(-15 300 135) scale(1.1)" />
+
+  <!-- Left Side Star Clusters -->
+  <use href="#svg-star-glowing" x="180" y="110" transform="scale(1.2)" />
+  <use href="#svg-star-tiny" x="150" y="130" />
+  <use href="#svg-star-tiny" x="200" y="90" />
+  
+  <use href="#svg-star-glowing" x="110" y="170" />
+  <use href="#svg-star-tiny" x="90" y="195" />
+
+  <use href="#svg-star-glowing" x="75" y="270" transform="scale(1.3)" />
+  <use href="#svg-star-tiny" x="60" y="295" />
+  <use href="#svg-star-tiny" x="95" y="250" />
+
+  <use href="#svg-star-glowing" x="65" y="380" />
+  <use href="#svg-star-tiny" x="80" y="410" />
+
+  <use href="#svg-star-glowing" x="75" y="490" transform="scale(1.1)" />
+  <use href="#svg-star-tiny" x="60" y="520" />
+  <use href="#svg-star-tiny" x="90" y="470" />
+
+  <use href="#svg-star-glowing" x="100" y="600" />
+  <use href="#svg-star-tiny" x="120" y="625" />
+
+  <!-- Right Side Star Clusters -->
+  <use href="#svg-star-glowing" x="420" y="110" transform="scale(1.2)" />
+  <use href="#svg-star-tiny" x="450" y="130" />
+  <use href="#svg-star-tiny" x="400" y="90" />
+
+  <use href="#svg-star-glowing" x="490" y="170" />
+  <use href="#svg-star-tiny" x="510" y="195" />
+
+  <use href="#svg-star-glowing" x="525" y="270" transform="scale(1.3)" />
+  <use href="#svg-star-tiny" x="540" y="295" />
+  <use href="#svg-star-tiny" x="505" y="250" />
+
+  <use href="#svg-star-glowing" x="535" y="380" />
+  <use href="#svg-star-tiny" x="520" y="410" />
+
+  <use href="#svg-star-glowing" x="525" y="490" transform="scale(1.1)" />
+  <use href="#svg-star-tiny" x="540" y="520" />
+  <use href="#svg-star-tiny" x="510" y="470" />
+
+  <use href="#svg-star-glowing" x="500" y="600" />
+  <use href="#svg-star-tiny" x="480" y="625" />
+
+  <!-- Symmetrical Hanging Golden Lanterns -->
+  <use href="#svg-lantern-boy" x="160" y="240" />
+  <use href="#svg-lantern-boy" x="440" y="240" />
+
+  <!-- Tiny Constellations -->
+  <line x1="80" y1="320" x2="110" y2="350" stroke="#fff" stroke-width="0.5" opacity="0.25" />
+  <line x1="110" y1="350" x2="150" y2="340" stroke="#fff" stroke-width="0.5" opacity="0.25" />
+  <use href="#svg-star-tiny" x="80" y="320" />
+  <use href="#svg-star-tiny" x="110" y="350" />
+  <use href="#svg-star-tiny" x="150" y="340" />
+
+  <line x1="520" y1="320" x2="490" y2="350" stroke="#fff" stroke-width="0.5" opacity="0.25" />
+  <line x1="490" y1="350" x2="450" y2="340" stroke="#fff" stroke-width="0.5" opacity="0.25" />
+  <use href="#svg-star-tiny" x="520" y="320" />
+  <use href="#svg-star-tiny" x="490" y="350" />
+  <use href="#svg-star-tiny" x="450" y="340" />
+
+  <!-- Symmetrical Beautiful Bottom Golden Clusters -->
+  <use href="#svg-crown" x="120" y="735" transform="scale(0.85)" />
+  <use href="#svg-star-glowing" x="155" y="745" transform="scale(0.9)" />
+  <use href="#svg-star-tiny" x="180" y="725" />
+
+  <use href="#svg-crown" x="480" y="735" transform="scale(0.85)" />
+  <use href="#svg-star-glowing" x="445" y="745" transform="scale(0.9)" />
+  <use href="#svg-star-tiny" x="420" y="725" />
+
+  <use href="#svg-moon" x="300" y="740" transform="scale(0.8) rotate(30 300 740)" />
+  <use href="#svg-star-glowing" x="270" y="755" transform="scale(0.8)" />
+  <use href="#svg-star-glowing" x="330" y="755" transform="scale(0.8)" />
+</svg>
+`;
+
+function getDecoratedName(name) {
+    if (!name) return "";
+    let clean = name.trim();
+    if (clean === 'وتين') return 'وَتِين';
+    if (clean === 'سمير محمد كمال') return 'سَمِير مُحَمَّد كَمَال';
+    return clean;
+}
+
 function applyGenderStyles() {
     const revealIcon = document.querySelector('.reveal-icon');
     const revealTitle = document.querySelector('.reveal-title');
-    const cardGenderTag = document.querySelector('.card-gender-tag');
+    const cardGenderTag = document.getElementById('cardGenderTag');
     
     // Update souvenir card text
     const cardName = document.getElementById('cardName');
     const cardSubText = document.getElementById('cardSubText');
-    if (cardName) cardName.textContent = MAIN_BABY_NAME;
-    if (cardSubText) cardSubText.textContent = SUB_BABY_NAME;
+    if (cardName) cardName.textContent = getDecoratedName(MAIN_BABY_NAME);
+    if (cardSubText) cardSubText.textContent = getDecoratedName(SUB_BABY_NAME);
 
     const souvenirCard = document.getElementById('souvenirCard');
+    const cardSvgContainer = document.getElementById('cardSvgContainer');
 
     if (eventData.revealed_gender === 'boy') {
         if (revealIcon) revealIcon.innerHTML = '👦⭐';
         if (revealTitle) revealTitle.textContent = 'إنه ولد!';
         if (cardGenderTag) {
-            cardGenderTag.textContent = 'إنه ولد! 👦';
-            cardGenderTag.style.background = 'linear-gradient(135deg, #d4a017, #c49a15)';
-            cardGenderTag.style.boxShadow = '0 4px 12px rgba(212, 160, 23, 0.35)';
+            cardGenderTag.textContent = 'إِنَّهُ وَلَدٌ!';
         }
+        
         // ========== LITTLE PRINCE THEME FOR BOY ==========
         if (souvenirCard) {
-            // Dark royal navy background
-            souvenirCard.style.background = 'linear-gradient(160deg, #0c1a3a 0%, #132952 30%, #0f2040 60%, #0c1a3a 100%)';
-            
-            // Change corner decorations to stars & crowns
-            const corners = souvenirCard.querySelectorAll('.garden-corner');
-            const boyCorners = ['⭐👑', '👑⭐', '🌟✨', '✨🌟'];
-            corners.forEach((c, i) => { c.textContent = boyCorners[i] || '⭐'; });
-            
-            // Change butterflies to stars/moons
-            const butterflies = souvenirCard.querySelectorAll('.garden-butterfly');
-            const boyDecos = ['🌙', '⭐', '💫'];
-            butterflies.forEach((b, i) => { b.textContent = boyDecos[i] || '⭐'; });
-
-            // Inner border - gold dashed
-            const inner = souvenirCard.querySelector('.card-inner');
-            if (inner) {
-                inner.style.borderColor = '#d4af37';
-                inner.style.background = 'linear-gradient(180deg, rgba(212,175,55,0.05) 0%, rgba(12,26,58,0.1) 100%)';
-                inner.style.color = '#e8dcc8';
-            }
-
-            // Header
-            const head = souvenirCard.querySelector('.card-header');
-            if (head) {
-                head.style.color = '#d4af37';
-                head.textContent = '👑 ذكرى الكشف عن المولود 👑';
-            }
-
-            // Main name - gold/white
-            const mainName = souvenirCard.querySelector('.card-main-name');
-            if (mainName) {
-                mainName.style.color = '#ffffff';
-                mainName.style.textShadow = '0 3px 12px rgba(212, 175, 55, 0.4)';
-            }
-
-            // Sub text
-            const subText = souvenirCard.querySelector('.card-sub-text');
-            if (subText) {
-                subText.style.color = '#d4af37';
-            }
-
-            // Ribbon folds - gold
-            const foldLeft = souvenirCard.querySelector('.ribbon-fold-left');
-            const foldRight = souvenirCard.querySelector('.ribbon-fold-right');
-            if (foldLeft) foldLeft.style.borderColor = 'transparent transparent transparent #8a7020';
-            if (foldRight) foldRight.style.borderColor = 'transparent #8a7020 transparent transparent';
-
-            // Footer
-            const foot = souvenirCard.querySelector('.card-footer');
-            if (foot) {
-                foot.style.color = '#c8b880';
-                foot.innerHTML = '<p>اللهم أنبته نباتاً حسناً 🤲</p><div id="cardDate" style="margin-top:10px; font-size: 0.8rem; opacity: 0.4; color: #8a8060;"></div>';
-            }
-
-            // Bottom floral -> stars
-            const bottomFloral = souvenirCard.querySelector('.card-bottom-floral');
-            if (bottomFloral) {
-                bottomFloral.textContent = '✨⭐🌟⭐✨';
-            }
+            souvenirCard.classList.remove('theme-girl');
+            souvenirCard.classList.add('theme-boy');
         }
+        if (cardSvgContainer) {
+            cardSvgContainer.innerHTML = BOY_SVG_FRAME;
+        }
+        
         // Grand reveal background boy-themed
         const revealPage = document.getElementById('revealPage');
         if (revealPage) {
             revealPage.style.background = 'linear-gradient(-45deg, #e0f2fe, #bae6fd, #e0c3fc, #d4b8f0)';
         }
+        
+        // Also update the prayer text
+        const cardPrayer = document.getElementById('cardPrayer');
+        if (cardPrayer) {
+            cardPrayer.textContent = 'اللَّهُمَّ أَنْبَتَهُ نَبَاتًا حَسَنًا';
+        }
     } else {
         if (revealIcon) revealIcon.innerHTML = '👸🎀';
         if (revealTitle) revealTitle.textContent = 'إنها بنت!';
         if (cardGenderTag) {
-            cardGenderTag.textContent = 'إنها بنت! 👸';
-            cardGenderTag.style.background = 'linear-gradient(135deg, #c75b7a, #d4728e)';
-            cardGenderTag.style.boxShadow = '0 4px 12px rgba(199, 91, 122, 0.25)';
+            cardGenderTag.textContent = 'إِنَّهَا بِنْتُ!';
         }
-        // Girl enchanted garden card is the default CSS - no extra changes needed
+        
+        // ========== ENCHANTED GARDEN THEME FOR GIRL ==========
+        if (souvenirCard) {
+            souvenirCard.classList.remove('theme-boy');
+            souvenirCard.classList.add('theme-girl');
+        }
+        if (cardSvgContainer) {
+            cardSvgContainer.innerHTML = GIRL_SVG_FRAME;
+        }
+        
+        // Also update the prayer text
+        const cardPrayer = document.getElementById('cardPrayer');
+        if (cardPrayer) {
+            cardPrayer.textContent = 'اللَّهُمَّ أَنْبَتَهَا نَبَاتًا حَسَنًا';
+        }
     }
 }
