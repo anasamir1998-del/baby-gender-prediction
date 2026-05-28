@@ -1393,6 +1393,46 @@
             });
         }
 
+        function addTeaser() {
+            syncTeasersArray();
+            teaserMessages.push({ text: '', delay: 3.5 });
+            renderTeasers();
+        }
+
+        function deleteTeaser(index) {
+            syncTeasersArray();
+            teaserMessages.splice(index, 1);
+            renderTeasers();
+        }
+
+        function moveTeaser(index, direction) {
+            syncTeasersArray();
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= teaserMessages.length) return;
+            
+            const temp = teaserMessages[index];
+            teaserMessages[index] = teaserMessages[targetIndex];
+            teaserMessages[targetIndex] = temp;
+            
+            renderTeasers();
+        }
+
+        function syncTeasersArray() {
+            const container = document.getElementById('teaserContainer');
+            if (!container) return;
+            const rows = container.querySelectorAll('.teaser-item');
+            teaserMessages = [];
+            
+            rows.forEach(row => {
+                const textVal = row.querySelector('.teaser-text-input').value.trim();
+                const delayVal = parseFloat(row.querySelector('.teaser-delay-input').value) || 3.5;
+                teaserMessages.push({
+                    text: textVal,
+                    delay: delayVal
+                });
+            });
+        }
+
         window.addTeaser = addTeaser;
         window.deleteTeaser = deleteTeaser;
         window.moveTeaser = moveTeaser;
