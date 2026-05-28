@@ -1195,7 +1195,6 @@ body {
     font-weight: 800;
     line-height: 1.1;
     font-family: 'Reem Kufi', 'Amiri', serif;
-    letter-spacing: -1px;
 }
 
 /* 2. Father Subtext */
@@ -1210,7 +1209,6 @@ body {
     font-family: 'Reem Kufi', 'Tajawal', sans-serif;
     font-size: 1.95rem;
     font-weight: 800;
-    letter-spacing: 0.5px;
 }
 
 /* 4. Prayer Text */

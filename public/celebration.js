@@ -766,7 +766,7 @@ function downloadCard() {
         scale: 3, // High quality
         useCORS: true,
         allowTaint: true,
-        letterRendering: true, // Helps with some Arabic issues
+        letterRendering: false, // Helps with some Arabic issues
     }).then(canvas => {
         const link = document.createElement('a');
         link.download = `baby-reveal-${MAIN_BABY_NAME}.png`;
