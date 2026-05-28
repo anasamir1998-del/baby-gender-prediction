@@ -1032,258 +1032,16 @@ function showExpiredOverlay() {
     document.body.appendChild(overlay);
 }
 
-// ============ PREMIUM SOUVENIR CARD FRAMES (SVG) ============\n
-function getSvgRosePink(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <circle cx="0" cy="0" r="16" fill="url(#roseGrad)" />
-      <path d="M-8,-4 C-12,4 -4,12 4,12 C12,12 12,4 8,-4 C4,-8 -4,-8 -8,-4 Z" fill="none" stroke="#a23b50" stroke-width="0.8" opacity="0.3" />
-      <circle cx="-4" cy="-4" r="8" fill="#fff0f2" opacity="0.4" />
-      <circle cx="4" cy="-4" r="8" fill="#f5b3be" opacity="0.4" />
-      <circle cx="0" cy="4" r="9" fill="#c65b71" opacity="0.3" />
-      <circle cx="0" cy="0" r="4" fill="#a23b50" />
-    </g>`;
-}
+// ============ PREMIUM SOUVENIR CARD FRAMES (SVG) ============
 
-function getSvgFlowerPeach(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <circle cx="0" cy="0" r="13" fill="url(#peachGrad)" />
-      <circle cx="-3" cy="-3" r="6" fill="#fff8f5" opacity="0.5" />
-      <circle cx="3" cy="-3" r="6" fill="#fcc7ac" opacity="0.5" />
-      <circle cx="0" cy="3" r="7" fill="#d47d6c" opacity="0.4" />
-      <circle cx="0" cy="0" r="3" fill="#9e4a3b" />
-    </g>`;
-}
-
-function getSvgRoseGold(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <circle cx="0" cy="0" r="14" fill="url(#goldFlowerGrad)" />
-      <circle cx="0" cy="0" r="4" fill="#8c6f27" />
-    </g>`;
-}
-
-function getSvgLeafPair(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <path d="M 0,15 L 0,-10" stroke="#4d6643" stroke-width="1" opacity="0.6" />
-      <path d="M 0,5 C -12,2 -16,-8 -10,-12 C -6,-10 -2,-2 0,5" fill="url(#leafGrad)" />
-      <path d="M 0,5 C 12,2 16,-8 10,-12 C 6,-10 2,-2 0,5" fill="url(#leafGrad)" />
-    </g>`;
-}
-
-function getSvgLeafSprig(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <path d="M 0,20 Q -6,0 0,-20" fill="none" stroke="#4d6643" stroke-width="1.2" opacity="0.6" />
-      <path d="M 0,-10 C -8,-12 -10,-18 -6,-20 C -2,-18 -1,-12 0,-10" fill="url(#leafGradLight)" />
-      <path d="M 0,-10 C 8,-12 10,-18 6,-20 C 2,-18 1,-12 0,-10" fill="url(#leafGradLight)" />
-      <path d="M 0,5 C -8,3 -10,-3 -6,-5 C -2,-3 -1,3 0,5" fill="url(#leafGrad)" />
-      <path d="M 0,5 C 8,3 10,-3 6,-5 C 2,-3 1,3 0,5" fill="url(#leafGrad)" />
-    </g>`;
-}
-
-function getSvgLantern(cx, cy, scale = 1, rotate = 0, isBoy = false) {
-    const strokeCol = isBoy ? '#695111' : '#8a6c1e';
-    const mainGlow = isBoy ? '#ffffff' : '#ffd954';
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <line x1="0" y1="-80" x2="0" y2="-12" stroke="${isBoy ? '#ebd287' : '#d4af37'}" stroke-width="1.2" opacity="${isBoy ? 0.75 : 1}" />
-      <circle cx="0" cy="-12" r="3" fill="none" stroke="${isBoy ? '#ebd287' : '#d4af37'}" stroke-width="1.2" />
-      <path d="M -12,-8 L 12,-8 L 7,-14 L -7,-14 Z" fill="url(#goldGrad)" stroke="${strokeCol}" stroke-width="0.8" />
-      <path d="M -12,-8 L -15,12 L 0,26 L 15,12 L 12,-8 Z" fill="#fffdf2" stroke="${strokeCol}" stroke-width="1" />
-      <path d="M -8,-6 L -10,10 L 0,20 L 10,10 L 8,-6 Z" fill="${mainGlow}" ${isBoy ? 'filter="url(#starGlow)"' : 'opacity="0.75"'} />
-      <line x1="0" y1="-8" x2="0" y2="26" stroke="${strokeCol}" stroke-width="0.8" />
-      <path d="M -12,-8 Q 0,-2 12,-8" fill="none" stroke="${strokeCol}" stroke-width="0.8" />
-      <path d="M -15,12 Q 0,18 15,12" fill="none" stroke="${strokeCol}" stroke-width="0.8" />
-      <path d="M -6,26 L 6,26 L 0,32 Z" fill="url(#goldGrad)" stroke="${strokeCol}" stroke-width="0.8" />
-      <line x1="0" y1="32" x2="0" y2="42" stroke="${isBoy ? '#ebd287' : '#d4af37'}" stroke-width="1" />
-      <circle cx="0" cy="42" r="1.5" fill="${isBoy ? '#ebd287' : '#d4af37'}" />
-    </g>`;
-}
-
-function getSvgButterfly(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <path d="M 0,0 C -6,-8 -12,-6 -10,2 C -8,8 -2,4 0,0" fill="#f5b3be" stroke="#c65b71" stroke-width="0.4" />
-      <path d="M 0,0 C 6,-8 12,-6 10,2 C 8,8 2,4 0,0" fill="#f5b3be" stroke="#c65b71" stroke-width="0.4" />
-      <path d="M 0,1 C -5,5 -8,3 -6,0" fill="#fcc7ac" stroke="#d47d6c" stroke-width="0.4" />
-      <path d="M 0,1 C 5,5 8,3 6,0" fill="#fcc7ac" stroke="#d47d6c" stroke-width="0.4" />
-      <circle cx="0" cy="-1" r="1" fill="#4a3b3d" />
-      <path d="M -0.5,-2 Q -2,-5 -4,-6" fill="none" stroke="#4a3b3d" stroke-width="0.4" />
-      <path d="M 0.5,-2 Q 2,-5 4,-6" fill="none" stroke="#4a3b3d" stroke-width="0.4" />
-    </g>`;
-}
-
-function getSvgCrown(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <path d="M -16,10 L 16,10 L 20,-2 L 10,4 L 0,-10 L -10,4 L -20,-2 Z" fill="url(#goldGrad)" stroke="#695111" stroke-width="0.8" />
-      <rect x="-14" y="8" width="28" height="2" fill="#fff" opacity="0.6" />
-      <circle cx="-16" cy="-2" r="1.5" fill="#fff" />
-      <circle cx="16" cy="-2" r="1.5" fill="#fff" />
-      <circle cx="0" cy="-10" r="2" fill="#ffd954" filter="url(#starGlow)" />
-      <circle cx="-10" cy="4" r="1.2" fill="#ffd954" />
-      <circle cx="10" cy="4" r="1.2" fill="#ffd954" />
-      <circle cx="0" cy="4" r="1.5" fill="#fff" />
-    </g>`;
-}
-
-function getSvgStarGlowing(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <circle cx="0" cy="0" r="10" fill="url(#starGlowGrad)" />
-      <path d="M 0,-8 L 2,-2 L 8,0 L 2,2 L 0,8 L -2,2 L -8,0 L -2,-2 Z" fill="#ffffff" />
-    </g>`;
-}
-
-function getSvgStarTiny(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <path d="M 0,-4 L 1,-1 L 4,0 L 1,1 L 0,4 L -1,1 L -4,0 L -1,-1 Z" fill="#ebcc6e" opacity="0.8" />
-    </g>`;
-}
-
-function getSvgMoon(cx, cy, scale = 1, rotate = 0) {
-    return `
-    <g transform="translate(${cx}, ${cy}) rotate(${rotate}) scale(${scale})">
-      <path d="M -10,-10 A 14,14 0 1,0 12,12 A 12,12 0 1,1 -10,-10 Z" fill="url(#goldGrad)" filter="url(#starGlow)" />
-    </g>`;
-}
-
-function getGirlSvgFrame() {
-    return `
-<svg class="card-svg-frame" width="100%" height="100%" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
+const GIRL_RIBBON_SVG = `
+<svg width="600" height="800" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;">
   <defs>
-    <!-- Gradients -->
-    <radialGradient id="roseGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fff0f2" />
-      <stop offset="50%" stop-color="#f5b3be" />
-      <stop offset="100%" stop-color="#c65b71" />
-    </radialGradient>
-    <radialGradient id="peachGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fff8f5" />
-      <stop offset="60%" stop-color="#fcc7ac" />
-      <stop offset="100%" stop-color="#d47d6c" />
-    </radialGradient>
-    <radialGradient id="goldFlowerGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fffbf0" />
-      <stop offset="70%" stop-color="#ebd59b" />
-      <stop offset="100%" stop-color="#b59443" />
-    </radialGradient>
-    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#d2e3cb" />
-      <stop offset="50%" stop-color="#8da883" />
-      <stop offset="100%" stop-color="#4d6643" />
-    </linearGradient>
-    <linearGradient id="leafGradLight" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e8f3e3" />
-      <stop offset="100%" stop-color="#b0cca3" />
-    </linearGradient>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fff3d1" />
-      <stop offset="40%" stop-color="#e5c158" />
-      <stop offset="100%" stop-color="#96721b" />
-    </linearGradient>
-    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="ribbonGradGirl" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#e39ca9" />
       <stop offset="100%" stop-color="#c65b71" />
     </linearGradient>
   </defs>
-
-  <!-- Background -->
-  <rect width="600" height="800" fill="#FAF6EE" />
-  <rect width="600" height="800" fill="#f5ebd9" opacity="0.35" />
-  <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
-    <stop offset="60%" stop-color="#FAF6EE" stop-opacity="0" />
-    <stop offset="100%" stop-color="#dfceb1" stop-opacity="0.3" />
-  </radialGradient>
-  <rect width="600" height="800" fill="url(#vignette)" />
-
-  <!-- Borders -->
-  <rect x="22" y="22" width="556" height="756" rx="32" ry="32" fill="none" stroke="#d5c7b3" stroke-width="1.8" stroke-dasharray="8, 5" />
-  <rect x="27" y="27" width="546" height="746" rx="27" ry="27" fill="none" stroke="#8da883" stroke-width="1.2" opacity="0.35" />
-
-  <!-- Branch Arch -->
-  <path d="M 70,680 Q 60,95 300,95" fill="none" stroke="#9da694" stroke-width="1.5" opacity="0.4" />
-  <path d="M 530,680 Q 540,95 300,95" fill="none" stroke="#9da694" stroke-width="1.5" opacity="0.4" />
-
-  <!-- Leaf Sprigs -->
-  ${getSvgLeafSprig(110, 220, 1.1, -50)}
-  ${getSvgLeafSprig(490, 220, 1.1, 50)}
-  ${getSvgLeafSprig(180, 140, 1, -30)}
-  ${getSvgLeafSprig(420, 140, 1, 30)}
-
-  <!-- Left Side Flowers & Leaves -->
-  ${getSvgLeafPair(75, 580, 1.1, -100)}
-  ${getSvgRosePink(80, 550, 1.2)}
-  ${getSvgFlowerPeach(90, 585, 1)}
-  
-  ${getSvgLeafPair(70, 450, 1, -85)}
-  ${getSvgRoseGold(70, 420, 1)}
-  ${getSvgRosePink(75, 460, 0.9)}
-
-  ${getSvgLeafPair(75, 320, 1.1, -65)}
-  ${getSvgRosePink(80, 290, 1.3)}
-  ${getSvgFlowerPeach(72, 335, 1)}
-
-  ${getSvgLeafPair(115, 200, 1, -45)}
-  ${getSvgRoseGold(120, 180, 1)}
-  ${getSvgRosePink(100, 210, 0.95)}
-
-  <!-- Right Side Flowers & Leaves -->
-  ${getSvgLeafPair(525, 580, 1.1, 100)}
-  ${getSvgRosePink(520, 550, 1.2)}
-  ${getSvgFlowerPeach(510, 585, 1)}
-
-  ${getSvgLeafPair(530, 450, 1, 85)}
-  ${getSvgRoseGold(530, 420, 1)}
-  ${getSvgRosePink(525, 460, 0.9)}
-
-  ${getSvgLeafPair(525, 320, 1.1, 65)}
-  ${getSvgRosePink(520, 290, 1.3)}
-  ${getSvgFlowerPeach(528, 335, 1)}
-
-  ${getSvgLeafPair(485, 200, 1, 45)}
-  ${getSvgRoseGold(480, 180, 1)}
-  ${getSvgRosePink(500, 210, 0.95)}
-
-  <!-- Top Curved Arch Floral Arrangement -->
-  ${getSvgLeafPair(300, 85, 1.3, 0)}
-  ${getSvgRosePink(300, 85, 1.5)}
-  ${getSvgFlowerPeach(260, 90, 1.1)}
-  ${getSvgRoseGold(340, 90, 1.1)}
-  ${getSvgFlowerPeach(220, 105, 1)}
-  ${getSvgRosePink(380, 105, 1)}
-
-  <!-- Lanterns -->
-  ${getSvgLantern(160, 240, 1, 0, false)}
-  ${getSvgLantern(440, 240, 1, 0, false)}
-
-  <!-- Butterflies -->
-  ${getSvgButterfly(125, 380, 1.2, -15)}
-  ${getSvgButterfly(475, 350, 1.2, 25)}
-  ${getSvgButterfly(430, 520, 1.1, -10)}
-  ${getSvgButterfly(170, 560, 1.1, 20)}
-
-  <!-- Bottom Flower Clusters -->
-  ${getSvgLeafPair(120, 735, 1, -30)}
-  ${getSvgRosePink(120, 735, 1.1)}
-  ${getSvgFlowerPeach(155, 745, 1)}
-  ${getSvgLeafPair(155, 745, 0.9, 10)}
-
-  ${getSvgLeafPair(480, 735, 1, 30)}
-  ${getSvgRosePink(480, 735, 1.1)}
-  ${getSvgFlowerPeach(445, 745, 1)}
-  ${getSvgLeafPair(445, 745, 0.9, -10)}
-
-  ${getSvgLeafPair(300, 750, 1, 0)}
-  ${getSvgRoseGold(300, 750, 1.2)}
-  ${getSvgFlowerPeach(270, 755, 1)}
-  ${getSvgRosePink(330, 755, 0.9)}
-
-  <!-- 3D Ribbon Banner in SVG -->
   <!-- Left Tail -->
   <path d="M 120,590 L 175,590 L 175,634 L 120,634 L 135,612 Z" fill="#e39ca9" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" />
   <!-- Right Tail -->
@@ -1293,143 +1051,18 @@ function getGirlSvgFrame() {
   <!-- Right Fold -->
   <path d="M 425,634 L 425,644 L 435,634 Z" fill="#8c3647" />
   <!-- Center Main Rect -->
-  <rect x="160" y="580" width="280" height="54" rx="4" fill="url(#ribbonGrad)" stroke="#ffffff" stroke-width="2" />
+  <rect x="160" y="580" width="280" height="54" rx="4" fill="url(#ribbonGradGirl)" stroke="#ffffff" stroke-width="2" />
 </svg>
 `;
-}
 
-function getBoySvgFrame() {
-    return `
-<svg class="card-svg-frame" width="100%" height="100%" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
+const BOY_RIBBON_SVG = `
+<svg width="600" height="800" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;">
   <defs>
-    <!-- Royal Dark Blue Gradient -->
-    <linearGradient id="boyBgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#071126" />
-      <stop offset="40%" stop-color="#0c1d3b" />
-      <stop offset="100%" stop-color="#142c54" />
-    </linearGradient>
-
-    <!-- Star Glow Filter -->
-    <filter id="starGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="2" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-
-    <!-- Gold Gradients -->
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fff6db" />
-      <stop offset="35%" stop-color="#ebd287" />
-      <stop offset="70%" stop-color="#d4af37" />
-      <stop offset="100%" stop-color="#8c6d1a" />
-    </linearGradient>
-
-    <radialGradient id="starGlowGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="30%" stop-color="#fff8db" />
-      <stop offset="70%" stop-color="#ebcc6e" stop-opacity="0.5" />
-      <stop offset="100%" stop-color="#ebcc6e" stop-opacity="0" />
-    </radialGradient>
-
-    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="ribbonGradBoy" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ebd287" />
       <stop offset="100%" stop-color="#d4af37" />
     </linearGradient>
   </defs>
-
-  <!-- Background -->
-  <rect width="600" height="800" fill="url(#boyBgGrad)" />
-  <radialGradient id="boyVignette" cx="50%" cy="45%" r="60%">
-    <stop offset="0%" stop-color="#142c54" stop-opacity="0.4" />
-    <stop offset="100%" stop-color="#040a17" stop-opacity="0.85" />
-  </radialGradient>
-  <rect width="600" height="800" fill="url(#boyVignette)" />
-
-  <!-- Borders -->
-  <rect x="22" y="22" width="556" height="756" rx="32" ry="32" fill="none" stroke="#ebd287" stroke-width="1.8" stroke-dasharray="8, 5" opacity="0.8" />
-  <rect x="27" y="27" width="546" height="746" rx="27" ry="27" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.15" />
-
-  <!-- Star Arch Structure -->
-  <path d="M 70,680 Q 60,95 300,95 T 530,680" fill="none" stroke="#ffffff" stroke-width="0.8" stroke-dasharray="3, 8" opacity="0.3" />
-  
-  <!-- Floating Arch Elements -->
-  ${getSvgCrown(300, 80, 1.3)}
-  ${getSvgMoon(300, 135, 1.1, -15)}
-
-  <!-- Left Side Star Clusters -->
-  ${getSvgStarGlowing(180, 110, 1.2)}
-  ${getSvgStarTiny(150, 130)}
-  ${getSvgStarTiny(200, 90)}
-  
-  ${getSvgStarGlowing(110, 170)}
-  ${getSvgStarTiny(90, 195)}
-
-  ${getSvgStarGlowing(75, 270, 1.3)}
-  ${getSvgStarTiny(60, 295)}
-  ${getSvgStarTiny(95, 250)}
-
-  ${getSvgStarGlowing(65, 380)}
-  ${getSvgStarTiny(80, 410)}
-
-  ${getSvgStarGlowing(75, 490, 1.1)}
-  ${getSvgStarTiny(60, 520)}
-  ${getSvgStarTiny(90, 470)}
-
-  ${getSvgStarGlowing(100, 600)}
-  ${getSvgStarTiny(120, 625)}
-
-  <!-- Right Side Star Clusters -->
-  ${getSvgStarGlowing(420, 110, 1.2)}
-  ${getSvgStarTiny(450, 130)}
-  ${getSvgStarTiny(400, 90)}
-
-  ${getSvgStarGlowing(490, 170)}
-  ${getSvgStarTiny(510, 195)}
-
-  ${getSvgStarGlowing(525, 270, 1.3)}
-  ${getSvgStarTiny(540, 295)}
-  ${getSvgStarTiny(505, 250)}
-
-  ${getSvgStarGlowing(535, 380)}
-  ${getSvgStarTiny(520, 410)}
-
-  ${getSvgStarGlowing(525, 490, 1.1)}
-  ${getSvgStarTiny(540, 520)}
-  ${getSvgStarTiny(510, 470)}
-
-  ${getSvgStarGlowing(500, 600)}
-  ${getSvgStarTiny(480, 625)}
-
-  <!-- Lanterns -->
-  ${getSvgLantern(160, 240, 1, 0, true)}
-  ${getSvgLantern(440, 240, 1, 0, true)}
-
-  <!-- Tiny Constellations -->
-  <line x1="80" y1="320" x2="110" y2="350" stroke="#fff" stroke-width="0.5" opacity="0.25" />
-  <line x1="110" y1="350" x2="150" y2="340" stroke="#fff" stroke-width="0.5" opacity="0.25" />
-  ${getSvgStarTiny(80, 320)}
-  ${getSvgStarTiny(110, 350)}
-  ${getSvgStarTiny(150, 340)}
-
-  <line x1="520" y1="320" x2="490" y2="350" stroke="#fff" stroke-width="0.5" opacity="0.25" />
-  <line x1="490" y1="350" x2="450" y2="340" stroke="#fff" stroke-width="0.5" opacity="0.25" />
-  ${getSvgStarTiny(520, 320)}
-  ${getSvgStarTiny(490, 350)}
-  ${getSvgStarTiny(450, 340)}
-
-  <!-- Symmetrical Beautiful Bottom Golden Clusters -->
-  ${getSvgCrown(120, 735, 0.85)}
-  ${getSvgStarGlowing(155, 745, 0.9)}
-  ${getSvgStarTiny(180, 725)}
-
-  ${getSvgCrown(480, 735, 0.85)}
-  ${getSvgStarGlowing(445, 745, 0.9)}
-  ${getSvgStarTiny(420, 725)}
-
-  ${getSvgMoon(300, 740, 0.8, 30)}
-  ${getSvgStarGlowing(270, 755, 0.8)}
-  ${getSvgStarGlowing(330, 755, 0.8)}
-
-  <!-- 3D Ribbon Banner in SVG -->
   <!-- Left Tail -->
   <path d="M 120,590 L 175,590 L 175,634 L 120,634 L 135,612 Z" fill="#ebd287" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" />
   <!-- Right Tail -->
@@ -1439,10 +1072,9 @@ function getBoySvgFrame() {
   <!-- Right Fold -->
   <path d="M 425,634 L 425,644 L 435,634 Z" fill="#8c6d1a" />
   <!-- Center Main Rect -->
-  <rect x="160" y="580" width="280" height="54" rx="4" fill="url(#ribbonGrad)" stroke="#ffffff" stroke-width="2" />
+  <rect x="160" y="580" width="280" height="54" rx="4" fill="url(#ribbonGradBoy)" stroke="#ffffff" stroke-width="2" />
 </svg>
 `;
-}
 
 function getDecoratedName(name) {
     if (!name) return "";
@@ -1478,13 +1110,13 @@ function applyGenderStyles() {
             cardGenderTag.style.color = '#0c1d3b';
         }
         
-        // ========== LITTLE PRINCE THEME FOR BOY ==========
+        // ========== BOY THEME (Option 4: Dreamy Hot Air Balloon) ==========
         if (souvenirCard) {
-            souvenirCard.classList.remove('theme-girl');
-            souvenirCard.classList.add('theme-boy');
+            souvenirCard.style.backgroundImage = "url('boy_balloon.png')";
+            souvenirCard.style.backgroundSize = "100% 100%";
         }
         if (cardSvgContainer) {
-            cardSvgContainer.innerHTML = getBoySvgFrame();
+            cardSvgContainer.innerHTML = BOY_RIBBON_SVG;
         }
         
         // Grand reveal background boy-themed
@@ -1495,23 +1127,23 @@ function applyGenderStyles() {
         
         if (cardPrayer) {
             cardPrayer.textContent = 'اللَّهُمَّ أَنْبَتَهُ نَبَاتًا حَسَنًا';
-            cardPrayer.style.color = '#ebd287';
-            cardPrayer.style.textShadow = '0 1px 3px rgba(0, 0, 0, 0.4)';
+            cardPrayer.style.color = '#4a607a';
+            cardPrayer.style.textShadow = 'none';
         }
 
         if (cardName) {
-            cardName.style.color = '#ffffff';
-            cardName.style.textShadow = '0 4px 15px rgba(255, 255, 255, 0.35), 0 0 10px rgba(235, 204, 110, 0.4)';
+            cardName.style.color = '#1f487e';
+            cardName.style.textShadow = '0 3px 10px rgba(255, 255, 255, 0.7)';
         }
 
         if (cardSubText) {
-            cardSubText.style.color = '#ebcc6e';
-            cardSubText.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.4)';
+            cardSubText.style.color = '#4a607a';
+            cardSubText.style.textShadow = 'none';
         }
 
         if (cardDate) {
-            cardDate.style.color = '#ebcc6e';
-            cardDate.style.textShadow = '0 1px 2px rgba(0, 0, 0, 0.4)';
+            cardDate.style.color = '#6f88a5';
+            cardDate.style.textShadow = 'none';
         }
     } else {
         if (revealIcon) revealIcon.innerHTML = '👸🎀';
@@ -1522,13 +1154,13 @@ function applyGenderStyles() {
             cardGenderTag.style.color = '#ffffff';
         }
         
-        // ========== ENCHANTED GARDEN THEME FOR GIRL ==========
+        // ========== GIRL THEME (Option 1: Watercolor Garden) ==========
         if (souvenirCard) {
-            souvenirCard.classList.remove('theme-boy');
-            souvenirCard.classList.add('theme-girl');
+            souvenirCard.style.backgroundImage = "url('girl_garden.png')";
+            souvenirCard.style.backgroundSize = "100% 100%";
         }
         if (cardSvgContainer) {
-            cardSvgContainer.innerHTML = getGirlSvgFrame();
+            cardSvgContainer.innerHTML = GIRL_RIBBON_SVG;
         }
         
         if (cardPrayer) {
