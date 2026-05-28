@@ -1129,6 +1129,27 @@ function applyGenderStyles() {
         if (revealIcon) revealIcon.innerHTML = '👦⭐';
         if (revealTitle) revealTitle.textContent = 'إنه ولد!';
         
+        const revealDecorations = document.querySelector('.reveal-decorations');
+        if (revealDecorations) {
+            revealDecorations.innerHTML = `<span>⭐</span><span>🧸</span><span>🚀</span><span>👑</span><span>💎</span>`;
+        }
+        
+        const revealMessage = document.querySelector('.reveal-message');
+        if (revealMessage) {
+            revealMessage.textContent = 'اللهم بارك لنا فيه وأنبته نباتاً حسناً 🤲';
+        }
+        
+        const revealFlowers = document.querySelector('.reveal-flowers');
+        if (revealFlowers) {
+            revealFlowers.innerHTML = '💙🌟⭐👑🧸👑⭐🌟💙';
+        }
+
+        const revealPage = document.getElementById('revealPage');
+        if (revealPage) {
+            revealPage.classList.add('boy-theme');
+            revealPage.style.background = ''; // Clear inline styles so class style applies
+        }
+        
         if (cardGenderTag) {
             cardGenderTag.textContent = 'إِنَّهُ وَلَدٌ!';
             cardGenderTag.style.color = '#0c1d3b';
@@ -1141,12 +1162,6 @@ function applyGenderStyles() {
         }
         if (cardSvgContainer) {
             cardSvgContainer.innerHTML = BOY_RIBBON_SVG;
-        }
-        
-        // Grand reveal background boy-themed
-        const revealPage = document.getElementById('revealPage');
-        if (revealPage) {
-            revealPage.style.background = 'linear-gradient(-45deg, #e0f2fe, #bae6fd, #e0c3fc, #d4b8f0)';
         }
         
         if (cardPrayer) {
@@ -1172,6 +1187,27 @@ function applyGenderStyles() {
     } else {
         if (revealIcon) revealIcon.innerHTML = '👸🎀';
         if (revealTitle) revealTitle.textContent = 'إنها بنت!';
+        
+        const revealDecorations = document.querySelector('.reveal-decorations');
+        if (revealDecorations) {
+            revealDecorations.innerHTML = `<span>🌸</span><span>🎀</span><span>💖</span><span>🦋</span><span>🌷</span>`;
+        }
+        
+        const revealMessage = document.querySelector('.reveal-message');
+        if (revealMessage) {
+            revealMessage.textContent = 'اللهم بارك لنا فيها وأنبتها نباتاً حسناً 🤲';
+        }
+        
+        const revealFlowers = document.querySelector('.reveal-flowers');
+        if (revealFlowers) {
+            revealFlowers.innerHTML = '🌺🌸🌷💐🌹🌺🌸🌷';
+        }
+        
+        const revealPage = document.getElementById('revealPage');
+        if (revealPage) {
+            revealPage.classList.remove('boy-theme');
+            revealPage.style.background = 'linear-gradient(135deg, #1a0a2e, #2d1b4e, #1a0a2e)'; // Keep original premium colors for girl!
+        }
         
         if (cardGenderTag) {
             cardGenderTag.textContent = 'إِنَّهَا بِنْتُ!';
