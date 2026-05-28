@@ -1160,7 +1160,12 @@ function getDecoratedName(name) {
     return clean;
 }
 
+let lastAppliedGender = null;
 function applyGenderStyles() {
+    if (!eventData) return;
+    if (lastAppliedGender === eventData.revealed_gender) return;
+    lastAppliedGender = eventData.revealed_gender;
+
     const revealIcon = document.querySelector('.reveal-icon');
     const revealTitle = document.querySelector('.reveal-title');
     const cardGenderTag = document.getElementById('cardGenderTag');
