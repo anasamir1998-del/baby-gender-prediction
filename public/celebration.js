@@ -434,6 +434,9 @@ function updateLiveStats() {
 
 // ============ IDEA 3: LIVE REACTIONS ============
 function sendReaction(emoji) {
+    // Spawn floating emoji locally instantly for immediate response!
+    spawnFloatingEmoji(emoji);
+
     fetch(`${API_BASE}/reactions.php?slug=${eventSlug}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -458,7 +461,7 @@ function listenForReactions() {
         }
     }
     pollReactions();
-    setInterval(pollReactions, 3000);
+    setInterval(pollReactions, 1000); // Poll every 1 second for super live response
 }
 
 function spawnFloatingEmoji(emoji) {
@@ -576,7 +579,7 @@ function initLiveChat() {
     }
 
     loadMessages();
-    setInterval(pollNewMessages, 3000);
+    setInterval(pollNewMessages, 1000); // Poll every 1 second for instant chat messages
     
     function sendChatMessage() {
         const text = liveChatInput.value.trim();
@@ -652,6 +655,16 @@ function startCountdown() {
 }
 
 // ============ SUSPENSE ============
+function wrapEmojis(text) {
+    if (!text) return "";
+    try {
+        const regex = /(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)/gu;
+        return text.replace(regex, `<span class="emoji-fix">$1</span>`);
+    } catch(e) {
+        return text;
+    }
+}
+
 async function startSuspense() {
     // Force user to activate sound before seeing the suspense
     if (!isAudioUnlocked) {
@@ -667,7 +680,17 @@ async function startSuspense() {
     }
 
     goToPage('suspense');
-    // music already started in unlockAudio
+    
+    // Explicitly loop and play the suspense music at premium volume
+    if (suspenseMusic) {
+        try {
+            suspenseMusic.loop = true;
+            suspenseMusic.volume = 0.5; // Clear and premium volume
+            suspenseMusic.play().catch(() => {});
+        } catch (e) {
+            console.log("Music play error in suspense:", e);
+        }
+    }
 
 
     // Play suspense heartbeat animation
@@ -693,7 +716,8 @@ async function startSuspense() {
 
     for (let i = 0; i < finalMessages.length; i++) {
         let msg = finalMessages[i];
-        suspenseText.innerHTML = msg.text;
+        // Automatically wrap emojis inside custom typed sentences to preserve their rich color details
+        suspenseText.innerHTML = wrapEmojis(msg.text);
         if (heartbeatSnd) { heartbeatSnd.currentTime = 0; heartbeatSnd.play().catch(() => {}); }
 
 
