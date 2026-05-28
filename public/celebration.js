@@ -595,7 +595,11 @@ function initLiveChat() {
                 text: text,
                 senderId: mySenderId
             })
-        }).catch(e => console.log('Chat send error:', e));
+        })
+        .then(() => {
+            pollNewMessages();
+        })
+        .catch(e => console.log('Chat send error:', e));
         
         liveChatInput.value = '';
     }
@@ -734,6 +738,14 @@ async function startSuspense() {
 
         // Shake effect for countdown numbers
         if (msg.text.includes('huge-countdown')) {
+            // Stop the suspense background music as soon as the countdown starts
+            if (suspenseMusic) {
+                try {
+                    suspenseMusic.pause();
+                } catch (e) {
+                    console.log("Error pausing suspense music:", e);
+                }
+            }
             const n = msg.text.replace(/[^0-9]/g, '');
             if (n === "10") {
                 countdownSnd.play().catch(() => {});
@@ -1060,8 +1072,8 @@ async function loadEvent() {
             goToPage('welcome');
         }
         
-        // Poll for target date changes
-        setInterval(fetchTargetDate, 10000);
+        // Poll for target date changes more frequently for instant live interaction (every 2.5 seconds)
+        setInterval(fetchTargetDate, 2500);
     } catch (e) {
         console.error(e);
         alert('فشل تحميل بيانات الاحتفالية من الخادم');
