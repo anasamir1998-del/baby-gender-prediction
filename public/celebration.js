@@ -71,16 +71,18 @@ function startPresenceTracking() {
     });
 }
 
-// Suspense messages - dramatic & teasing
-const SUSPENSE_MESSAGES = [
+// Suspense messages - dramatic & teasing (default)
+const DEFAULT_INTRO_MESSAGES = [
     { text: "⏳ خلص الوقت!", delay: 3500 },
     { text: "اللحظة اللي ننتظرها من زمان... <span class='emoji-fix'>🔥</span>", delay: 3500 },
     { text: "يا ترى ولد ولا بنت؟ <span class='emoji-fix'>🤔</span>", delay: 3500 },
     { text: "نبضات القلب تزيد... <span class='emoji-fix'>💓</span>", delay: 3500 },
     { text: "تتوقعون إحساسكم بمحله؟ <span class='emoji-fix'>✨</span>", delay: 3500 },
     { text: "ترقبوا الخبر الزين... <span class='emoji-fix'>🚀</span>", delay: 3500 },
-    { text: "جاهزيييين؟؟ <span class='emoji-fix'>😍</span>", delay: 3500 },
+    { text: "جاهزيييين؟؟ <span class='emoji-fix'>😍</span>", delay: 3500 }
+];
 
+const COUNTDOWN_MESSAGES = [
     { text: "<span class='huge-countdown'>10</span>", delay: 1000 },
     { text: "<span class='huge-countdown'>9</span>", delay: 1000 },
     { text: "<span class='huge-countdown'>8</span>", delay: 1000 },
@@ -664,8 +666,26 @@ async function startSuspense() {
     // Play suspense heartbeat animation
     document.body.style.animation = 'none';
 
-    for (let i = 0; i < SUSPENSE_MESSAGES.length; i++) {
-        let msg = SUSPENSE_MESSAGES[i];
+    // Build the dynamic final array of teaser sentences + countdown
+    let introMessages = DEFAULT_INTRO_MESSAGES;
+    if (eventData && eventData.suspense_messages) {
+        try {
+            const parsed = JSON.parse(eventData.suspense_messages);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                // Map the stored delay (in seconds or ms) safely
+                introMessages = parsed.map(msg => ({
+                    text: msg.text,
+                    delay: (msg.delay > 100) ? msg.delay : (msg.delay * 1000)
+                }));
+            }
+        } catch (e) {
+            console.log("Failed to parse custom suspense messages:", e);
+        }
+    }
+    const finalMessages = [...introMessages, ...COUNTDOWN_MESSAGES];
+
+    for (let i = 0; i < finalMessages.length; i++) {
+        let msg = finalMessages[i];
         suspenseText.innerHTML = msg.text;
         if (heartbeatSnd) { heartbeatSnd.currentTime = 0; heartbeatSnd.play().catch(() => {}); }
 
@@ -693,12 +713,9 @@ async function startSuspense() {
             setTimeout(() => { document.body.style.animation = ''; }, 300);
 
         } else {
-
-
-            // For 5-second sentences
-            suspenseText.style.animation = 'popTextSentence 5s ease-in-out forwards';
-            suspenseText.style.animation = 'popTextSentence 5s ease-in-out forwards';
-
+            // Adapt animation length dynamically to match teaser delay
+            const animSec = (msg.delay / 1000).toFixed(1);
+            suspenseText.style.animation = `popTextSentence ${animSec}s ease-in-out forwards`;
         }
 
         await new Promise(r => setTimeout(r, msg.delay));

@@ -659,7 +659,25 @@
                         <input type="text" id="adminPinInput" value="2030" placeholder="مثال: 2030">
                     </div>
 
-                    <button type="submit" class="btn-save" id="saveEventBtn">💾 حفظ ونشر الإعدادات</button>
+                    <!-- ⏳ إدارة الجمل التشويقية ما قبل الكشف -->
+                    <div class="form-group" style="margin-top: 35px; border-top: 2px solid #f3f4f6; padding-top: 25px;">
+                        <label style="font-size: 1.1rem; font-weight: 800; color: var(--purple); display: flex; align-items: center; gap: 8px;">
+                            ⏳ إدارة الجمل التشويقية ما قبل الكشف
+                        </label>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; line-height: 1.6;">
+                            هذه الجمل تظهر بالتتابع مع ضربات قلب سريعة لزيادة التشويق للضيوف والزوار قبل كشف جنس المولود. (تليها تلقائياً العد التنازلي من 10 إلى 1).
+                        </p>
+                        
+                        <div id="teaserContainer" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;">
+                            <!-- سيتم توليد العناصر هنا ديناميكياً -->
+                        </div>
+                        
+                        <button type="button" class="action-btn" id="addTeaserBtn" style="background: #f3e8ff; color: var(--purple); border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; font-family: 'Tajawal', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; transition: all 0.3s; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.05);">
+                            ➕ إضافة جملة تشويقية جديدة
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn-save" id="saveEventBtn" style="margin-top: 20px;">💾 حفظ ونشر الإعدادات</button>
                 </form>
             </div>
 
@@ -735,6 +753,7 @@
         const API_BASE = 'api';
         let currentEvent = null;
         let currentUser = null;
+        let teaserMessages = [];
 
         // Check Login Status on Page Load
         async function checkAuth() {
@@ -809,6 +828,29 @@
                         document.getElementById('targetDateInput').value = formatted;
                     }
 
+                    // Load and render teaser messages
+                    teaserMessages = [];
+                    if (currentEvent.suspense_messages) {
+                        try {
+                            teaserMessages = JSON.parse(currentEvent.suspense_messages);
+                        } catch (e) {
+                            console.error("Failed to parse suspense_messages:", e);
+                        }
+                    }
+                    
+                    if (!Array.isArray(teaserMessages) || teaserMessages.length === 0) {
+                        teaserMessages = [
+                            { text: "⏳ خلص الوقت!", delay: 3.5 },
+                            { text: "اللحظة اللي ننتظرها من زمان... 🔥", delay: 3.5 },
+                            { text: "يا ترى ولد ولا بنت؟ 🤔", delay: 3.5 },
+                            { text: "نبضات القلب تزيد... 💓", delay: 3.5 },
+                            { text: "تتوقعون إحساسكم بمحله؟ ✨", delay: 3.5 },
+                            { text: "ترقبوا الخبر الزين... 🚀", delay: 3.5 },
+                            { text: "جاهزيييين؟؟ 😍", delay: 3.5 }
+                        ];
+                    }
+                    renderTeasers();
+
                     // Render event links
                     const protocol = window.location.protocol;
                     const host = window.location.host;
@@ -846,13 +888,17 @@
             saveBtn.disabled = true;
             saveBtn.textContent = 'جاري الحفظ والتحميل...';
 
+            // Sync teaser messages array from HTML inputs before saving
+            syncTeasersArray();
+
             const payload = {
                 baby_name: document.getElementById('babyNameInput').value.trim(),
                 sub_baby_name: document.getElementById('subBabyNameInput').value.trim(),
                 revealed_gender: document.getElementById('genderSelect').value,
                 target_date: document.getElementById('targetDateInput').value.replace('T', ' ') + ':00',
                 slug: document.getElementById('slugInput').value.trim(),
-                admin_pin: document.getElementById('adminPinInput').value.trim()
+                admin_pin: document.getElementById('adminPinInput').value.trim(),
+                suspense_messages: teaserMessages
             };
 
             try {
@@ -1305,6 +1351,55 @@
                 showErrorAlert("❌ حدث خطأ فني أثناء إتمام الدفع. تواصل مع الدعم الفني.");
             }
         }
+
+        // ============ CUSTOM TEASER MESSAGES EDITOR LOGIC ============
+        function renderTeasers() {
+            const container = document.getElementById('teaserContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            teaserMessages.forEach((msg, idx) => {
+                const item = document.createElement('div');
+                item.className = 'teaser-item';
+                item.style.cssText = 'display: flex; align-items: center; gap: 10px; background: #fafafa; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; transition: all 0.3s;';
+                
+                let seconds = parseFloat(msg.delay);
+                if (seconds > 100) seconds = seconds / 1000;
+                
+                item.innerHTML = `
+                    <span style="font-weight: 800; color: var(--purple); width: 24px; text-align: center; font-size: 0.95rem;">${idx + 1}</span>
+                    <input type="text" class="teaser-text-input" placeholder="اكتب عبارة التشويق... (مثال: جاهزيين؟؟ 😍)" value="${escapeHTML(msg.text)}" style="flex: 1; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;" required>
+                    <div style="display: flex; align-items: center; gap: 6px; width: 140px;">
+                        <input type="number" class="teaser-delay-input" placeholder="المدة" min="0.5" max="10" step="0.5" value="${seconds}" style="width: 70px; padding: 10px 8px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; text-align: center;" required>
+                        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">ثواني</span>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button type="button" class="teaser-btn-move-up" onclick="moveTeaser(${idx}, -1)" style="background: #eef2f6; border: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #4b5563; transition: all 0.2s;" title="تحريك لأعلى">▲</button>
+                        <button type="button" class="teaser-btn-move-down" onclick="moveTeaser(${idx}, 1)" style="background: #eef2f6; border: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #4b5563; transition: all 0.2s;" title="تحريك لأسفل">▼</button>
+                        <button type="button" class="teaser-btn-delete" onclick="deleteTeaser(${idx})" style="background: #fee2e2; color: #ef4444; border: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; font-weight: 800; transition: all 0.2s;" title="حذف">✕</button>
+                    </div>
+                `;
+                
+                item.addEventListener('mouseenter', () => {
+                    item.style.borderColor = 'var(--purple-light)';
+                    item.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.04)';
+                });
+                item.addEventListener('mouseleave', () => {
+                    item.style.borderColor = '#e5e7eb';
+                    item.style.boxShadow = 'none';
+                });
+                
+                container.appendChild(item);
+            });
+        }
+
+        window.addTeaser = addTeaser;
+        window.deleteTeaser = deleteTeaser;
+        window.moveTeaser = moveTeaser;
+        window.syncTeasersArray = syncTeasersArray;
+
+        // Bind button
+        document.getElementById('addTeaserBtn').addEventListener('click', addTeaser);
 
         // Init
         checkAuth().then(checkPaymentResults);

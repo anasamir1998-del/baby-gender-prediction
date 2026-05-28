@@ -150,6 +150,12 @@ try {
     if ($stmt->rowCount() == 0) {
         $pdo->exec("ALTER TABLE events ADD COLUMN admin_pin VARCHAR(20) DEFAULT '2030' AFTER target_date");
     }
+    
+    $stmt = $pdo->prepare("SHOW COLUMNS FROM events LIKE 'suspense_messages'");
+    $stmt->execute();
+    if ($stmt->rowCount() == 0) {
+        $pdo->exec("ALTER TABLE events ADD COLUMN suspense_messages TEXT NULL AFTER admin_pin");
+    }
 
     // 2. Check users table for subscription_status and trial_ends_at
     $stmt = $pdo->prepare("SHOW COLUMNS FROM users LIKE 'subscription_status'");

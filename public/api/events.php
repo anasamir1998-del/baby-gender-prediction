@@ -64,7 +64,8 @@ if ($method === 'GET' && isset($_GET['slug'])) {
         'sub_baby_name' => $event['sub_baby_name'],
         'target_date' => $event['target_date'],
         'admin_pin' => $event['admin_pin'], // مستخدم لتخطي لوحة النتائج محلياً
-        'status' => $event['subscription_status']
+        'status' => $event['subscription_status'],
+        'suspense_messages' => $event['suspense_messages']
     ]);
 }
 
@@ -100,6 +101,26 @@ switch ($method) {
         $slug = strtolower(trim(sanitize($data['slug'] ?? '')));
         $adminPin = sanitize($data['admin_pin'] ?? '2030');
 
+        $suspenseMessagesRaw = $data['suspense_messages'] ?? null;
+        $suspenseMessages = null;
+        if (is_array($suspenseMessagesRaw)) {
+            $cleanedMessages = [];
+            foreach ($suspenseMessagesRaw as $msg) {
+                if (isset($msg['text']) && isset($msg['delay'])) {
+                    // Sanitize text but keep emojis (strip_tags only is fine)
+                    $text = htmlspecialchars(strip_tags(trim($msg['text'])), ENT_QUOTES, 'UTF-8');
+                    $delay = floatval($msg['delay']);
+                    if (!empty($text) && $delay > 0) {
+                        $cleanedMessages[] = [
+                            'text' => $text,
+                            'delay' => $delay
+                        ];
+                    }
+                }
+            }
+            $suspenseMessages = json_encode($cleanedMessages, JSON_UNESCAPED_UNICODE);
+        }
+
         if (empty($slug)) {
             jsonResponse(['error' => 'الرابط المخصص (Slug) مطلوب'], 400);
         }
@@ -128,9 +149,9 @@ switch ($method) {
             if ($existingEvent) {
                 // تعديل
                 $update = $pdo->prepare("UPDATE events 
-                    SET slug = ?, baby_name = ?, sub_baby_name = ?, revealed_gender = ?, target_date = ?, admin_pin = ? 
+                    SET slug = ?, baby_name = ?, sub_baby_name = ?, revealed_gender = ?, target_date = ?, admin_pin = ?, suspense_messages = ? 
                     WHERE user_id = ?");
-                $update->execute([$slug, $babyName, $subBabyName, $revealedGender, $targetDate, $adminPin, $userId]);
+                $update->execute([$slug, $babyName, $subBabyName, $revealedGender, $targetDate, $adminPin, $suspenseMessages, $userId]);
                 
                 jsonResponse([
                     'success' => true,
@@ -139,9 +160,9 @@ switch ($method) {
                 ]);
             } else {
                 // إنشاء جديد
-                $insert = $pdo->prepare("INSERT INTO events (user_id, slug, baby_name, sub_baby_name, revealed_gender, target_date, admin_pin) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?)");
-                $insert->execute([$userId, $slug, $babyName, $subBabyName, $revealedGender, $targetDate, $adminPin]);
+                $insert = $pdo->prepare("INSERT INTO events (user_id, slug, baby_name, sub_baby_name, revealed_gender, target_date, admin_pin, suspense_messages) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $insert->execute([$userId, $slug, $babyName, $subBabyName, $revealedGender, $targetDate, $adminPin, $suspenseMessages]);
                 
                 jsonResponse([
                     'success' => true,
