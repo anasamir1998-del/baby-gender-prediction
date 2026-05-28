@@ -1165,9 +1165,6 @@ body {
     left: 0;
     width: 600px;
     height: 800px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     direction: rtl;
     overflow: hidden;
     background-color: #FAF6EE;
@@ -1188,192 +1185,47 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    box-sizing: border-box;
-    text-align: center;
+    width: 600px;
+    height: 800px;
 }
 
 /* 1. Baby Name Title */
 .card-name-title {
-    margin-top: 195px;
     font-size: 5.6rem;
     font-weight: 800;
     line-height: 1.1;
     font-family: 'Reem Kufi', 'Amiri', serif;
     letter-spacing: -1px;
 }
-.theme-girl .card-name-title {
-    color: #c75b7a;
-    text-shadow: 0 4px 10px rgba(199, 91, 122, 0.18);
-}
-.theme-boy .card-name-title {
-    color: #ffffff;
-    text-shadow: 0 4px 15px rgba(255, 255, 255, 0.3), 0 0 10px rgba(235, 204, 110, 0.4);
-}
 
 /* 2. Father Subtext */
 .card-father-name {
-    margin-top: 10px;
-    margin-bottom: 30px;
     font-size: 2.3rem;
     font-weight: 700;
     font-family: 'Aref Ruqaa', 'Amiri', serif;
 }
-.theme-girl .card-father-name {
-    color: #5a7a52;
-}
-.theme-boy .card-father-name {
-    color: #ebcc6e;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-}
 
-/* 3. 3D Ribbon Banner */
-.card-ribbon-banner {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 320px;
-    height: 70px;
-    margin-bottom: 25px;
-}
-
-.ribbon-center {
-    position: relative;
-    width: 210px;
-    height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 4;
-    border-radius: 4px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
-.theme-girl .ribbon-center {
-    background: linear-gradient(135deg, #e39ca9 0%, #c65b71 100%);
-    border: 2px solid #ffffff;
-}
-.theme-boy .ribbon-center {
-    background: linear-gradient(135deg, #ebd287 0%, #d4af37 100%);
-    border: 2px solid #ffffff;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.35);
-}
-
-.ribbon-center span {
+/* 3. Simple Ribbon Text Overlay (Aligned with SVG ribbon) */
+.card-gender-tag-overlay {
     font-family: 'Reem Kufi', 'Tajawal', sans-serif;
-    font-size: 1.9rem;
+    font-size: 1.95rem;
     font-weight: 800;
-    color: #ffffff;
-}
-.theme-boy .ribbon-center span {
-    color: #0c1d3b;
-    text-shadow: none;
-}
-
-/* Folds */
-.ribbon-fold-left,
-.ribbon-fold-right {
-    position: absolute;
-    top: 48px;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    z-index: 3;
-}
-.theme-girl .ribbon-fold-left {
-    left: 47px;
-    border-width: 8px 8px 0 0;
-    border-color: #8c3647 transparent transparent transparent;
-}
-.theme-girl .ribbon-fold-right {
-    right: 47px;
-    border-width: 8px 0 0 8px;
-    border-color: #8c3647 transparent transparent transparent;
-}
-.theme-boy .ribbon-fold-left {
-    left: 47px;
-    border-width: 8px 8px 0 0;
-    border-color: #8c6d1a transparent transparent transparent;
-}
-.theme-boy .ribbon-fold-right {
-    right: 47px;
-    border-width: 8px 0 0 8px;
-    border-color: #8c6d1a transparent transparent transparent;
-}
-
-/* Tails */
-.ribbon-tail-left,
-.ribbon-tail-right {
-    position: absolute;
-    top: 8px;
-    width: 60px;
-    height: 46px;
-    z-index: 2;
-}
-.theme-girl .ribbon-tail-left {
-    left: 0px;
-    background: #e39ca9;
-    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 25% 50%);
-    border: 2px solid #ffffff;
-    border-right: none;
-}
-.theme-girl .ribbon-tail-right {
-    right: 0px;
-    background: #e39ca9;
-    clip-path: polygon(0% 0%, 100% 0%, 75% 50%, 100% 100%, 0% 100%);
-    border: 2px solid #ffffff;
-    border-left: none;
-}
-.theme-boy .ribbon-tail-left {
-    left: 0px;
-    background: #ebd287;
-    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 25% 50%);
-    border: 2px solid #ffffff;
-    border-right: none;
-}
-.theme-boy .ribbon-tail-right {
-    right: 0px;
-    background: #ebd287;
-    clip-path: polygon(0% 0%, 100% 0%, 75% 50%, 100% 100%, 0% 100%);
-    border: 2px solid #ffffff;
-    border-left: none;
+    letter-spacing: 0.5px;
 }
 
 /* 4. Prayer Text */
 .card-prayer-text {
-    margin-top: 30px;
     font-size: 2.1rem;
     font-weight: 700;
     font-family: 'Amiri', serif;
 }
-.theme-girl .card-prayer-text {
-    color: #5a7a52;
-}
-.theme-boy .card-prayer-text {
-    color: #ebd287;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
 
 /* 5. Date Display */
 .card-date-display {
-    margin-top: 15px;
     font-size: 1.2rem;
     font-weight: 700;
     font-family: 'Aref Ruqaa', 'Tajawal', sans-serif;
     opacity: 0.85;
-}
-.theme-girl .card-date-display {
-    color: #8da883;
-}
-.theme-boy .card-date-display {
-    color: #ebcc6e;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 
