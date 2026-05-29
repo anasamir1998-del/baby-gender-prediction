@@ -90,6 +90,123 @@
             background: #fca5a5;
         }
 
+        .btn-pregnancy-tracker {
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-decoration: none;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(236, 72, 153, 0.25);
+        }
+
+        .btn-pregnancy-tracker:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35);
+            filter: brightness(1.05);
+        }
+
+        /* Pregnancy Tracker Promo Card */
+        .pregnancy-promo-card {
+            background: linear-gradient(135deg, #fff5f5, #fff0f6);
+            border: 2px dashed #f472b6;
+            border-radius: var(--radius);
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .pregnancy-promo-card:hover {
+            transform: translateY(-2px);
+            border-style: solid;
+            box-shadow: 0 8px 25px rgba(244, 114, 182, 0.15);
+        }
+
+        .promo-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .promo-icon {
+            font-size: 3rem;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+        }
+
+        .promo-text h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #db2777;
+            margin-bottom: 6px;
+        }
+
+        .promo-text p {
+            font-size: 0.95rem;
+            color: #4b5563;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .promo-btn {
+            background: linear-gradient(135deg, #db2777, #f43f5e);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .promo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(219, 39, 119, 0.35);
+            filter: brightness(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .pregnancy-promo-card {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .promo-content {
+                flex-direction: column;
+            }
+            
+            .promo-btn {
+                justify-content: center;
+            }
+        }
+
         /* Container */
         .container {
             max-width: 1100px;
@@ -580,6 +697,7 @@
     <div class="navbar">
         <a href="landing.html" class="logo">🎉 صانع الاحتفاليات</a>
         <div class="nav-actions">
+            <a href="https://pregnancy-tracker-peach.vercel.app/" target="_blank" class="btn-pregnancy-tracker">🤰 تتبع الحمل</a>
             <span id="userEmailSpan" style="font-weight: 700; font-size: 0.95rem; color: var(--text-muted);">...</span>
             <button class="btn-logout" id="logoutBtn">تسجيل خروج</button>
         </div>
@@ -606,6 +724,18 @@
                 </div>
                 <button class="btn-upgrade" id="upgradeBtn" style="display: none;">💡 تفعيل الاحتفالية لمدة 5 أيام</button>
             </div>
+        </div>
+
+        <!-- 🤰 Pregnancy Tracker Promo Banner -->
+        <div class="pregnancy-promo-card">
+            <div class="promo-content">
+                <div class="promo-icon">🤰✨</div>
+                <div class="promo-text">
+                    <h3>برنامج تتبع مراحل الحمل الذكي 🌸</h3>
+                    <p>هل ترغبين في تتبع مراحل نمو جنينك يوماً بيوم وتلقي نصائح طبية وصحية مخصصة لكل أسبوع؟ جربي تطبيقنا المميز لمتابعة الحمل الآن مجاناً!</p>
+                </div>
+            </div>
+            <a href="https://pregnancy-tracker-peach.vercel.app/" target="_blank" class="promo-btn">زيارة موقع تتبع الحمل 🚀</a>
         </div>
 
         <!-- Main Workspace -->
