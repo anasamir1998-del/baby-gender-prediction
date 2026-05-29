@@ -160,7 +160,7 @@ try {
     $stmt = $pdo->prepare("SHOW COLUMNS FROM events LIKE 'custom_card_image'");
     $stmt->execute();
     if ($stmt->rowCount() == 0) {
-        $pdo->exec("ALTER TABLE events ADD COLUMN custom_card_image LONGTEXT NULL AFTER suspense_messages");
+        $pdo->exec("ALTER TABLE events ADD COLUMN custom_card_image LONGTEXT NULL");
     }
 
     // 2. Check users table for subscription_status and trial_ends_at
