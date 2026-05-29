@@ -784,10 +784,7 @@
                         <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px; display: block;">سيكون رابطك: domain.com/index.html?event=ilan</small>
                     </div>
 
-                    <div class="form-group">
-                        <label for="adminPinInput">رمز الـ PIN لصفحة النتائج المحلية (اختياري):</label>
-                        <input type="text" id="adminPinInput" value="2030" placeholder="مثال: 2030">
-                    </div>
+
 
                     <div class="form-group" style="margin-top: 25px; border-top: 2px solid #f3f4f6; padding-top: 25px;">
                         <label style="font-size: 1.05rem; font-weight: 800; color: #db2777; display: flex; align-items: center; gap: 8px;">
@@ -974,7 +971,6 @@
                     document.getElementById('subBabyNameInput').value = currentEvent.sub_baby_name || '';
                     document.getElementById('genderSelect').value = currentEvent.revealed_gender || 'girl';
                     document.getElementById('slugInput').value = currentEvent.slug || '';
-                    document.getElementById('adminPinInput').value = currentEvent.admin_pin || '2030';
                     
                     if (currentEvent.target_date) {
                         const formatted = currentEvent.target_date.replace(' ', 'T').slice(0, 16);
@@ -1061,7 +1057,7 @@
                 revealed_gender: document.getElementById('genderSelect').value,
                 target_date: document.getElementById('targetDateInput').value.replace('T', ' ') + ':00',
                 slug: document.getElementById('slugInput').value.trim(),
-                admin_pin: document.getElementById('adminPinInput').value.trim(),
+                admin_pin: (currentEvent && currentEvent.admin_pin) ? currentEvent.admin_pin : '2030',
                 suspense_messages: teaserMessages,
                 custom_card_image: customCardImageBase64
             };
