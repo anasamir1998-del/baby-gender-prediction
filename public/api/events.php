@@ -66,7 +66,8 @@ if ($method === 'GET' && isset($_GET['slug'])) {
         'target_date' => $event['target_date'],
         'admin_pin' => $event['admin_pin'], // مستخدم لتخطي لوحة النتائج محلياً
         'status' => $event['subscription_status'],
-        'suspense_messages' => $event['suspense_messages']
+        'suspense_messages' => $event['suspense_messages'],
+        'custom_card_image' => $event['custom_card_image']
     ]);
 }
 
@@ -101,6 +102,7 @@ switch ($method) {
         $targetDate = sanitize($data['target_date'] ?? '');
         $slug = strtolower(trim(sanitize($data['slug'] ?? '')));
         $adminPin = sanitize($data['admin_pin'] ?? '2030');
+        $customCardImage = $data['custom_card_image'] ?? '';
 
         $suspenseMessagesRaw = $data['suspense_messages'] ?? null;
         $suspenseMessages = null;
@@ -150,9 +152,9 @@ switch ($method) {
             if ($existingEvent) {
                 // تعديل
                 $update = $pdo->prepare("UPDATE events 
-                    SET slug = ?, baby_name = ?, sub_baby_name = ?, revealed_gender = ?, target_date = ?, admin_pin = ?, suspense_messages = ? 
+                    SET slug = ?, baby_name = ?, sub_baby_name = ?, revealed_gender = ?, target_date = ?, admin_pin = ?, suspense_messages = ?, custom_card_image = ? 
                     WHERE user_id = ?");
-                $update->execute([$slug, $babyName, $subBabyName, $revealedGender, $targetDate, $adminPin, $suspenseMessages, $userId]);
+                $update->execute([$slug, $babyName, $subBabyName, $revealedGender, $targetDate, $adminPin, $suspenseMessages, $customCardImage, $userId]);
                 
                 jsonResponse([
                     'success' => true,
@@ -161,9 +163,9 @@ switch ($method) {
                 ]);
             } else {
                 // إنشاء جديد
-                $insert = $pdo->prepare("INSERT INTO events (user_id, slug, baby_name, sub_baby_name, revealed_gender, target_date, admin_pin, suspense_messages) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $insert->execute([$userId, $slug, $babyName, $subBabyName, $revealedGender, $targetDate, $adminPin, $suspenseMessages]);
+                $insert = $pdo->prepare("INSERT INTO events (user_id, slug, baby_name, sub_baby_name, revealed_gender, target_date, admin_pin, suspense_messages, custom_card_image) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $insert->execute([$userId, $slug, $babyName, $subBabyName, $revealedGender, $targetDate, $adminPin, $suspenseMessages, $customCardImage]);
                 
                 jsonResponse([
                     'success' => true,

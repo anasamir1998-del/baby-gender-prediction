@@ -828,6 +828,15 @@ function startReveal() {
 
 // ============ IDEA 5: SHARE CARD ============
 function downloadCard() {
+    // If a custom card image was uploaded by the admin, download it directly!
+    if (eventData && eventData.custom_card_image && eventData.custom_card_image.trim() !== '') {
+        const link = document.createElement('a');
+        link.download = `baby-reveal-${MAIN_BABY_NAME || 'memory'}.png`;
+        link.href = eventData.custom_card_image;
+        link.click();
+        return;
+    }
+
     const area = document.getElementById('souvenirCard');
     const btn = document.querySelector('.share-btn');
     
@@ -847,7 +856,7 @@ function downloadCard() {
         letterRendering: false, // Helps with some Arabic issues
     }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `baby-reveal-${MAIN_BABY_NAME}.png`;
+        link.download = `baby-reveal-${MAIN_BABY_NAME || 'memory'}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
         btn.style.display = 'block';

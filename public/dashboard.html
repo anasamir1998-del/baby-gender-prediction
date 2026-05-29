@@ -789,6 +789,28 @@
                         <input type="text" id="adminPinInput" value="2030" placeholder="مثال: 2030">
                     </div>
 
+                    <div class="form-group" style="margin-top: 25px; border-top: 2px solid #f3f4f6; padding-top: 25px;">
+                        <label style="font-size: 1.05rem; font-weight: 800; color: #db2777; display: flex; align-items: center; gap: 8px;">
+                            🖼️ صورة مخصصة لبطاقة الذكرى (اختياري)
+                        </label>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.6;">
+                            يمكنك رفع صورة مخصصة بالكامل (مثل تصميم خاص بك باسم المولود) ليقوم الضيوف بتحميلها مباشرة عند الضغط على "حفظ بطاقة الذكرى". إذا تركت هذا الحقل فارغاً، سيتم تحميل النموذج والشهادة الذكية التلقائية الافتراضية.
+                        </p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <input type="file" id="customCardImageFile" accept="image/*" style="padding: 10px; border: 2px dashed #f472b6; border-radius: 12px; background: #fff5f5; cursor: pointer; font-family: 'Tajawal', sans-serif; width: 100%;">
+                            
+                            <!-- Preview Box -->
+                            <div id="customCardPreviewContainer" style="display: none; align-items: center; gap: 15px; background: #fafafa; padding: 15px; border-radius: 12px; border: 1px solid #e5e7eb;">
+                                <img id="customCardPreviewImg" src="" alt="Custom Card Preview" style="max-height: 120px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: white;">
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <span style="font-size: 0.85rem; color: #10b981; font-weight: 700;">✅ تم رفع صورة مخصصة</span>
+                                    <button type="button" id="removeCustomCardBtn" style="background: #fee2e2; color: #ef4444; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.3s; font-family: 'Tajawal', sans-serif;">❌ حذف الصورة والعودة للتصميم التلقائي</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- ⏳ إدارة الجمل التشويقية ما قبل الكشف -->
                     <div class="form-group" style="margin-top: 35px; border-top: 2px solid #f3f4f6; padding-top: 25px;">
                         <label style="font-size: 1.1rem; font-weight: 800; color: var(--purple); display: flex; align-items: center; gap: 8px;">
@@ -884,6 +906,7 @@
         let currentEvent = null;
         let currentUser = null;
         let teaserMessages = [];
+        let customCardImageBase64 = "";
 
         // Check Login Status on Page Load
         async function checkAuth() {
@@ -981,6 +1004,17 @@
                     }
                     renderTeasers();
 
+                    customCardImageBase64 = currentEvent.custom_card_image || '';
+                    const previewContainer = document.getElementById('customCardPreviewContainer');
+                    const previewImg = document.getElementById('customCardPreviewImg');
+                    if (customCardImageBase64) {
+                        previewImg.src = customCardImageBase64;
+                        previewContainer.style.display = 'flex';
+                    } else {
+                        previewImg.src = '';
+                        previewContainer.style.display = 'none';
+                    }
+
                     // Render event links
                     const protocol = window.location.protocol;
                     const host = window.location.host;
@@ -1028,7 +1062,8 @@
                 target_date: document.getElementById('targetDateInput').value.replace('T', ' ') + ':00',
                 slug: document.getElementById('slugInput').value.trim(),
                 admin_pin: document.getElementById('adminPinInput').value.trim(),
-                suspense_messages: teaserMessages
+                suspense_messages: teaserMessages,
+                custom_card_image: customCardImageBase64
             };
 
             try {
@@ -1570,6 +1605,37 @@
 
         // Bind button
         document.getElementById('addTeaserBtn').addEventListener('click', addTeaser);
+
+        // Custom Card Image Listeners
+        const fileInput = document.getElementById('customCardImageFile');
+        const previewContainer = document.getElementById('customCardPreviewContainer');
+        const previewImg = document.getElementById('customCardPreviewImg');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('❌ حجم الصورة كبير جداً، الحد الأقصى هو 5 ميجابايت.');
+                fileInput.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                customCardImageBase64 = evt.target.result;
+                previewImg.src = customCardImageBase64;
+                previewContainer.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('removeCustomCardBtn').addEventListener('click', function() {
+            customCardImageBase64 = "";
+            fileInput.value = '';
+            previewImg.src = '';
+            previewContainer.style.display = 'none';
+        });
 
         // Init
         checkAuth().then(checkPaymentResults);
