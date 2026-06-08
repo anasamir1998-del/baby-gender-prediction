@@ -377,6 +377,62 @@
                 gap: 12px;
                 margin-bottom: 15px;
             }
+
+            .teaser-item {
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 10px;
+            }
+            .teaser-text-input {
+                width: calc(100% - 35px) !important;
+                flex: none !important;
+            }
+            .teaser-delay-wrap {
+                width: auto !important;
+                flex: 1 1 auto !important;
+                justify-content: flex-start;
+            }
+            .teaser-actions-wrap {
+                flex: 1 1 auto !important;
+                justify-content: flex-end;
+            }
+            #liveRevealBtn {
+                display: block !important;
+                width: 100% !important;
+                white-space: normal !important;
+                font-size: 0.95rem !important;
+                padding: 12px 15px !important;
+                text-align: center !important;
+            }
+        }
+
+        .teaser-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fafafa;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .teaser-text-input {
+            flex: 1;
+        }
+
+        .teaser-delay-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 140px;
+            flex-shrink: 0;
+        }
+
+        .teaser-actions-wrap {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
         }
 
         /* Container */
@@ -496,6 +552,8 @@
             padding: 30px;
             box-shadow: var(--shadow);
             border: 1px solid #f3f4f6;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .card-title {
@@ -1697,19 +1755,18 @@
             teaserMessages.forEach((msg, idx) => {
                 const item = document.createElement('div');
                 item.className = 'teaser-item';
-                item.style.cssText = 'display: flex; align-items: center; gap: 10px; background: #fafafa; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; transition: all 0.3s;';
                 
                 let seconds = parseFloat(msg.delay);
                 if (seconds > 100) seconds = seconds / 1000;
                 
                 item.innerHTML = `
                     <span style="font-weight: 800; color: var(--purple); width: 24px; text-align: center; font-size: 0.95rem;">${idx + 1}</span>
-                    <input type="text" class="teaser-text-input" placeholder="اكتب عبارة التشويق... (مثال: جاهزيين؟؟ 😍)" value="${escapeHTML(msg.text)}" style="flex: 1; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;" required>
-                    <div style="display: flex; align-items: center; gap: 6px; width: 140px;">
+                    <input type="text" class="teaser-text-input" placeholder="اكتب عبارة التشويق... (مثال: جاهزيين؟؟ 😍)" value="${escapeHTML(msg.text)}" style="padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;" required>
+                    <div class="teaser-delay-wrap">
                         <input type="number" class="teaser-delay-input" placeholder="المدة" min="0.5" max="10" step="0.5" value="${seconds}" style="width: 70px; padding: 10px 8px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; text-align: center;" required>
                         <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">ثواني</span>
                     </div>
-                    <div style="display: flex; gap: 5px;">
+                    <div class="teaser-actions-wrap">
                         <button type="button" class="teaser-btn-move-up" onclick="moveTeaser(${idx}, -1)" style="background: #eef2f6; border: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #4b5563; transition: all 0.2s;" title="تحريك لأعلى">▲</button>
                         <button type="button" class="teaser-btn-move-down" onclick="moveTeaser(${idx}, 1)" style="background: #eef2f6; border: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #4b5563; transition: all 0.2s;" title="تحريك لأسفل">▼</button>
                         <button type="button" class="teaser-btn-delete" onclick="deleteTeaser(${idx})" style="background: #fee2e2; color: #ef4444; border: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; font-weight: 800; transition: all 0.2s;" title="حذف">✕</button>
