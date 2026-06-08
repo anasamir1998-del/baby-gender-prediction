@@ -37,6 +37,11 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         body {
             font-family: 'Tajawal', sans-serif;
             background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
@@ -798,9 +803,9 @@
 
         /* Souvenir card mockup - Enchanted Garden theme */
         .souvenir-card-template {
-            position: absolute;
+            position: fixed;
             left: -9999px;
-            top: 0;
+            top: -9999px;
             width: 500px;
             background: linear-gradient(160deg, #fefdf5 0%, #faf5ee 30%, #f5f0e3 60%, #fef9f0 100%);
             border-radius: 24px;
